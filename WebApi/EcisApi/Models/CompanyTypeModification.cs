@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.Models
 {
@@ -12,7 +9,7 @@ namespace EcisApi.Models
         public string Modification { get; set; }
         public bool IsAnnounced { get; set; }
         public DateTime? AnnouncedAt { get; set; }
-        
+
         public int? CompanyId { get; set; }
         public int? PreviousCompanyTypeId { get; set; }
         public int? UpdatedCompanyTypeId { get; set; }

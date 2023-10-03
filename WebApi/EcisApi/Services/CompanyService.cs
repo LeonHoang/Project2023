@@ -3,7 +3,6 @@ using EcisApi.Helpers;
 using EcisApi.Models;
 using EcisApi.Repositories;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -244,7 +243,7 @@ namespace EcisApi.Services
             if (data.ModificationType == "VERIFICATION")
             {
                 currentModification.VerificationProcessId = data.ModificationTargetId;
-            } 
+            }
             else if (data.ModificationType == "REPORT")
             {
                 currentModification.CompanyReportId = data.ModificationTargetId;

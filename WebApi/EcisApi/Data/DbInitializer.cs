@@ -1,9 +1,7 @@
 ﻿using EcisApi.Helpers;
 using EcisApi.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.Data
 {
@@ -31,7 +29,8 @@ namespace EcisApi.Data
             context.SystemConfigurations.Add(systemConfiguration1);
 
             // Role seeding
-            Role adminRole = new() { 
+            Role adminRole = new()
+            {
                 RoleName = "Admin",
                 CreatedAt = DateTime.Now,
                 Description = "Admin Role",
@@ -342,7 +341,7 @@ namespace EcisApi.Data
             };
             context.CriteriaDetails.Add(criteriaDetail11);
 
-            CriteriaDetail criteriaDetail12= new()
+            CriteriaDetail criteriaDetail12 = new()
             {
                 CriteriaDetailName = "Niêm yết công khai thông tin về đóng bảo hiểm xã hội và y tế đối với người lao động theo quy định của Luật Bảo hiểm xã hội",
                 Description = "Niêm yết công khai thông tin về đóng bảo hiểm xã hội và y tế đối với người lao động theo quy định của Luật Bảo hiểm xã hội",

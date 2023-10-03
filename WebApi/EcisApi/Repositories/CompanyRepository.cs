@@ -1,13 +1,11 @@
 ﻿using EcisApi.Data;
 using EcisApi.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.Repositories
 {
-    public interface ICompanyRepository: IRepository<Company>
+    public interface ICompanyRepository : IRepository<Company>
     {
         ICollection<Company> GetAllActivated();
         ICollection<Company> GetByProvinces(List<int> provinceIds);

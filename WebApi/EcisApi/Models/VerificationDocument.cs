@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.Models
 {
@@ -15,7 +12,7 @@ namespace EcisApi.Models
         public string ResourceUrl { get; set; }
         public long ResourceSize { get; set; }
         public string UploaderType { get; set; }
-        
+
         public int? VerificationCriteriaId { get; set; }
 
         public virtual VerificationCriteria VerificationCriteria { get; set; }

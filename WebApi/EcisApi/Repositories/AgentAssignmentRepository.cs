@@ -1,9 +1,7 @@
 ﻿using EcisApi.Data;
 using EcisApi.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.Repositories
 {
@@ -23,6 +21,6 @@ namespace EcisApi.Repositories
         {
             return db.Set<AgentAssignment>().Where(x => x.AgentId == agentId).ToList();
         }
-        
+
     }
 }

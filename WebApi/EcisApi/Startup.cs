@@ -1,27 +1,17 @@
 using EcisApi.Data;
-using Microsoft.EntityFrameworkCore;
+using EcisApi.DTO;
+using EcisApi.Helpers;
+using EcisApi.Models;
+using EcisApi.Repositories;
+using EcisApi.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EcisApi.Repositories;
-using EcisApi.Services;
-using EcisApi.Controllers;
-using FluentValidation.AspNetCore;
-using EcisApi.DTO;
-using FluentValidation;
-using EcisApi.Helpers;
-using System.IO;
-using EcisApi.Models;
 
 namespace EcisApi
 {
@@ -38,10 +28,7 @@ namespace EcisApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options =>
-                options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddHealthChecks()
-                .AddCheck<DbPendingMigrationHealthCheck<DataContext>>("db-migration-check");
-
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
@@ -83,7 +70,6 @@ namespace EcisApi
             services.AddTransient<IProvinceService, ProvinceService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IThirdPartyService, ThirdPartyService>();
-            services.AddTransient<IV1Service, V1Service>();
             services.AddTransient<IVerificationConfirmRequirementService, VerificationConfirmRequirementService>();
             services.AddTransient<IVerificationCriteriaService, VerificationCriteriaService>();
             services.AddTransient<IVerificationDocumentService, VerificationDocumentService>();
@@ -92,10 +78,7 @@ namespace EcisApi
             services.AddTransient<IViolationReportDocumentService, ViolationReportDocumentService>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-
-            services.AddTransient<ICloudStorageHelper, CloudStorageHelper>();
             services.AddTransient<IEmailHelper, EmailHelper>();
-            services.AddTransient<ILoggerHelper, LoggerHelper>();
 
             services.AddCors(options =>
             {
@@ -116,13 +99,6 @@ namespace EcisApi
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                 );
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EcisApi", Version = "v1" });
-                var filePath = Path.Combine(System.AppContext.BaseDirectory, "EcisApi.xml");
-                c.IncludeXmlComments(filePath);
-            });
 
             // configure strongly typed settings object
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
@@ -155,7 +131,6 @@ namespace EcisApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EcisApi v1"));
             }
 
             app.UseRouting();
@@ -169,7 +144,6 @@ namespace EcisApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/_Health");
             });
         }
     }

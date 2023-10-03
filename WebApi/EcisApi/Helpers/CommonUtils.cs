@@ -1,13 +1,11 @@
 ﻿using EcisApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace EcisApi.Helpers
 {
@@ -54,7 +52,7 @@ namespace EcisApi.Helpers
             var key = Encoding.ASCII.GetBytes(secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { 
+                Subject = new ClaimsIdentity(new[] {
                     new Claim("Id", account.Id.ToString()),
                     new Claim("Type", "ThirdParty"),
                     new Claim("ClientSecret", clientSecret),

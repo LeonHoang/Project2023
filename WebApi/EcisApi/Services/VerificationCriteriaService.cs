@@ -2,9 +2,7 @@
 using EcisApi.Models;
 using EcisApi.Repositories;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace EcisApi.Services
@@ -55,7 +53,7 @@ namespace EcisApi.Services
             verificationCriteria.ReviewResult = payload.ReviewResult;
             return await verificationCriteriaRepository.UpdateAsync(verificationCriteria);
         }
-        
+
         public async Task<ICollection<VerificationCriteria>> ApproveAllAsync(int processId)
         {
             var verificationCriterias = verificationCriteriaRepository.GetByProcessId(processId);
@@ -64,7 +62,7 @@ namespace EcisApi.Services
                 throw new BadHttpRequestException("VerificationCriteriaEmpty");
             }
             using var transaction = unitOfWork.BeginTransaction();
-            foreach(var criteria in verificationCriterias)
+            foreach (var criteria in verificationCriterias)
             {
                 criteria.ApprovedStatus = AppConstants.VerificationCriteriaStatus.VERIFIED;
                 await verificationCriteriaRepository.UpdateAsync(criteria);

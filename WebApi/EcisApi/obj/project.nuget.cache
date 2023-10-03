@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "bZrRM8i0f6ACWZoP3qcE0XjoMMWvQ4WwJbnGcvaiI3zgivvBPG0c4UIW5PzyKULoga1Lwawq0Xl6TYUmbXIKpA==",
+  "dgSpecHash": "Q4PANfx4xLKOX1FyU4/Y4CDqexd5cE08Cd8Arcr00wRsM5xJAipieB9CVpSuCmzp07xlL2/7qrEIVKI5uE3cZA==",
   "success": true,
-  "projectFilePath": "D:\\doan2023\\Source\\EcisApi\\EcisApi.csproj",
+  "projectFilePath": "D:\\doan2023\\Source\\github\\Project2023\\WebApi\\EcisApi\\EcisApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hoang\\.nuget\\packages\\castle.core\\4.4.1\\castle.core.4.4.1.nupkg.sha512",
     "C:\\Users\\hoang\\.nuget\\packages\\fluentvalidation\\10.3.0\\fluentvalidation.10.3.0.nupkg.sha512",

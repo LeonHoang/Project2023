@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.Models
 {
@@ -17,7 +15,7 @@ namespace EcisApi.Models
         public string Address { get; set; }
 
         public int AccountId { get; set; }
-        
+
         public virtual Account Account { get; set; }
 
         [JsonIgnore]

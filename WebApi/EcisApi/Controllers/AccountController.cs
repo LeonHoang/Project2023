@@ -4,9 +4,6 @@ using EcisApi.Models;
 using EcisApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace EcisApi.Controllers
@@ -23,7 +20,7 @@ namespace EcisApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Account> GetById([FromRoute]int id)
+        public ActionResult<Account> GetById([FromRoute] int id)
         {
             return accountService.GetById(id);
         }
@@ -41,7 +38,7 @@ namespace EcisApi.Controllers
             catch (BadHttpRequestException e)
             {
                 return BadRequest(new
-                { 
+                {
                     e.Message
                 });
             }

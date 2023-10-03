@@ -1,9 +1,5 @@
 ﻿using EcisApi.Models;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.DTO
 {
@@ -15,8 +11,8 @@ namespace EcisApi.DTO
         public ViolationReportDocument[] ViolationReportDocuments { get; set; }
     }
 
-    public class ViolationReportDTOValidator : AbstractValidator<ViolationReportDTO> 
-    { 
+    public class ViolationReportDTOValidator : AbstractValidator<ViolationReportDTO>
+    {
         public ViolationReportDTOValidator()
         {
             RuleFor(x => x.CompanyId)

@@ -124,7 +124,7 @@ namespace EcisApi.Services
             }
             var processes = verificationProcessRepository
                     .Find(x => (x.Status == AppConstants.VerificationProcessStatus.InProgress || x.Status == AppConstants.VerificationProcessStatus.Submitted) && !x.IsDeleted);
-            
+
             if (role.RoleName == "Admin")
             {
                 return processes.ToList();
@@ -213,7 +213,7 @@ namespace EcisApi.Services
         public VerificationProcess GetCompanyCurrentPending(int companyId)
         {
             return verificationProcessRepository
-                .Find(x => 
+                .Find(x =>
                     x.CompanyId == companyId &&
                     !x.IsDeleted && (
                         x.Status == AppConstants.VerificationProcessStatus.InProgress ||
@@ -327,7 +327,7 @@ namespace EcisApi.Services
             process.Status = AppConstants.VerificationProcessStatus.Submitted;
             return await verificationProcessRepository.UpdateAsync(process);
         }
-        
+
         public async Task<VerificationProcess> SubmitReviewAsync(int id, int assignedAgentId)
         {
             var process = verificationProcessRepository.GetById(id);

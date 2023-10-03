@@ -1,13 +1,10 @@
 ﻿using EcisApi.Data;
 using EcisApi.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.Repositories
 {
-    public interface IRoleRepository: IRepository<Role>
+    public interface IRoleRepository : IRepository<Role>
     {
         Role GetRoleByName(string name);
     }

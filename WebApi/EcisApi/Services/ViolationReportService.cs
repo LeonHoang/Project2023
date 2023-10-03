@@ -81,7 +81,8 @@ namespace EcisApi.Services
             return createdReport;
         }
 
-        public async Task<ViolationReport> ApproveAsync(int id) {
+        public async Task<ViolationReport> ApproveAsync(int id)
+        {
             var report = violationReportRepository.GetById(id);
             if (report == null)
             {

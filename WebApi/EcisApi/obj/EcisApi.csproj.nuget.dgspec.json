@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\doan2023\\Source\\EcisApi\\EcisApi.csproj": {}
+    "D:\\doan2023\\Source\\github\\Project2023\\WebApi\\EcisApi\\EcisApi.csproj": {}
   },
   "projects": {
-    "D:\\doan2023\\Source\\EcisApi\\EcisApi.csproj": {
+    "D:\\doan2023\\Source\\github\\Project2023\\WebApi\\EcisApi\\EcisApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\doan2023\\Source\\EcisApi\\EcisApi.csproj",
+        "projectUniqueName": "D:\\doan2023\\Source\\github\\Project2023\\WebApi\\EcisApi\\EcisApi.csproj",
         "projectName": "EcisApi",
-        "projectPath": "D:\\doan2023\\Source\\EcisApi\\EcisApi.csproj",
+        "projectPath": "D:\\doan2023\\Source\\github\\Project2023\\WebApi\\EcisApi\\EcisApi.csproj",
         "packagesPath": "C:\\Users\\hoang\\.nuget\\packages\\",
-        "outputPath": "D:\\doan2023\\Source\\EcisApi\\obj\\",
+        "outputPath": "D:\\doan2023\\Source\\github\\Project2023\\WebApi\\EcisApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

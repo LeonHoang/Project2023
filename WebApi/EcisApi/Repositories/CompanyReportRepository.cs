@@ -1,10 +1,8 @@
 ﻿using EcisApi.Data;
 using EcisApi.Helpers;
 using EcisApi.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.Repositories
 {
@@ -29,7 +27,7 @@ namespace EcisApi.Repositories
         public CompanyReport GetCurrentUnhandled(int companyId)
         {
             return db.Set<CompanyReport>()
-                .Where(x => 
+                .Where(x =>
                     x.Status == AppConstants.CompanyReportStatus.PENDING
                     && !x.IsDeleted
                     && x.TargetedCompanyId == companyId)

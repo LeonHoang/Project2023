@@ -4,9 +4,6 @@ using EcisApi.Models;
 using EcisApi.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace EcisApi.Services
@@ -45,7 +42,7 @@ namespace EcisApi.Services
         {
             var hashedPassword = CommonUtils.GenerateSHA1(model.Password);
             var account = accountRepository.GetOne(x => x.Email == model.Email && x.Password == hashedPassword);
-            
+
             if (account == null || !account.IsVerified) return null;
 
             var token = CommonUtils.GenerateJwtToken(account, appSettings.Secret);
@@ -57,7 +54,7 @@ namespace EcisApi.Services
                 RoleId = account.RoleId,
                 Token = token
             };
-                
+
         }
 
         public AuthenticateResponseDTO AuthenticateManagement(AuthenticateRequestDTO model)

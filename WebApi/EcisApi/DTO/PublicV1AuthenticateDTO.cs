@@ -1,8 +1,4 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.DTO
 {
@@ -13,7 +9,7 @@ namespace EcisApi.DTO
         public string ClientSecret { get; set; }
     }
 
-    public class PublicV1AuthenticateDTOValidator: AbstractValidator<PublicV1AuthenticateDTO>
+    public class PublicV1AuthenticateDTOValidator : AbstractValidator<PublicV1AuthenticateDTO>
     {
         public PublicV1AuthenticateDTOValidator()
         {

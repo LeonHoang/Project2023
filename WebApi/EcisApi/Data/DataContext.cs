@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EcisApi.Models;
+﻿using EcisApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcisApi.Data

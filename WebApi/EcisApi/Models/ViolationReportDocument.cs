@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EcisApi.Models
+﻿namespace EcisApi.Models
 {
     public class ViolationReportDocument : BaseModel
     {
@@ -14,7 +9,7 @@ namespace EcisApi.Models
         public long DocumentSize { get; set; }
 
         public int? ViolationReportId { get; set; }
-        
+
         public virtual ViolationReport ViolationReport { get; set; }
     }
 }

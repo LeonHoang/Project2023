@@ -1,7 +1,6 @@
 ﻿using EcisApi.Data;
 using EcisApi.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -65,7 +64,7 @@ namespace EcisApi.Repositories
                 await db.SaveChangesAsync();
                 return entity;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception($"{nameof(entity)} could not be saved: {e.Message}");
             }

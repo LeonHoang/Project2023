@@ -45,7 +45,7 @@ namespace EcisApi.Services
         {
             return companyReportRepository.GetAll().ToList();
         }
-        
+
         public ICollection<CompanyReport> GetPending()
         {
             return companyReportRepository.GetPending();
@@ -84,7 +84,7 @@ namespace EcisApi.Services
                 VerificationProcessId = payload.VerificationProcessId
             };
             var createdCompanyReport = await companyReportRepository.AddAsync(companyReport);
-            foreach(var document in payload.CompanyReportDocuments)
+            foreach (var document in payload.CompanyReportDocuments)
             {
                 document.CompanyReportId = createdCompanyReport.Id;
                 await companyReportDocumentRepository.AddAsync(document);

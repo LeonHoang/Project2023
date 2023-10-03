@@ -1,12 +1,5 @@
-﻿using EcisApi.DTO;
-using EcisApi.Helpers;
-using EcisApi.Models;
+﻿using EcisApi.Models;
 using EcisApi.Repositories;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EcisApi.Services
 {
