@@ -91,6 +91,8 @@ namespace EcisApi
                     });
             });
 
+            services.AddSwaggerGen();
+
             services.AddControllers()
                 .AddFluentValidation(s =>
                 {
@@ -131,6 +133,7 @@ namespace EcisApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseRouting();

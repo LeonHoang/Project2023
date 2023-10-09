@@ -473,16 +473,16 @@ namespace EcisApi.Data
             };
             context.CriteriaDetails.Add(criteriaDetail22);
 
-            //context.Accounts.Add(new Account
-            //{
-            //    Email = "qanh@gmail.com",
-            //    Password = CommonUtils.GenerateSHA1("abcd1234"),
-            //    Role = adminRole,
-            //    IsDeleted = false,
-            //    CreatedAt = DateTime.Now,
-            //    UpdatedAt = DateTime.Now,
-            //    IsVerified = true
-            //});
+            context.Accounts.Add(new Account
+            {
+                Email = "hoang@gmail.com",
+                Password = CommonUtils.GenerateSHA1("abcd1234"),
+                Role = adminRole,
+                IsDeleted = false,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                IsVerified = true
+            });
 
             context.SaveChanges();
 
