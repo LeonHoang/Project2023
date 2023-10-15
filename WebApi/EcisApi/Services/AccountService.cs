@@ -67,8 +67,9 @@ namespace EcisApi.Services
                 throw new BadHttpRequestException("Sai email hoặc mật khẩu");
             }
 
-            if (!account.IsVerified || !account.Role.HasManagement)
-            {
+            // if (!account.IsVerified || !account.Role.HasManagement)
+            if (!account.IsVerified)
+                {
                 throw new BadHttpRequestException("Tài khoản không có quyền đăng nhập");
             }
 
