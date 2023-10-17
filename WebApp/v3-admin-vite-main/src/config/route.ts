@@ -1,27 +1,27 @@
-/** 动态路由配置 */
+/** Dynamic routing configuration */
 interface RouteSettings {
   /**
-   * 是否开启动态路由功能？
-   * 1. 开启后需要后端配合，在查询用户详情接口返回当前用户可以用来判断并加载动态路由的字段（该项目用的是角色 roles 字段）
-   * 2. 假如项目不需要根据不同的用户来显示不同的页面，则应该将 async: false
+   * Whether to enable dynamic routing function?
+   * 1. After it is turned on, it requires back-end cooperation. In the user details query interface, the fields that the current user can use to determine and load dynamic routing are returned (this project uses the roles field)
+   * 2. If the project does not need to display different pages according to different users, it should set async: false
    */
   async: boolean
-  /** 当动态路由功能关闭时：
-   * 1. 应该将所有路由都写到常驻路由里面（表明所有登陆的用户能访问的页面都是一样的）
-   * 2. 系统自动给当前登录用户赋值一个没有任何作用的默认角色
+  /** When the dynamic routing function is turned off:
+   * 1. All routes should be written into the resident route (indicating that all logged-in users can access the same page)
+   * 2. The system automatically assigns a default role that has no effect to the currently logged in user.
    */
-  defaultRoles: Array<string>
+  defaultRoles: string
   /**
-   * 是否开启三级及其以上路由缓存功能？
-   * 1. 开启后会进行路由降级（把三级及其以上的路由转化为二级路由）
-   * 2. 由于都会转成二级路由，所以二级及其以上路由有内嵌子路由将会失效
+   * Whether to enable the route caching function at level 3 and above?
+   * 1. After being enabled, routing will be downgraded (routes of level three and above will be converted into level two routes).
+   * 2. Since all routes will be converted to secondary routes, embedded sub-routes for secondary and above routes will be invalid.
    */
   thirdLevelRouteCache: boolean
 }
 
 const routeSettings: RouteSettings = {
   async: true,
-  defaultRoles: ["DEFAULT_ROLE"],
+  defaultRoles: "Admin",
   thirdLevelRouteCache: false
 }
 

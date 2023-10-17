@@ -5,9 +5,9 @@ import { useUserStoreHook } from "@/store/modules/user"
 export const permission: Directive = {
   mounted(el, binding) {
     const { value: permissionRoles } = binding
-    const { roles } = useUserStoreHook()
-    if (Array.isArray(permissionRoles) && permissionRoles.length > 0) {
-      const hasPermission = roles.some((role) => permissionRoles.includes(role))
+    const { user_role } = useUserStoreHook()
+    if (permissionRoles.length > 0) {
+      const hasPermission = permissionRoles === user_role
       // hasPermission || (el.style.display = "none")
       hasPermission || el.parentNode?.removeChild(el)
     }

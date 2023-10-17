@@ -19,9 +19,9 @@ declare module "vue-router" {
      */
     hidden?: boolean
     /**
-     * Set the permissions for the route to enter and support the superposition of multiple permissions.
+     * Set the permission for the route to enter and support of permission.
      */
-    roles?: string[]
+    role?: string
     /**
      * Defaults to true, if set to false, it will not be displayed in breadcrumbs
      */

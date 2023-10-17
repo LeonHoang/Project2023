@@ -5,9 +5,9 @@ import routeSettings from "@/config/route"
 const Layouts = () => import("@/layouts/index.vue")
 
 /**
- * 常驻路由
- * 除了 redirect/403/404/login 等隐藏页面，其他页面建议设置 Name 属性
- */
+  * Resident routing
+  * In addition to hidden pages such as redirect/403/404/login, it is recommended to set the Name attribute on other pages
+  */
 export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/redirect",
@@ -237,14 +237,6 @@ export const constantRoutes: RouteRecordRaw[] = [
         meta: {
           title: "useFullscreenLoading"
         }
-      },
-      {
-        path: "use-watermark",
-        component: () => import("@/views/hook-demo/use-watermark.vue"),
-        name: "UseWatermark",
-        meta: {
-          title: "useWatermark"
-        }
       }
     ]
   }
@@ -264,7 +256,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
     meta: {
       title: "权限管理",
       svgIcon: "lock",
-      roles: ["admin", "editor"], // 可以在根路由中设置角色
+      role: "admin", // 可以在根路由中设置角色
       alwaysShow: true // 将始终显示根菜单
     },
     children: [
@@ -274,7 +266,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
         name: "PagePermission",
         meta: {
           title: "页面权限",
-          roles: ["admin"] // 或者在子导航中设置角色
+          role: "admin" // 或者在子导航中设置角色
         }
       },
       {
@@ -302,13 +294,13 @@ const router = createRouter({
   routes: routeSettings.thirdLevelRouteCache ? flatMultiLevelRoutes(constantRoutes) : constantRoutes
 })
 
-/** 重置路由 */
+/** Reset routing */
 export function resetRouter() {
-  // 注意：所有动态路由路由必须带有 Name 属性，否则可能会不能完全重置干净
+  // Note: All dynamic routing routes must have the Name attribute, otherwise they may not be completely reset.
   try {
     router.getRoutes().forEach((route) => {
       const { name, meta } = route
-      if (name && meta.roles?.length) {
+      if (name && meta.role) {
         router.hasRoute(name) && router.removeRoute(name)
       }
     })

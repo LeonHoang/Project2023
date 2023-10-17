@@ -8,16 +8,16 @@ const emit = defineEmits<{
 }>()
 
 const userStore = useUserStore()
-const switchRoles = ref(userStore.roles[0])
+const switchRoles = ref(userStore.user_role)
 watch(switchRoles, async (value) => {
-  await userStore.changeRoles(value)
+  await userStore.changeRole(value)
   emit("change")
 })
 </script>
 
 <template>
   <div>
-    <div>你的权限：{{ userStore.roles }}</div>
+    <div>你的权限：{{ userStore.user_role }}</div>
     <div class="switch-roles">
       <span>切换权限：</span>
       <el-radio-group v-model="switchRoles">
