@@ -26,8 +26,8 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
       cors: true,
       strictPort: false,
       proxy: {
-        "/api/v1": {
-          target: "https://www.fastmock.site/mock/761e2dda2b8890ab86c928a74e8f6538",
+        "/api": {
+          target: "http://localhost:5000",
           ws: true,
           changeOrigin: true
         }

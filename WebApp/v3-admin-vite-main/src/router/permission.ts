@@ -15,63 +15,61 @@ const { setTitle } = useTitle()
 NProgress.configure({ showSpinner: false })
 
 router.beforeEach(async (to, _from, next) => {
-  fixBlankPage()
-  NProgress.start()
-  const userStore = useUserStoreHook()
-  const permissionStore = usePermissionStoreHook()
-  const token = getToken()
+   fixBlankPage()
+   NProgress.start()
+   const userStore = useUserStoreHook()
+   const permissionStore = usePermissionStoreHook()
+   const token = getToken()
 
-  // 判断该用户是否已经登录
-  if (!token) {
-    // 如果在免登录的白名单中，则直接进入
-    if (isWhiteList(to)) {
-      next()
-    } else {
-      // 其他没有访问权限的页面将被重定向到登录页面
-      NProgress.done()
-      next("/login")
-    }
-    return
-  }
+   // Determine whether the user is logged in
+   if (!token) {
+     // If it is in the login-free whitelist, enter directly
+     if (isWhiteList(to)) {
+       next()
+     } else {
+       // Other pages without access rights will be redirected to the login page
+       NProgress.done()
+       next("/login")
+     }
+     return
+   }
 
-  // 如果已经登录，并准备进入 Login 页面，则重定向到主页
-  if (to.path === "/login") {
-    NProgress.done()
-    return next({ path: "/" })
-  }
+   // If you have logged in and are ready to enter the login page, redirect to the home page
+   if (to.path === "/login") {
+     NProgress.done()
+     return next({ path: "/" })
+   }
 
-  // 如果用户已经获得其权限角色
-  if (userStore.roles.length !== 0) return next()
+   // If the user has obtained its permission role
+   if (userStore.user_role.length !== 0) return next()
 
-  // 否则要重新获取权限角色
-  try {
-    if (routeSettings.async) {
-      // 注意：角色必须是一个数组！ 例如: ['admin'] 或 ['developer', 'editor']
-      await userStore.getInfo()
-      const roles = userStore.roles
-      // 根据角色生成可访问的 Routes（可访问路由 = 常驻路由 + 有访问权限的动态路由）
-      permissionStore.setRoutes(roles)
-    } else {
-      // 没有开启动态路由功能，则启用默认角色
-      userStore.setRoles(routeSettings.defaultRoles)
-      permissionStore.setRoutes(routeSettings.defaultRoles)
-    }
-    // 将'有访问权限的动态路由' 添加到 Router 中
-    permissionStore.dynamicRoutes.forEach((route) => router.addRoute(route))
-    // 确保添加路由已完成
-    // 设置 replace: true, 因此导航将不会留下历史记录
-    next({ ...to, replace: true })
-  } catch (err: any) {
-    // 过程中发生任何错误，都直接重置 Token，并重定向到登录页面
-    userStore.resetToken()
-    ElMessage.error(err.message || "路由守卫过程发生错误")
-    NProgress.done()
-    next("/login")
-  }
+   // Otherwise, re-acquire the permission role
+   try {
+     if (routeSettings.async) {
+       const user_role = userStore.user_role
+       // Generate accessible Routes based on user_role (accessible routes = resident routes + dynamic routes with access rights)
+       permissionStore.setRoutes(user_role)
+     } else {
+       // If the dynamic routing function is not enabled, the default role is enabled.
+       userStore.setRole(routeSettings.defaultRoles)
+       permissionStore.setRoutes(routeSettings.defaultRoles)
+     }
+     // Add 'dynamic route with access permission' to Router
+     permissionStore.dynamicRoutes.forEach((route) => router.addRoute(route))
+     // Make sure adding the route is complete
+     // Set replace: true, so navigation will not leave a history
+     next({ ...to, replace: true })
+   } catch (err: any) {
+     // If any error occurs during the process, the Token will be reset directly and redirected to the login page.
+     userStore.resetToken()
+     ElMessage.error(err.message || "An error occurred in the routing guard process")
+     NProgress.done()
+     next("/login")
+   }
 })
 
 router.afterEach((to) => {
-  setRouteChange(to)
-  setTitle(to.meta.title)
-  NProgress.done()
+   setRouteChange(to)
+   setTitle(to.meta.title)
+   NProgress.done()
 })

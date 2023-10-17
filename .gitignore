@@ -8,3 +8,6 @@
 /WebApi/EcisApi/obj/*
 /WebApi/.vs/*
 /WebApi/.vs/*
+/WebApi/EcisApi/obj/
+/WebApi/EcisApi/obj
+/WebApi/EcisApi/obj/Debug/net5.0/*

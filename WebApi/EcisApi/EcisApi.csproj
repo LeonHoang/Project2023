@@ -1,29 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>5f340330-15b9-413f-b26e-3325b791fb01</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\qanh\ecis\EcisApi\EcisApi.xml</DocumentationFile>
+    <DocumentationFile>D:\Fithou\Project2023\WebApi\EcisApi.xml</DocumentationFile>
     <NoWarn>1591;1701;1702</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Controllers\FileController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="commands.sh" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="commands.sh">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>

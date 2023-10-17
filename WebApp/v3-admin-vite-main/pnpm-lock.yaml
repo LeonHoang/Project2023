@@ -41,6 +41,9 @@ dependencies:
   pinia:
     specifier: 2.1.6
     version: 2.1.6(typescript@5.2.2)(vue@3.3.4)
+  pnpm:
+    specifier: ^8.9.2
+    version: 8.9.2
   screenfull:
     specifier: 6.0.2
     version: 6.0.2
@@ -3982,6 +3985,12 @@ packages:
       mlly: 1.4.2
       pathe: 1.1.1
     dev: true
+
+  /pnpm@8.9.2:
+    resolution: {integrity: sha512-udNf6RsqWFTa3EMDSj57LmdfpLVuIOjgnvB4+lU8GPiu1EBR57Nui43UNfl+sMRMT/O0T8fG+n0h4frBe75mHg==}
+    engines: {node: '>=16.14'}
+    hasBin: true
+    dev: false
 
   /posix-character-classes@0.1.1:
     resolution: {integrity: sha512-xTgYBc3fuo7Yt7JbiuFxSYGToMoz8fLoE6TC9Wx1P/u+LfeThMOAqmuyECnlBaaJb+u1m9hHiXUEtwW4OzfUJg==}
