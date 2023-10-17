@@ -1,5 +1,5 @@
-/WebApi/EcisApi/bin/Debug/*
-/WebApi/.vs/EcisApi/v16/.suo
+/WebApi/EcisApi/bin
+/WebApi/.vs
 /WebApi/EcisApi/obj
-/WebApi/EcisApi/obj/*
-/WebApi/EcisApi/obj/*
+/WebApp/ecis-web-management/node_modules
+/WebApp/v3-admin-vite-main/node_modules
