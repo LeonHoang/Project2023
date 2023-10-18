@@ -4,7 +4,7 @@ import { useRouter } from "vue-router"
 import { useUserStore } from "@/store/modules/user"
 import { type FormInstance, type FormRules } from "element-plus"
 import { User, Lock } from "@element-plus/icons-vue"
-import { type LoginRequestData } from "@/api/login/types/login"
+import { type LogInDTO } from "@/types/dto"
 
 const router = useRouter()
 
@@ -15,7 +15,7 @@ const loginFormRef = ref<FormInstance | null>(null)
 const loading = ref(false)
 
 /** Login form data */
-const loginFormData: LoginRequestData = reactive({
+const loginFormData: LogInDTO = reactive({
   email: "hoang@gmail.com",
   password: "abcd1234"
 })

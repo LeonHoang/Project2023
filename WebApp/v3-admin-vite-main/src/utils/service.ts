@@ -3,6 +3,7 @@ import { useUserStoreHook } from "@/store/modules/user"
 import { ElMessage } from "element-plus"
 import { get, merge } from "lodash-es"
 import { getToken } from "./cache/cookies"
+import { config } from "process"
 
 /** Log out and force refresh the page (will redirect to the login page) */
 function logout() {
@@ -74,7 +75,7 @@ function createService() {
 }
 
 /** Create request method */
-function createRequest(service: AxiosInstance) {
+function createRequest(instance: AxiosInstance) {
    return function <T>(config: AxiosRequestConfig): Promise<T> {
      const token = getToken()
      const defaultConfig = {
@@ -89,11 +90,22 @@ function createRequest(service: AxiosInstance) {
      }
      // Merge the default configuration defaultConfig and the incoming custom configuration config into mergeConfig
      const mergeConfig = merge(defaultConfig, config)
-     return service(mergeConfig)
+     return instance(mergeConfig)
    }
 }
 
 /** Instance used for network requests */
-const service = createService()
+const instance = createService()
+
 /** Method used for network requests */
-export const request = createRequest(service)
+const mergeRequest = createRequest(instance)
+
+const request = {
+  get: <T>(path: string, body?: any) => mergeRequest<T>({url: path, method: "post", data: body}),
+  post: <T>(path: string, body?: any) => mergeRequest<T>({url: path, method: "post", data: body}),
+  patch: <T>(path: string, body?: any) => mergeRequest<T>({url: path, method: "patch", data: body}),
+  put: <T>(path: string, body?: any) => mergeRequest<T>({url: path, method: "put", data: body}),
+  del: <T>(path: string) => mergeRequest<T>({url: path, method: "delete"}),
+};
+
+export default request;

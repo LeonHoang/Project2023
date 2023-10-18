@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue"
 import { checkPermission } from "@/utils/permission" // checkPermission permission judgment function
-import SwitchRoles from "./components/SwitchRoles.vue"
+// import SwitchRoles from "./components/SwitchRoles.vue"
 
 /** key is to reinitialize the command every time you switch permissions */
 const key = ref(1)
@@ -12,7 +12,7 @@ const handleRolesChange = () => {
 
 <template>
    <div class="app-container">
-     <SwitchRoles @change="handleRolesChange" />
+     <!-- <SwitchRoles @change="handleRolesChange" /> -->
      <!-- v-permission example -->
      <div :key="key" class="margin-top-30">
        <div>

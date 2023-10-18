@@ -12,6 +12,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace EcisApi
 {
@@ -28,7 +32,7 @@ namespace EcisApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
@@ -91,7 +95,17 @@ namespace EcisApi
                     });
             });
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v0.1",
+                    Title = "Ecis API"
+                });
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
 
             services.AddControllers()
                 .AddFluentValidation(s =>

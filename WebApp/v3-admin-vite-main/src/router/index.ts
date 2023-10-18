@@ -243,10 +243,10 @@ export const constantRoutes: RouteRecordRaw[] = [
 ]
 
 /**
- * 动态路由
- * 用来放置有权限 (Roles 属性) 的路由
- * 必须带有 Name 属性
- */
+  * Dynamic routing
+  * Used to place routes with permissions (Roles attribute)
+  * Must have Name attribute
+  */
 export const asyncRoutes: RouteRecordRaw[] = [
   {
     path: "/permission",
@@ -254,10 +254,10 @@ export const asyncRoutes: RouteRecordRaw[] = [
     redirect: "/permission/page",
     name: "Permission",
     meta: {
-      title: "权限管理",
+      title: "Permission Management",
       svgIcon: "lock",
-      role: "admin", // 可以在根路由中设置角色
-      alwaysShow: true // 将始终显示根菜单
+      role: "admin", // You can set the role in the root route
+      alwaysShow: true // Will always show the root menu
     },
     children: [
       {
@@ -265,8 +265,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
         component: () => import("@/views/permission/page.vue"),
         name: "PagePermission",
         meta: {
-          title: "页面权限",
-          role: "admin" // 或者在子导航中设置角色
+          title: "Page Permissions",
+          role: "admin" // Or set the role in the sub-navigation
         }
       },
       {
@@ -274,13 +274,13 @@ export const asyncRoutes: RouteRecordRaw[] = [
         component: () => import("@/views/permission/directive.vue"),
         name: "DirectivePermission",
         meta: {
-          title: "指令权限" // 如果未设置角色，则表示：该页面不需要权限，但会继承根路由的角色
+          title: "Command permissions" // If no role is set, it means: the page does not require permissions, but will inherit the role of the root route
         }
       }
     ]
   },
   {
-    path: "/:pathMatch(.*)*", // Must put the 'ErrorPage' route at the end, 必须将 'ErrorPage' 路由放在最后
+    path: "/:pathMatch(.*)*", // Must put the 'ErrorPage' route at the end, Must put the 'ErrorPage' route at the end
     redirect: "/404",
     name: "ErrorPage",
     meta: {
@@ -288,7 +288,6 @@ export const asyncRoutes: RouteRecordRaw[] = [
     }
   }
 ]
-
 const router = createRouter({
   history,
   routes: routeSettings.thirdLevelRouteCache ? flatMultiLevelRoutes(constantRoutes) : constantRoutes
@@ -305,7 +304,7 @@ export function resetRouter() {
       }
     })
   } catch {
-    // 强制刷新浏览器也行，只是交互体验不是很好
+    // It’s okay to force refresh the browser, but the interactive experience isn’t very good.
     window.location.reload()
   }
 }
