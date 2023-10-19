@@ -71,6 +71,7 @@ export const constantRoutes: RouteRecordRaw[] = [
         component: () => import("@/views/unocss/index.vue"),
         name: "UnoCSS",
         meta: {
+          role: "editor",
           title: "UnoCSS",
           svgIcon: "unocss"
         }
