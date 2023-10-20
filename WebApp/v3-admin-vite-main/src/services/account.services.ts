@@ -6,7 +6,7 @@ function changePassword(payload: ChangePasswordDTO): Promise<boolean> {
 }
 
 const accountServices = {
-  changePassword,
+  changePassword
 };
 
 export default accountServices;

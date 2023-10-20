@@ -35,25 +35,25 @@ export const useUserStore = defineStore("user", () => {
     user_role.value = data.roleName
   }
 
-  // /** Get user details */
-  // const getUserInfo = async () => {
-  //   const { data } = await getUserInfo()
-  //   user_email.value = data.username
-  //   user_role.value = data? data.roleName : routeSettings.defaultRoles
-  // }
+  /** Get user details */
+  const getUserInfo = async () => {
+    const { data } = await authenticationServices.getUserInfo()
+    user_email.value = data.email
+    user_role.value = data? data.role.roleName : routeSettings.defaultRoles
+  }
 
-  // /** Switch roles */
-  // const changeRole = async (role: string) => {
-  //   const newToken = "token-" + role
-  //   token.value = newToken
-  //   setToken(newToken)
-  //   permissionStore.setRoutes(user_role.value)
-  //   resetRouter()
-  //   permissionStore.dynamicRoutes.forEach((item: RouteRecordRaw) => {
-  //     router.addRoute(item)
-  //   })
-  //   _resetTagsView()
-  // }
+  /** Switch roles */
+  const changeRole = async (role: string) => {
+    const newToken = "token-" + role
+    token.value = newToken
+    setToken(newToken)
+    permissionStore.setRoutes(user_role.value)
+    resetRouter()
+    permissionStore.dynamicRoutes.forEach((item: RouteRecordRaw) => {
+      router.addRoute(item)
+    })
+    _resetTagsView()
+  }
 
   /** logout */
   const logout = () => {
@@ -77,7 +77,7 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
-  return { user_email, token, user_role, setRole, login, logout, resetToken }
+  return { user_email, token, user_role, getUserInfo, setRole, login, logout, resetToken }
 })
 
 /** Use outside setup */

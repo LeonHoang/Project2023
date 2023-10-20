@@ -40,31 +40,21 @@ router.beforeEach(async (to, _from, next) => {
      return next({ path: "/" })
    }
    
-   // If the user has obtained its permission role
+   // determine whether the user has obtained his permission roles through getUserInfo
    if (userStore.user_role.length !== 0) return next()
 
    // Otherwise, re-acquire the permission role
    try {
-     if (routeSettings.async) {
-       //await userStore.getInfo()
-       //const user_role = userStore.user_role
-       // Generate accessible Routes based on user_role (accessible routes = resident routes + dynamic routes with access rights)
-       permissionStore.setRoutes("admin1")
-     } else {
-       // If the dynamic routing function is not enabled, the default role is enabled.
-       userStore.setRole(routeSettings.defaultRoles)
-       permissionStore.setRoutes(routeSettings.defaultRoles)
-     }
+      await userStore.getUserInfo()
+      const user_role = userStore.user_role
+      //Generate accessible Routes based on user_role (accessible routes = resident routes + dynamic routes with access rights)
+      permissionStore.setRoutes(user_role)
 
-     if (!hasNecessaryRoute(to)) {
       // Add 'dynamic route with access permission' to Router
       permissionStore.dynamicRoutes.forEach((route) => router.addRoute(route))
       // Make sure adding the route is complete
       // Set replace: true, so navigation will not leave a history   
       next({ ...to, replace: true })
-     }
-
-     next()
 
    } catch (err: any) {
      // If any error occurs during the process, the Token will be reset directly and redirected to the login page.
@@ -76,9 +66,9 @@ router.beforeEach(async (to, _from, next) => {
 })
 
 // Determine whether the currently redirected route is in router.getRoutes()
-function hasNecessaryRoute(to: any) {
-  return router.getRoutes().findIndex(r => r.path === to.path) !== -1;
-}
+// function hasNecessaryRoute(to: any) {
+//   return router.getRoutes().findIndex(r => r.path === to.path) !== -1;
+// }
 
 router.afterEach((to) => {
    setRouteChange(to)

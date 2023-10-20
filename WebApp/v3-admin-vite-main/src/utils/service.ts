@@ -101,7 +101,7 @@ const instance = createService()
 const mergeRequest = createRequest(instance)
 
 const request = {
-  get: <T>(path: string, body?: any) => mergeRequest<T>({url: path, method: "post", data: body}),
+  get: <T>(path: string, body?: any) => mergeRequest<T>({url: path, method: "get", data: body}),
   post: <T>(path: string, body?: any) => mergeRequest<T>({url: path, method: "post", data: body}),
   patch: <T>(path: string, body?: any) => mergeRequest<T>({url: path, method: "patch", data: body}),
   put: <T>(path: string, body?: any) => mergeRequest<T>({url: path, method: "put", data: body}),

@@ -4,13 +4,12 @@ export interface BaseModel {
   updatedAt: Date;
 };
 
-export interface Account {
+export interface Account extends BaseModel {
   id: number;
   email: string;
   isVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
   roleId: number;
+  role: Role;
 };
 
 export interface Role {
