@@ -11,6 +11,8 @@ namespace EcisApi.Data
         {
             context.Database.EnsureCreated();
 
+            InitializeProvince(context);
+
             // Look for any roles.
             if (context.Roles.Any())
             {
@@ -507,6 +509,33 @@ namespace EcisApi.Data
             };
             context.CompanyTypes.Add(companyType2);
 
+            context.SaveChanges();
+        }
+
+
+        public static void InitializeProvince(DataContext context)
+        {
+            context.Database.EnsureCreated();
+
+            // Look for any Provinces.
+            if (context.Provinces.Any())
+            {
+                return;   // DB has been seeded
+            }
+
+            // Provinces seeding
+            Province[] province = new Province[] {
+                new Province(){ProvinceCode = "880000", ProvinceName = "An Giang", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, IsDeleted = false},
+                new Province(){ProvinceCode = "790000", ProvinceName = "Ba Ria - Vung Tau", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, IsDeleted = false},
+                new Province(){ProvinceCode = "260000", ProvinceName = "Bac Lieu", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, IsDeleted = false},
+                new Province(){ProvinceCode = "960000", ProvinceName = "Bac Kan", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, IsDeleted = false},
+                new Province(){ProvinceCode = "100000", ProvinceName = "Ha Noi", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, IsDeleted = false},
+                new Province(){ProvinceCode = "700000", ProvinceName = "Ho Chi Minh", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, IsDeleted = false},
+                new Province(){ProvinceCode = "160000", ProvinceName = "Hung Yen", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, IsDeleted = false},
+                new Province(){ProvinceCode = "510000", ProvinceName = "Quang Binh", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, IsDeleted = false}
+            };
+
+            context.Provinces.AddRange(province);
             context.SaveChanges();
         }
     }

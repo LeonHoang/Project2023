@@ -17,6 +17,7 @@ export const useUserStore = defineStore("user", () => {
   const user_email = ref<string>("")
   const token = ref<string>(getToken() || "")
   const user_role = ref<string>("")
+  const user_id = ref<number>(0)
 
   const permissionStore = usePermissionStore()
   const tagsViewStore = useTagsViewStore()
@@ -40,6 +41,7 @@ export const useUserStore = defineStore("user", () => {
     const { data } = await authenticationServices.getUserInfo()
     user_email.value = data.email
     user_role.value = data? data.role.roleName : routeSettings.defaultRoles
+    user_id.value = data.id
   }
 
   /** Switch roles */
@@ -77,7 +79,7 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
-  return { user_email, token, user_role, getUserInfo, setRole, login, logout, resetToken }
+  return { user_id, user_email, token, user_role, getUserInfo, setRole, login, logout, resetToken }
 })
 
 /** Use outside setup */
