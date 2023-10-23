@@ -62,6 +62,23 @@ export const constantRoutes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: "/company-verification",
+    component: Layouts,
+    redirect: "/company-verification/index",
+    children: [
+      {
+        path: "index",
+        component: () => import("@/views/company-verification/index.vue"),
+        name: "company-verification",
+        meta: {
+          role: "editor",
+          title: "Company Verification",
+          svgIcon: "menu"
+        }
+      }
+    ]
+  },
+  {
     path: "/unocss",
     component: Layouts,
     redirect: "/unocss/index",

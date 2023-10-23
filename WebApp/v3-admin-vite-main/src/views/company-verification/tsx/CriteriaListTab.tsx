@@ -1,24 +1,18 @@
 import _ from "lodash";
-import DataTable, { IDataTableColumn } from "react-data-table-component";
-import { useAppSelector } from "../../../app/store";
 import { Criteria } from "../../../types/models";
 import CriteriaDetailList from "./CriteriaDetailList";
+import { useCriteriaTypeStore } from "@/store/criteriaType"
+import { useCriteriaStore } from "@/store/criteria"
 
 type Props = {
   criteriaTypeId: number;
-  isSelected: boolean;
 };
 
 const CriteriaListTab = (props: Props) => {
-  const { criteriaTypes } = useAppSelector((state) => state.criteriaType);
-  const { criterias } = useAppSelector((state) => state.criteria);
-  const criteriaType = _.find(criteriaTypes, (type) => type.id === props.criteriaTypeId);
+  const criteriaTypeStore = useCriteriaTypeStore();
+  const criteriaStore = useCriteriaStore();
 
-  if (!criteriaType) {
-    return null;
-  }
-  
-  const filteredCriterias = _.filter(criterias, (criteria) => criteria.criteriaTypeId === props.criteriaTypeId);
+  const filteredCriterias = _.filter(criteriaStore.criterias, (x) => x.criteriaTypeId === props.criteriaTypeId);
 
   const columns: IDataTableColumn<Criteria>[] = [
     {

@@ -2,7 +2,7 @@ import { ref } from "vue"
 import _ from "lodash";
 import store from "@/store"
 import { defineStore } from "pinia"
-import { useUserStore } from "../modules/user"
+import { useUserStore } from "./modules/user"
 import verificationProcessServices from "@/services/verificationProcess.services"
 import verificationCriteriaServices from "@/services/verificationCriteria.services"
 import verificationDocumentServices from "@/services/verificationDocument.services"
