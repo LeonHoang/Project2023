@@ -1,38 +1,24 @@
 <script lang="ts" setup>
-import { reactive, ref, watch } from "vue"
+import {ref} from "vue"
 import _ from "lodash";
-import { createTableDataApi, deleteTableDataApi, updateTableDataApi, getTableDataApi } from "@/api/table"
-import { type GetTableData } from "@/api/table/types/table"
-import { type FormInstance, type FormRules, ElMessage, ElMessageBox } from "element-plus"
 import { useVerificationProcessStore } from "@/store/verificationProcess"
-import { useCriteriaTypeStore } from "@/store/criteriaType"
-import CriteriaListTab from "./tsx/CriteriaListTab";
+import CriteriaTable from "./CriteriaTable.vue"
 
 defineOptions({
   name: "CompanyYerification"
 })
 
 const loading = ref<boolean>(false)
-
 // created
 const verificationProcessStore = useVerificationProcessStore()
-const criteriaTypeStore = useCriteriaTypeStore();
-const criteriaStore = useCriteriaStore();
-
 verificationProcessStore.loadSelfVerification()
-criteriaTypeStore.getCriteriaType()
-
-
-const filteredCriterias = _.filter(criteriaStore.criterias, (x) => x.criteriaTypeId === props.criteriaTypeId);
-
-
 </script>
 
 <template>
   <div class="app-container">
     <div className="x_panel">
       <div className="x_title">
-        <!-- <h2>{`Doanh nghiệp ${verificationProcessStore.company.companyNameVI} tự đánh giá`}</h2> -->
+        <h2>Doanh nghiệp tự đánh giá</h2>
         <div className="clearfix" />
       </div>
       <div className="x_content">
@@ -44,32 +30,7 @@ const filteredCriterias = _.filter(criteriaStore.criterias, (x) => x.criteriaTyp
         </el-card>
         
         <el-card v-loading="loading" v-if="verificationProcessStore.editingProcess" shadow="never">
-          <el-tabs tab-position="left" class="demo-tabs">
-            <template v-for="(item, index) in criteriaTypeStore.criteriaType"   
-              :item="item"
-              :index="index"
-              :key="item.id">
-              <el-tab-pane  :label="item.criteriaTypeName">
-                <el-table :data="tableData" :border="true" style="width: 100%">
-                  <el-table-column type="expand">
-                    <template #default="props">
-                      <!-- <div m="4">
-                        <el-table :data="props.row.family" :border="true">
-                          <el-table-column label="Name" prop="name" />
-                          <el-table-column label="State" prop="state" />
-                          <el-table-column label="City" prop="city" />
-                          <el-table-column label="Address" prop="address" />
-                          <el-table-column label="Zip" prop="zip" />
-                        </el-table>
-                      </div> -->
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="STT" :data="(index + 1)" />
-                  <el-table-column label="Nội dung kê khai"/>
-                </el-table>
-              </el-tab-pane>
-            </template>
-          </el-tabs>
+          <CriteriaTable/>
         </el-card>
       </div>
     </div>
@@ -78,7 +39,7 @@ const filteredCriterias = _.filter(criteriaStore.criterias, (x) => x.criteriaTyp
 
 <style>
 .demo-tabs{
-  height: 200px;
+  height: auto;
 }
 
 .demo-tabs > .el-tabs__content {

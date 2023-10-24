@@ -13,7 +13,6 @@ export const useCriteriaTypeStore = defineStore("criteriaType", () => {
       criteriaType.value = criteriaTypeResult.data
   }
 
-
   return { criteriaType, getCriteriaType }
 })
 
