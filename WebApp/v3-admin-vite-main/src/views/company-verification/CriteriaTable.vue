@@ -1,22 +1,21 @@
 <script lang="ts" setup>
 import _ from "lodash";
+import { reactive, ref, watch } from "vue"
 import { useCriteriaTypeStore } from "@/store/criteriaType"
-import { useCriteriaStore } from "@/store/criteria";
-import { useCriteriaDetailStore } from "@/store/criteriaDetail";
-import CriteriaForm from "./tsx/CriteriaForm";
+import { useCriteriaStore } from "@/store/criteria"
+import { useCriteriaDetailStore } from "@/store/criteriaDetail"
+import { TableInstance } from "element-plus"
+import CriteriaForm from "./tsx/CriteriaForm"
+import { Criteria, CriteriaDetail } from "@/types/models";
 
 const criteriaTypeStore = useCriteriaTypeStore();
 const criteriaStore = useCriteriaStore();
 const criteriaDetailStore = useCriteriaDetailStore();
+const tableData = ref()
 
-const getCriteriaTable = (criteriaTypeId: number) => {
-  return _.filter(criteriaStore.criterias, (x) => x.criteriaTypeId === criteriaTypeId);
-}
-
-const getCriteriaDetailsTable = (criteriaId: number) => {
-  return _.filter(criteriaDetailStore.criteriaDetail, (x) => x.criteriaId === criteriaId);
-}
-
+// const rowClicked = (row: any) => {
+//   tableData.toggleRowExpansion(row)
+// }
 </script>
 
 <template>
@@ -25,16 +24,18 @@ const getCriteriaDetailsTable = (criteriaId: number) => {
     :item="item"
     :index="index"
     :key="item.id">
-    <el-tab-pane  :label="item.criteriaTypeName">
-      <el-table :data="getCriteriaTable(item.id)" :border="true" style="width: 100%">
+    <el-tab-pane :label="item.criteriaTypeName">
+      <el-table ref="tableData" :data="_.filter(criteriaStore.criterias, (x) => x.criteriaTypeId === item.id)" 
+        style="width: 100%" class="clickable-rows"
+        :row-key="(row) => {return row.id}">
         <el-table-column type="expand">
-          <template #default="props">
+          <template #default="{ row }">
             <div m="4">
-              <el-table :data="getCriteriaDetailsTable(props.row.criteriaId)" :border="true">
+              <el-table :data="_.filter(criteriaDetailStore.criteriaDetail, (x) => x.criteriaId === row.id)">
                 <el-table-column label="STT" type="index" width="100" />
                 <el-table-column label="Nội dung kê khai" width="500" prop="criteriaDetailName" />
                 <el-table-column label="Tự đánh giá">
-                  <CriteriaForm :data=props.row />
+                  <CriteriaForm :data=row />
                 </el-table-column>
               </el-table>
             </div>
@@ -47,3 +48,15 @@ const getCriteriaDetailsTable = (criteriaId: number) => {
   </template>
 </el-tabs>
 </template>
+
+<style>
+.clickable-rows {
+  tbody tr td {
+    cursor: pointer;
+  }
+
+  .el-table__expanded-cell {
+    cursor: default;
+  }
+}
+</style>

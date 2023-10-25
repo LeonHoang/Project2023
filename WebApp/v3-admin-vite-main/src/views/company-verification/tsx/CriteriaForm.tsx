@@ -4,7 +4,7 @@ import { reactive, ref, watch } from "vue"
 // import fileServices from "@/common/services/file.services";
 // import helpers from "@/common/utils/helpers";
 // import config from "@/config";
-import { CriteriaDetail, VerificationCriteria } from "@/types/models";
+import { CriteriaDetail, VerificationCriteria, VerificationDocument } from "@/types/models";
 import { useVerificationProcessStore } from "@/store/verificationProcess";
 import { ElMessage } from "element-plus"
 
@@ -14,18 +14,21 @@ type Props = {
 
 const CriteriaForm = (props: Props) => {
   const fileRef = ref<HTMLInputElement>();
-  
   const loading = ref<boolean>(false)
-
   const verificationProcessStore = useVerificationProcessStore();
+  // const currentCriteria = ref<VerificationCriteria>()
+  // const currentDocuments = ref<VerificationDocument[]>([])
+  // const opinion = ref<string>()
+  // const rate = ref<boolean | null>()
 
-  const currentCriteria = _.find(verificationProcessStore.verificationCriterias, (item) => item.criteriaDetailId === props.data.id);
+  const currentCriteria = verificationProcessStore.verificationCriterias.find((item) => item.criteriaDetailId === props.data.id)
   const currentDocuments = _.filter(verificationProcessStore.verificationDocuments, (item) => item.verificationCriteriaId === currentCriteria?.id);
-  const opinion = currentCriteria?.companyOpinion ?? '';
-  const rate = currentCriteria?.companyRate ?? null;
-  console.log(currentCriteria)
+  let opinion = currentCriteria?.companyOpinion ?? '';
+  let rate = currentCriteria?.companyRate ?? null;
+  
+  const updateCompanyRate = (data: any) => {
+    rate = data
 
-  const updateCompanyRate = () => {
     const updated: Partial<VerificationCriteria> = {
       ...currentCriteria,
       companyRate: rate,
@@ -90,15 +93,15 @@ const CriteriaForm = (props: Props) => {
 
   return (
     <el-form label-width="100px" label-position="left">
-      <el-form-item>
-        <el-radio-group model={rate} change={() => updateCompanyRate()}>
-          <el-radio label={true} checked={rate === true}>Đáp ứng</el-radio>
-          <el-radio label={false} checked={rate === false}>Không đáp ứng</el-radio>
-          <el-radio label={null} checked={rate === null}>Không phải loại hình của DN</el-radio>
+      <el-form-item prop={'dataList.' + props.data.id + '.name'}>
+        <el-radio-group model-value={rate} onChange={updateCompanyRate}>
+          <el-radio label={true}>Đáp ứng</el-radio>
+          <el-radio label={false}>Không đáp ứng</el-radio>
+          <el-radio label={null}>Không phải loại hình của DN</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Ý kiến riêng">
-        <el-input model={opinion} type="textarea" placeholder="Ý kiến riêng"/>
+      <el-form-item>
+        <el-input type="textarea" placeholder="Ý kiến riêng"/>
         <el-button type="primary" onClick={updateCompanyOpinion}>Lưu ý kiến</el-button>
       </el-form-item>
     </el-form>
