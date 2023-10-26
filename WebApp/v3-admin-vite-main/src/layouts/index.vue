@@ -7,7 +7,6 @@ import useResize from "./hooks/useResize"
 import LeftMode from "./LeftMode.vue"
 import TopMode from "./TopMode.vue"
 import LeftTopMode from "./LeftTopMode.vue"
-import { Settings, RightPanel } from "./components"
 import { DeviceEnum } from "@/constants/app-key"
 import { getCssVariableValue, setCssVariableValue } from "@/utils"
 
@@ -16,7 +15,7 @@ useResize()
 const appStore = useAppStore()
 const settingsStore = useSettingsStore()
 
-const { showSettings, layoutMode, showTagsView, showGreyMode, showColorWeakness } =
+const { layoutMode, showTagsView, showGreyMode, showColorWeakness } =
   storeToRefs(settingsStore)
 
 const classes = computed(() => {
@@ -47,9 +46,6 @@ watchEffect(() => {
     <!-- 混合模式 -->
     <LeftTopMode v-else-if="layoutMode === 'left-top'" />
     <!-- 右侧设置面板 -->
-    <RightPanel v-if="showSettings">
-      <Settings />
-    </RightPanel>
   </div>
 </template>
 

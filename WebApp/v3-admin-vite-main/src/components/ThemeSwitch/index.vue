@@ -8,7 +8,7 @@ const { themeList, activeThemeName, setTheme } = useTheme()
 <template>
   <el-dropdown trigger="click" @command="setTheme">
     <div>
-      <el-tooltip effect="dark" content="主题模式" placement="bottom">
+      <el-tooltip effect="dark" content="theme mode" placement="bottom">
         <el-icon :size="20">
           <MagicStick />
         </el-icon>

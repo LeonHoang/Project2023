@@ -2,47 +2,47 @@ import { onBeforeUnmount } from "vue"
 import mitt, { type Handler } from "mitt"
 import { type RouteLocationNormalized } from "vue-router"
 
-/** 回调函数的类型 */
+/** Type of callback function */
 type Callback = (route: RouteLocationNormalized) => void
 
 const emitter = mitt()
 const key = Symbol("ROUTE_CHANGE")
 let latestRoute: RouteLocationNormalized
 
-/** 设置最新的路由信息，触发路由变化事件 */
+/** Set the latest routing information and trigger routing change events */
 export const setRouteChange = (to: RouteLocationNormalized) => {
-  // 触发事件
-  emitter.emit(key, to)
-  // 缓存最新的路由信息
-  latestRoute = to
+   // trigger event
+   emitter.emit(key, to)
+   //Cache the latest routing information
+   latestRoute = to
 }
 
-/** 单独监听路由会浪费渲染性能，使用发布订阅模式去进行分发管理 */
+/** Monitoring routes alone will waste rendering performance, use the publish and subscribe model for distribution management */
 export function useRouteListener() {
-  /** 回调函数集合 */
-  const callbackList: Callback[] = []
+   /** Callback function collection */
+   const callbackList: Callback[] = []
 
-  /** 监听路由变化（可以选择立即执行） */
-  const listenerRouteChange = (callback: Callback, immediate = false) => {
-    // 缓存回调函数
-    callbackList.push(callback)
-    // 监听事件
-    emitter.on(key, callback as Handler)
-    // 可以选择立即执行一次回调函数
-    immediate && latestRoute && callback(latestRoute)
-  }
+   /** Monitor routing changes (you can choose to execute it immediately) */
+   const listenerRouteChange = (callback: Callback, immediate = false) => {
+     //Cache callback function
+     callbackList.push(callback)
+     // Listen for events
+     emitter.on(key, callback as Handler)
+     // You can choose to execute a callback function immediately
+     immediate && latestRoute && callback(latestRoute)
+   }
 
-  /** 移除路由变化事件监听器 */
-  const removeRouteListener = (callback: Callback) => {
-    emitter.off(key, callback as Handler)
-  }
+   /** Remove route change event listener */
+   const removeRouteListener = (callback: Callback) => {
+     emitter.off(key, callback as Handler)
+   }
 
-  /** 组件销毁前移除监听器 */
-  onBeforeUnmount(() => {
-    for (let i = 0; i < callbackList.length; i++) {
-      removeRouteListener(callbackList[i])
-    }
-  })
+   /** Remove the listener before component destruction */
+   onBeforeUnmount(() => {
+     for (let i = 0; i < callbackList.length; i++) {
+       removeRouteListener(callbackList[i])
+     }
+   })
 
-  return { listenerRouteChange, removeRouteListener }
+   return { listenerRouteChange, removeRouteListener }
 }

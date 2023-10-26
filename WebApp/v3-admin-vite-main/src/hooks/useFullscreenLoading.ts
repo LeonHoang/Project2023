@@ -2,7 +2,7 @@ import { type LoadingOptions, ElLoading } from "element-plus"
 
 const defaultOptions = {
   lock: true,
-  text: "加载中..."
+  text: "loading..."
 }
 
 interface LoadingInstance {
@@ -17,11 +17,11 @@ interface UseFullscreenLoading {
 }
 
 /**
- * 传入一个函数 fn，在它执行周期内，加上「全屏」loading
- * @param fn 要执行的函数
- * @param options LoadingOptions
- * @returns 返回一个新的函数，该函数返回一个 Promise
- */
+  * Pass in a function fn, and add "full screen" loading during its execution cycle
+  * @param fn The function to be executed
+  * @param options LoadingOptions
+  * @returns returns a new function that returns a Promise
+  */
 export const useFullscreenLoading: UseFullscreenLoading = (fn, options = {}) => {
   let loadingInstance: LoadingInstance
   return async (...args) => {

@@ -30,15 +30,13 @@ const tableData = ref()
         :row-key="(row) => {return row.id}">
         <el-table-column type="expand">
           <template #default="{ row }">
-            <div m="4">
-              <el-table :data="_.filter(criteriaDetailStore.criteriaDetail, (x) => x.criteriaId === row.id)">
-                <el-table-column label="STT" type="index" width="100" />
-                <el-table-column label="Nội dung kê khai" width="500" prop="criteriaDetailName" />
-                <el-table-column label="Tự đánh giá">
-                  <CriteriaForm :data=row />
-                </el-table-column>
-              </el-table>
-            </div>
+            <el-table style="width: 100%" :data="_.filter(criteriaDetailStore.criteriaDetail, (x) => x.criteriaId === row.id)">
+              <el-table-column label="STT" type="index" width="100" />
+              <el-table-column label="Nội dung kê khai" prop="criteriaDetailName" />
+              <el-table-column label="Tự đánh giá">
+                <CriteriaForm :data=row />
+              </el-table-column>
+            </el-table>
           </template>
         </el-table-column>
         <el-table-column label="STT" type="index" width="100"/>
@@ -47,6 +45,7 @@ const tableData = ref()
     </el-tab-pane>
   </template>
 </el-tabs>
+<el-button type="primary" style="display:block; margin: 0 auto;">Gửi đánh giá</el-button>
 </template>
 
 <style>

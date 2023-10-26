@@ -92,7 +92,7 @@ const CriteriaForm = (props: Props) => {
   }
 
   return (
-    <el-form label-width="100px" label-position="left">
+    <el-form label-position="left">
       <el-form-item prop={'dataList.' + props.data.id + '.name'}>
         <el-radio-group model-value={rate} onChange={updateCompanyRate}>
           <el-radio label={true}>Đáp ứng</el-radio>

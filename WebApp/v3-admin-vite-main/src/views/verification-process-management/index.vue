@@ -5,7 +5,7 @@ import { useVerificationProcessStore } from "@/store/verificationProcess"
 import CriteriaTable from "./CriteriaTable.vue"
 
 defineOptions({
-  name: "CompanyVerification"
+  name: "CompanyYerification"
 })
 
 const loading = ref<boolean>(false)
