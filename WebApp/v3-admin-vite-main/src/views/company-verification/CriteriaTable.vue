@@ -5,7 +5,7 @@ import { useCriteriaTypeStore } from "@/store/criteriaType"
 import { useCriteriaStore } from "@/store/criteria"
 import { useCriteriaDetailStore } from "@/store/criteriaDetail"
 import { TableInstance } from "element-plus"
-import CriteriaForm from "./tsx/CriteriaForm"
+import CriteriaForm from "./CriteriaForm.vue"
 import { Criteria, CriteriaDetail } from "@/types/models";
 
 const criteriaTypeStore = useCriteriaTypeStore();
@@ -33,8 +33,10 @@ const tableData = ref()
             <el-table style="width: 100%" :data="_.filter(criteriaDetailStore.criteriaDetail, (x) => x.criteriaId === row.id)">
               <el-table-column label="STT" type="index" width="100" />
               <el-table-column label="Nội dung kê khai" prop="criteriaDetailName" />
-              <el-table-column label="Tự đánh giá">
-                <CriteriaForm :data=row />
+              <el-table-column label="Tự đánh giá" >
+                <template #default="scope">
+                  <CriteriaForm :data=scope.row />
+                </template>
               </el-table-column>
             </el-table>
           </template>

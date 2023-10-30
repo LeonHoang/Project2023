@@ -2,10 +2,9 @@
 import {ref} from "vue"
 import _ from "lodash";
 import { useVerificationProcessStore } from "@/store/verificationProcess"
-import CriteriaTable from "./CriteriaTable.vue"
 
 defineOptions({
-  name: "CompanyYerification"
+  name: "CompanyVerification"
 })
 
 const loading = ref<boolean>(false)
@@ -30,7 +29,6 @@ verificationProcessStore.loadSelfVerification()
         </el-card>
         
         <el-card v-loading="loading" v-if="verificationProcessStore.editingProcess" shadow="never">
-          <CriteriaTable/>
         </el-card>
       </div>
     </div>
