@@ -58,12 +58,25 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     }
   }
 
-  const updateVerificationCriteria = async (payload: Partial<VerificationCriteria>) => {
-    await verificationCriteriaServices.update(payload);
-}
+  const createDocument = async (data: Partial<VerificationDocument>) => {
+    await verificationDocumentServices.create(data);
+    // refesh
+    await loadSelfVerification();
+  }
+
+  const removeDocument = async (documentId: number) => {
+    await verificationDocumentServices.remove(documentId);
+    verificationDocuments.value.filter(
+      (document) => document.id !== documentId
+    );
+  }
+
+  const updateVerificationCriteria = async (data: Partial<VerificationCriteria>) => {
+    await verificationCriteriaServices.update(data);
+  }
 
   return { editingProcess, verificationCriterias, verificationDocuments, company, 
-    loadSelfVerification, updateVerificationCriteria}
+      createDocument, removeDocument, loadSelfVerification, updateVerificationCriteria}
 })
 
 /** Use outside setup */

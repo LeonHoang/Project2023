@@ -2,6 +2,8 @@
 {
     public class AppSettings
     {
+        public string FileFolderPath { get; set; }
+
         public string Secret { get; set; }
 
         // Email config

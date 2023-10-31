@@ -1,8 +1,10 @@
 ﻿using EcisApi.DTO;
 using EcisApi.Helpers;
+using EcisApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EcisApi.Controllers
 {
@@ -10,19 +12,19 @@ namespace EcisApi.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-        private readonly ICloudStorageHelper cloudStorageHelper;
+        private readonly IFileService fileService;
 
-        public FileController(ICloudStorageHelper cloudStorageHelper)
+        public FileController(IFileService fileService)
         {
-            this.cloudStorageHelper = cloudStorageHelper;
+            this.fileService = fileService;
         }
 
         [HttpGet("{fileName}")]
-        public ActionResult GetFile([FromRoute] string fileName)
+        public async Task<ActionResult> GetFile([FromRoute] string fileName)
         {
             try
             {
-                var stream = cloudStorageHelper.GetFile(fileName);
+                var stream = await fileService.GetFile(fileName);
                 string mimeType = MimeMapping.MimeUtility.GetMimeMapping(fileName);
 
                 return new FileStreamResult(stream, mimeType)
@@ -37,7 +39,7 @@ namespace EcisApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<UploadFileResponseDTO> UploadFile([FromForm] UploadFileDTO data)
+        public async Task<ActionResult<UploadFileResponseDTO>> UploadFile([FromForm] UploadFileDTO data)
         {
             if (data == null || data.File == null || data.File.Length == 0)
             {
@@ -55,10 +57,10 @@ namespace EcisApi.Controllers
                 return BadRequest("FileTooLarge");
             }
 
-            var fileName = cloudStorageHelper.UploadFile(data.File);
+            var fileName = await fileService.UploadFile(data.File);
             var response = new UploadFileResponseDTO
             {
-                Name = fileName,
+                Name = data.File.FileName,
                 Size = data.File.Length,
                 Type = extension,
                 Url = $"/File/{fileName}"

@@ -19,7 +19,7 @@ namespace EcisApi.Repositories
 
         public ICollection<VerificationDocument> GetByProcessId(int processId)
         {
-            return db.Set<VerificationDocument>().Where(x => x.VerificationCriteria.VerificationProcessId == processId).ToList();
+            return db.Set<VerificationDocument>().Where(x => x.VerificationCriteria.VerificationProcessId == processId && !x.IsDeleted).ToList();
         }
     }
 }

@@ -3,13 +3,14 @@
 import _ from "lodash";
 import { reactive, ref, watch } from "vue"
 
-// import fileServices from "@/common/services/file.services";
-// import helpers from "@/common/utils/helpers";
-// import config from "@/config";
+import fileServices from "@/services/file.services";
+import helpers from "@/utils/helpers";
+import config from "@/config";
 import { CriteriaDetail, VerificationCriteria, VerificationDocument } from "@/types/models";
 import { useVerificationProcessStore } from "@/store/verificationProcess";
 import { ElMessage, ElMessageBox } from "element-plus"
 import type { UploadProps, UploadUserFile } from 'element-plus'
+import { url } from "inspector";
 
 interface Props {
   data: CriteriaDetail
@@ -26,7 +27,7 @@ const form = reactive({
 })
 
 const currentCriteria = verificationProcessStore.verificationCriterias.find((item) => item.criteriaDetailId === props.data.id)
-const currentDocuments = _.filter(verificationProcessStore.verificationDocuments, (item) => item.verificationCriteriaId === currentCriteria?.id);
+let currentDocuments = _.filter(verificationProcessStore.verificationDocuments, (item) => item.verificationCriteriaId === currentCriteria?.id);
 _.map(currentDocuments, (item) => (
   fileList.value.push({name: item.documentName, size: item.resourceSize, url: item.resourceUrl} as UploadUserFile)
 ))
@@ -63,27 +64,59 @@ const updateCompanyOpinion = () => {
 };
 
 
+const handleRemove: UploadProps['onRemove'] = (file) => {
+  const fileUrl = file.url ?? file.response?.url;
+  let id = _.find(currentDocuments, (item) => item.resourceUrl === fileUrl)?.id;
 
-const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
-  console.log(file, uploadFiles)
+  if(id){
+    verificationProcessStore.removeDocument(id)
+  .then(() => {
+    ElMessage.success('Gỡ bỏ tài liệu thành công.');
+  })
+  .catch(() => {
+    ElMessage.error('Đã xảy ra lỗi trong quá trình gỡ bỏ tài liệu. Vui lòng thử lại sau.');
+  });
+  } else{
+    ElMessage.error('Không tồn tại tài liệu để gỡ bỏ');
+  }
 }
 
 const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
-  console.log(uploadFile)
+  const a = document.createElement('a')
+  const fileUrl = uploadFile.url ?? uploadFile.response?.url
+  a.href = "http://localhost:5000/api" + fileUrl
+  a.target = "_blank"
+  a.click()
 }
 
-const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
+const beforeRemove: UploadProps['beforeRemove'] = (uploadFile) => {
   return ElMessageBox.confirm(
-    `Cancel the transfer of ${uploadFile.name} ?`
+    `Gỡ bỏ file ${uploadFile.name} ?`
   ).then(
     () => true,
     () => false
   )
 }
 
-const handleChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
-  fileList.value = uploadFiles
+const createDoc: UploadProps['onSuccess'] = (uploadFile) => {
+  verificationProcessStore.createDocument({
+    resourceSize: uploadFile.size,
+    resourceType: uploadFile.type,
+    documentName: uploadFile.name,
+    resourceUrl: uploadFile.url,
+    verificationCriteriaId: currentCriteria?.id,
+    uploaderType: 'BY_COMPANY',
+  })
+  .then(() => {
+    currentDocuments = []
+    currentDocuments = _.filter(verificationProcessStore.verificationDocuments, (item) => item.verificationCriteriaId === currentCriteria?.id);
+    ElMessage.success('Tải tài liệu thành công.');
+  })
+  .catch(() => {
+    ElMessage.error('Đã xảy ra lỗi trong quá trình tải tài liệu. Vui lòng thử lại sau.');
+  });
 }
+
 </script>
 
 <template>
@@ -101,13 +134,12 @@ const handleChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
       </el-form-item>
       <el-upload
         v-model:file-list="fileList"
-        class="upload-demo"
-        action="#"
+        action="http://localhost:5000/api/File"
         multiple
         :on-preview="handlePreview"
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
-        :on-change="handleChange"
+        :on-success="createDoc"
       >
         <el-button type="primary">Chọn file</el-button>
       </el-upload>
