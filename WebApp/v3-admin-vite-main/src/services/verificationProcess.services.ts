@@ -47,6 +47,10 @@ function generate(companyId: number): Promise<ApiResponseData<VerificationProces
   return request.post(`/VerificationProcess/Generate/${companyId}`);
 }
 
+function submitProcess(id: number): Promise<ApiResponseData<VerificationProcess>> {
+  return request.put(`/VerificationProcess/SubmitProcess/${id}`);
+}
+
 function submitVerifyReview(id: number, assignedAgentId: number): Promise<ApiResponseData<VerificationProcess>> {
   return request.put(`/VerificationProcess/SubmitReview/${id}?assignedAgentId=${assignedAgentId}`);
 }
@@ -93,6 +97,7 @@ const verificationProcessServices = {
   getById,
   getCurrentPendingByCompanyId,
   generate,
+  submitProcess,
   submitVerifyReview,
   submitClassify,
   rejectReviewed,

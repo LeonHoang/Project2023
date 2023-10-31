@@ -8,6 +8,7 @@ import { TableInstance } from "element-plus"
 import CriteriaForm from "./CriteriaForm.vue"
 import { Criteria, CriteriaDetail } from "@/types/models";
 
+
 const criteriaTypeStore = useCriteriaTypeStore();
 const criteriaStore = useCriteriaStore();
 const criteriaDetailStore = useCriteriaDetailStore();
@@ -47,7 +48,6 @@ const tableData = ref()
     </el-tab-pane>
   </template>
 </el-tabs>
-<el-button type="primary" style="display:block; margin: 0 auto;">Gửi đánh giá</el-button>
 </template>
 
 <style>

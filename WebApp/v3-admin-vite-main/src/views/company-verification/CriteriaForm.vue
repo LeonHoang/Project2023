@@ -65,8 +65,8 @@ const updateCompanyOpinion = () => {
 
 
 const handleRemove: UploadProps['onRemove'] = (file) => {
-  const fileUrl = file.url ?? file.response?.url;
-  let id = _.find(currentDocuments, (item) => item.resourceUrl === fileUrl)?.id;
+  const fileUrl = file.url ?? file.response?.url
+  let id = _.find(currentDocuments, (item) => item.resourceUrl === fileUrl)?.id
 
   if(id){
     verificationProcessStore.removeDocument(id)

@@ -13,18 +13,19 @@ import verificationDocumentServices from "@/services/verificationDocument.servic
 
 import { Company, DocumentReview, VerificationCriteria, VerificationDocument, VerificationProcess } from "@/types/models"
 import companyServices from "@/services/company.services";
+import { VerificationProcessRatingDTO } from "@/types/dto";
 
 export const useVerificationProcessStore = defineStore("verificationProcess", () => {
   const editingProcess = ref<VerificationProcess>()
   const editingDocument = ref<VerificationDocument>()
   const verificationCriterias = ref<VerificationCriteria[]>([])
   const verificationDocuments = ref<VerificationDocument[]>([])
+  const verificationProcess = ref<VerificationProcess[]>([])
   const documentReviews = ref<DocumentReview[]>([])
   const company = ref<Company>()
-
+  const ratings = ref<VerificationProcessRatingDTO[]>([])
 
   const userStore = useUserStore()
-  const verificationProcessStore = useVerificationProcessStore()
   const criteriaTypeStore = useCriteriaTypeStore();
   const criteriaStore = useCriteriaStore();
   const criteriaDetailStore = useCriteriaDetailStore();
@@ -44,7 +45,6 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
         verificationDocumentServices.getAllByProcessId(processId)
       ])
 
-      verificationProcessStore.loadSelfVerification()
       criteriaTypeStore.getCriteriaType()
       criteriaStore.getCriteria()
       criteriaDetailStore.getcriteriaDetail()
@@ -58,6 +58,21 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     }
   }
 
+  const getAllPending = async () => {
+    const verificationProcessServiceResult = await verificationProcessServices.getAllPending()
+    verificationProcess.value = verificationProcessServiceResult.data
+  }
+  
+  const getRatingCount = async (processIds: number[]) => {
+    const {data} = await verificationProcessServices.getRatingCount(processIds)
+    ratings.value = data
+  }
+
+  const submitProcess = async (id: number) => {
+    const {data} = await verificationProcessServices.submitProcess(id)
+    editingProcess.value = data
+  }
+  
   const createDocument = async (data: Partial<VerificationDocument>) => {
     await verificationDocumentServices.create(data);
     // refesh
@@ -75,8 +90,8 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     await verificationCriteriaServices.update(data);
   }
 
-  return { editingProcess, verificationCriterias, verificationDocuments, company, 
-      createDocument, removeDocument, loadSelfVerification, updateVerificationCriteria}
+  return { verificationProcess, ratings, editingProcess, verificationCriterias, verificationDocuments, company, 
+    getAllPending, getRatingCount, submitProcess, createDocument, removeDocument, loadSelfVerification, updateVerificationCriteria}
 })
 
 /** Use outside setup */

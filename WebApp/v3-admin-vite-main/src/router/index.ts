@@ -72,8 +72,41 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: "company-verification",
         meta: {
           role: "Company",
-          title: "Company Verification",
+          title: "Đánh giá, phân loại",
           svgIcon: "menu"
+        }
+      }
+    ]
+  },
+  {
+    path: "/verification-process",
+    component: Layouts,
+    redirect: "/verification-process/verification",
+    name: "Menu",
+    meta: {
+      role: "Company",
+      title: "Đánh giá, xác minh",
+      svgIcon: "menu"
+    },
+    children: [
+      {
+        path: "verification",
+        component: () => import("@/views/verification-process-management/verification/index.vue"),
+        name: "verification",
+        meta: {
+          role: "Company",
+          title: "Đánh giá sự tuân thủ"
+        },
+
+      },
+      {
+        path: "menu2",
+        component: () => import("@/views/verification-process-management/menu2/index.vue"),
+        name: "Menu2",
+        meta: {
+          role: "Company",
+          title: "menu2",
+          keepAlive: true
         }
       }
     ]
