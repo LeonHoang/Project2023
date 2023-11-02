@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {ref} from "vue"
+import dayjs from "dayjs";
 import _ from "lodash";
 import { useVerificationProcessStore } from "@/store/verificationProcess"
 import { VerificationProcessRatingDTO } from "@/types/dto";
@@ -45,9 +46,21 @@ verificationProcessStore.getAllPending()
               :row-key="(row) => {return row.id}">
               <el-table-column label="STT" type="index" width="100"/>
               <el-table-column label="Doanh nghiệp" prop="company.companyNameVI"/>
-              <el-table-column label="Thời gian tạo" prop="createdAt"/>
-              <el-table-column label="Hạn đánh giá" prop="submitDeadline"/>
-              <el-table-column label="Kết quả đánh giá" prop="submitDeadline"/>
+              <el-table-column label="Thời gian tạo">
+                <template #default="scope">
+                  {{dayjs(scope.row.createdAt).format('DD/MM/YYYY') }}
+                </template>  
+              </el-table-column>
+              <el-table-column label="Hạn đánh giá">
+                <template #default="scope">
+                  {{dayjs(scope.row.submitDeadline).format('DD/MM/YYYY') }}
+                </template>  
+              </el-table-column>
+              <el-table-column label="Kết quả đánh giá" >
+                <template #default="scope">
+                  {{dayjs(scope.row.submitDeadline).format('DD/MM/YYYY') }}
+                </template>  
+              </el-table-column>
               <el-table-column label="Hành động">
                 <Link className="btn btn-default" to="/verification/{id}">Đánh giá</Link>
               </el-table-column>
