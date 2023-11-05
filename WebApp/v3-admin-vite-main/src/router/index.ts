@@ -91,13 +91,31 @@ export const constantRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: "verification",
-        component: () => import("@/views/verification-process-management/verification/index.vue"),
+        redirect: "/verification-process/verification/list",
         name: "verification",
         meta: {
           role: "Company",
           title: "Đánh giá sự tuân thủ"
         },
-
+        children: [
+          {
+            path: 'edit/:id(\\d+)',
+            component: () => import('@/views/verification-process-management/verification/edit.vue'),
+            name: 'EditVerification',
+            meta: { 
+              title: 'đánh giá', 
+              noCache: true, 
+              activeMenu: '/verification-process/verification/list', 
+              hidden: true
+            },
+          },
+          {
+            path: 'list',
+            component: () => import("@/views/verification-process-management/verification/index.vue"),
+            name: 'VerificationList',
+            meta: { title: 'Danh sách đánh giá', icon: 'list' }
+          }
+        ]
       },
       {
         path: "menu2",

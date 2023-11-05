@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import {ref} from "vue"
+import {ref, watch} from "vue"
 import dayjs from "dayjs";
 import _ from "lodash";
 import { useVerificationProcessStore } from "@/store/verificationProcess"
-import { VerificationProcessRatingDTO } from "@/types/dto";
+import { VerificationProcessRatingDTO } from "@/types/dto"
+import { usePagination } from "@/hooks/usePagination"
+import { VerificationProcess } from "@/types/models";
 
 defineOptions({
   name: "Verification"
@@ -11,18 +13,36 @@ defineOptions({
 
 const loading = ref<boolean>(false)
 let ratings = ref<VerificationProcessRatingDTO[]>([])
+const { paginationData, handleCurrentChange, handleSizeChange } = usePagination()
+const verificationProcessData = ref<VerificationProcess[]>([])
 
 // created
 const verificationProcessStore = useVerificationProcessStore()
-verificationProcessStore.getAllPending()
-.then(() => 
-{
-  const processIds = _.map(verificationProcessStore.verificationProcess, 'id');
-  if(processIds.length > 0){
-    verificationProcessStore.getRatingCount(processIds)
-    ratings.value = verificationProcessStore.ratings
-  }
-});
+
+const getVerificationProcessData = () => {
+  loading.value = true
+
+  verificationProcessStore.getAllPending()
+    .then((res) => {
+      const processIds = _.map(verificationProcessStore.verificationProcess, 'id');
+      if(processIds.length > 0){
+        verificationProcessStore.getRatingCount(processIds)
+        ratings.value = verificationProcessStore.ratings
+      }
+
+      paginationData.total = res.data.length
+      verificationProcessData.value = res.data
+    })
+    .catch(() => {
+      verificationProcessData.value = []
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+/** 监听分页参数的变化 */
+watch([() => paginationData.currentPage, () => paginationData.pageSize], getVerificationProcessData, { immediate: true })
 
 </script>
 
@@ -41,7 +61,7 @@ verificationProcessStore.getAllPending()
         </el-card>
         
         <el-card v-loading="loading" v-if="verificationProcessStore.verificationProcess.length > 0" shadow="never">
-            <el-table ref="tableData" :data=verificationProcessStore.verificationProcess
+            <el-table ref="tableData" :data=verificationProcessData
               style="width: 100%"
               :row-key="(row) => {return row.id}">
               <el-table-column label="STT" type="index" width="100"/>
@@ -62,38 +82,35 @@ verificationProcessStore.getAllPending()
                 </template>  
               </el-table-column>
               <el-table-column label="Hành động">
-                <Link className="btn btn-default" to="/verification/{id}">Đánh giá</Link>
-              </el-table-column>
+              <template  #default="scope">
+                <router-link :to="'/verification-process/verification/edit/'+scope.row.id">
+                  <el-button type="primary" style="display:block; margin: 0 auto;">
+                    Đánh giá
+                  </el-button>
+                </router-link>
+              </template>
+            </el-table-column>
             </el-table>
-        </el-card>
+            <div class="pager-wrapper">
+              <el-pagination
+                background
+                :layout="paginationData.layout"
+                :page-sizes="paginationData.pageSizes"
+                :total="paginationData.total"
+                :page-size="paginationData.pageSize"
+                :currentPage="paginationData.currentPage"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+              />
+            </div>
+            </el-card>
       </div>
     </div>
   </div>
 </template>
 
 <style>
-.demo-tabs{
-  height: auto;
-}
-
-.demo-tabs > .el-tabs__content {
-  padding: 32px;
-  color: #6b778c;
-  font-size: 32px;
-  font-weight: 600;
-}
-
-.el-tabs--left .el-tabs__item.is-left, .el-tabs--right .el-tabs__item.is-left {
-  max-width: 300px;
-  text-wrap: wrap;
-}
-
-.el-tabs__item{
-  padding: 40px 20px;
-}
-
-.el-tabs--right .el-tabs__content,
-.el-tabs--left .el-tabs__content {
-  height: 100%;
+.pager-wrapper{
+padding-top: 20px;
 }
 </style>

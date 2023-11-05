@@ -6,7 +6,6 @@ import { CriteriaDetail, VerificationCriteria, VerificationDocument } from "@/ty
 import { useVerificationProcessStore } from "@/store/verificationProcess";
 import { ElMessage, ElMessageBox } from "element-plus"
 import type { UploadProps, UploadUserFile } from 'element-plus'
-
 interface Props {
   data: CriteriaDetail
 }

@@ -7,7 +7,7 @@ import { ElMessage, ElMessageBox } from "element-plus"
 import { useUserStore } from "@/store/modules/user"
 
 defineOptions({
-  name: "CompanyVerification"
+  name: "VerificationDetail"
 })
 
 const loading = ref<boolean>(false)
@@ -45,19 +45,21 @@ const submit = () => {
   <div class="app-container">
     <div className="x_panel">
       <div className="x_title">
-        <h2>Doanh nghiệp tự đánh giá</h2>
+        <h2>Đánh giá sự tuân thủ của doanh nghiệp {{verificationProcessStore.company.companyNameVI}}</h2>
         <div className="clearfix" />
       </div>
+      <div className="x_breadcrumb">
+        <router-link to="/verification-process/verification">
+          <el-button type="primary" style="display:block; margin-bottom: 20px;">
+            Quay lại
+          </el-button>
+        </router-link>
+      </div>
       <div className="x_content">
-        <el-card v-loading="loading" v-if="!verificationProcessStore.editingProcess" shadow="never">
-          <div>
-            Hiện tại doanh nghiệp không cần phải đánh giá.
-          </div>
-        </el-card>
         
-        <el-card v-loading="loading" v-if="verificationProcessStore.editingProcess" shadow="never">
+        <el-card v-loading="loading" shadow="never">
           <CriteriaTable/>
-          <el-button type="primary" style="display:block; margin: 0 auto;" @click="submit">Gửi đánh giá</el-button>
+          <!-- <el-button type="primary" style="display:block; margin: 0 auto;" @click="submit">Gửi đánh giá</el-button> -->
         </el-card>
       </div>
     </div>
