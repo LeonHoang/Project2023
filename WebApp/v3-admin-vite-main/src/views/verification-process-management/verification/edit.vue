@@ -5,6 +5,7 @@ import { useVerificationProcessStore } from "@/store/verificationProcess"
 import CriteriaTable from "./CriteriaTable.vue"
 import { ElMessage, ElMessageBox } from "element-plus"
 import { useUserStore } from "@/store/modules/user"
+import { useRoute } from "vue-router";
 
 defineOptions({
   name: "VerificationDetail"
@@ -12,11 +13,15 @@ defineOptions({
 
 const loading = ref<boolean>(false)
 // created
-const verificationProcessStore = useVerificationProcessStore()
-const userStore = useUserStore()
-const accountId = userStore.user_id
+const route = useRoute()
+const processId = route.params && route.params.id
 
-verificationProcessStore.loadSelfVerification(accountId)
+const verificationProcessStore = useVerificationProcessStore()
+verificationProcessStore.loadSelfVerification(Number(processId))
+
+const canSubmit = _(verificationProcessStore.verificationCriterias)
+    .filter((criteria) => criteria.approvedStatus === 'PENDING')
+    .isEmpty();
 
 const submit = () => {
   ElMessageBox.confirm(
@@ -45,7 +50,7 @@ const submit = () => {
   <div class="app-container">
     <div className="x_panel">
       <div className="x_title">
-        <h2>Đánh giá sự tuân thủ của doanh nghiệp {{verificationProcessStore.company.companyNameVI}}</h2>
+        <h2>Đánh giá sự tuân thủ của doanh nghiệp {{verificationProcessStore.company?.companyNameVI}}</h2>
         <div className="clearfix" />
       </div>
       <div className="x_breadcrumb">
@@ -62,6 +67,44 @@ const submit = () => {
           <!-- <el-button type="primary" style="display:block; margin: 0 auto;" @click="submit">Gửi đánh giá</el-button> -->
         </el-card>
       </div>
+      <div style="marginTop: 24px">
+          <router-link
+            className="btn btn-default"
+            :to="'/verify-verification-assign?companyId=' + verificationProcessStore.editingProcess?.companyId"
+          >
+            Yêu cầu xác minh
+          </router-link>
+          <!-- <el-button
+            className="btn btn-default"
+            @click=approveAllCriterias
+            disabled=approveAllSubmiting
+          >
+            Đánh dấu tất cả đạt
+          </el-button>
+          <div v-if="canSubmit">
+            <el-button
+                className="btn btn-primary"
+                @click=setOpeningSubmitModal(true)
+              >
+                Duyệt kết quả
+              </el-button>
+          </div> -->
+          <!-- <div v-else>
+            <Popup
+                on={['hover']}
+                position="top center"
+                trigger={(
+                  <span>
+                    <button className="btn btn-primary" disabled>
+                      Duyệt kết quả
+                    </button>
+                  </span>
+                )}
+              >
+                Vui lòng đánh giá đầy đủ tiêu chí trước khi duyệt kết quả
+              </Popup>
+          </div> -->
+        </div>
     </div>
   </div>
 </template>
@@ -90,5 +133,9 @@ const submit = () => {
 .el-tabs--right .el-tabs__content,
 .el-tabs--left .el-tabs__content {
   height: 100%;
+}
+
+.el-table .cell {
+  word-break: break-word;
 }
 </style>

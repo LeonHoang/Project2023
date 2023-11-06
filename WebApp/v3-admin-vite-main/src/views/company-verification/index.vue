@@ -16,7 +16,8 @@ const verificationProcessStore = useVerificationProcessStore()
 const userStore = useUserStore()
 const accountId = userStore.user_id
 
-verificationProcessStore.loadSelfVerification(accountId)
+verificationProcessStore.getProcessIdByAccountId(accountId)
+verificationProcessStore.loadSelfVerification(verificationProcessStore.processId)
 
 const submit = () => {
   ElMessageBox.confirm(

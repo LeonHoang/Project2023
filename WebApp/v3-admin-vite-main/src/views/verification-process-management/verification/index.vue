@@ -47,6 +47,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getVeri
 </script>
 
 <template>
+  <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.css">
   <div class="app-container">
     <div className="x_panel">
       <div className="x_title">
