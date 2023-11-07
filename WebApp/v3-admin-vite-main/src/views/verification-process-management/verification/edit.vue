@@ -17,6 +17,7 @@ const route = useRoute()
 const processId = route.params && route.params.id
 
 const verificationProcessStore = useVerificationProcessStore()
+verificationProcessStore.setProcessId(Number(processId))
 verificationProcessStore.loadSelfVerification(Number(processId))
 
 const canSubmit = _(verificationProcessStore.verificationCriterias)

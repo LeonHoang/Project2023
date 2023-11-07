@@ -46,13 +46,13 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
       verificationDocumentServices.getAllByProcessId(processId)
     ])
 
-    criteriaTypeStore.getCriteriaType()
-    criteriaStore.getCriteria()
-    criteriaDetailStore.getcriteriaDetail()
-
     editingProcess.value = process.data
     verificationCriterias.value = criterias.data
     verificationDocuments.value = documents.data
+
+    criteriaTypeStore.getCriteriaType()
+    criteriaStore.getCriteria()
+    criteriaDetailStore.getcriteriaDetail()
     
     const companiesResult = await companyServices.getAll()
     companies.value = companiesResult.data
@@ -79,7 +79,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
   
   const createDocument = async (data: Partial<VerificationDocument>) => {
     await verificationDocumentServices.create(data);
-    // refesh
+    // refresh
     await loadSelfVerification(processId.value);
   }
 
@@ -90,6 +90,10 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     );
   }
 
+  const setProcessId = async (id: number) => {
+    processId.value = id
+  }
+  
   const updateVerificationCriteria = async (data: Partial<VerificationCriteria>) => {
     await verificationCriteriaServices.update(data);
   }
@@ -125,10 +129,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
 
     await verificationCriteriaServices.update(data)
 
-    // const criterias =  await verificationCriteriaServices.getAllByProcessId(processId.value)
-    // verificationCriterias.value = criterias.data
-
-
+    // refresh
     await loadSelfVerification(processId.value);
   }
 
@@ -143,7 +144,8 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     companies,
     processId,
 
-    getProcessIdByAccountId, 
+    getProcessIdByAccountId,
+    setProcessId,
     getAllPending, 
     getRatingCount, 
     submitProcess, 

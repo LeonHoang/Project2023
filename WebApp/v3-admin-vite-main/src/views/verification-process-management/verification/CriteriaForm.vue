@@ -32,8 +32,7 @@ const rate = String(currentCriteria?.companyRate) ?? 'null';
         <label>Không có</label>
       </div>
       <div v-else>
-        <div v-for="doc in currentDocuments" :key="doc.id">
-          
+        <div v-for="doc in currentDocuments" :key="doc.id"> 
           <a
             className="file-item"
             :key=doc.id

@@ -14,11 +14,11 @@ const criteriaTypeStore = useCriteriaTypeStore();
 const criteriaStore = useCriteriaStore();
 const criteriaDetailStore = useCriteriaDetailStore();
 const verificationProcessStore = useVerificationProcessStore()
-const tableData = ref()
 
-// const rowClicked = (row: any) => {
-//   tableData.toggleRowExpansion(row)
-// }
+const loading = ref<boolean>(false)
+const tableData = ref<Criteria[]>([])
+// const currentReviewComment = ref<string[]>([])
+// verificationProcessStore.verificationCriterias.map((x) => currentReviewComment.value.push(x.reviewComment))
 
 const editCriteriaField = (fieldName: string, verificationCriteriaId: number, value: string) => {
   verificationProcessStore.updateCriteriaField(fieldName, verificationCriteriaId, value)
@@ -39,7 +39,17 @@ const getApprovedStatus = (verificationCriteriaId: number) => {
   return currentCriteria.approvedStatus 
 };
 
-  
+const getReviewComment = (verificationCriteriaId: number) => {
+  const currentCriteria = _.find(verificationProcessStore.verificationCriterias, (item) => item.criteriaDetailId === verificationCriteriaId)
+  if (!currentCriteria) {
+    return null
+  }
+
+  // currentReviewComment.value[verificationCriteriaId] = currentCriteria.reviewComment 
+  return currentCriteria.reviewComment
+};
+
+
 const markCompliance = (verificationCriteriaId: number, value: boolean) => {
   verificationProcessStore.updateCriteriaCompliance(verificationCriteriaId, value)
     .then(() => {
@@ -59,12 +69,12 @@ const markCompliance = (verificationCriteriaId: number, value: boolean) => {
     :index="index"
     :key="item.id">
     <el-tab-pane :label="item.criteriaTypeName">
-      <el-table ref="tableData" :data="_.filter(criteriaStore.criterias, (x) => x.criteriaTypeId === item.id)" 
+      <el-table ref="tableData" :data="criteriaStore.criterias?.filter((x) => x.criteriaTypeId === item.id)" 
         style="width: 100%" class="clickable-rows"
         :row-key="(row) => {return row.id}">
         <el-table-column type="expand">
           <template #default="{ row }">
-            <el-table style="width: 100%" :data="_.filter(criteriaDetailStore.criteriaDetail, (x) => x.criteriaId === row.id)">
+            <el-table style="width: 100%" :data="criteriaDetailStore.criteriaDetail?.filter((x) => x.criteriaId === row.id)">
               <el-table-column label="STT" type="index" width="100" />
               <el-table-column label="Tiêu chí đánh giá" prop="criteriaDetailName" />
               <el-table-column label="Tự đánh giá" >
@@ -72,16 +82,19 @@ const markCompliance = (verificationCriteriaId: number, value: boolean) => {
                   <CriteriaForm :data=scope.row />
                 </template>
               </el-table-column>
-              <el-table-column label="Góp ý">
+              <!-- <el-table-column label="Góp ý">
                 <template #default="scope">
+                  <el-input v-model="verificationProcessStore.verificationCriterias" type="textarea" placeholder="Ý kiến riêng"/>
+                  <el-button type="primary" :click="editCriteriaField" style="marginTop: 8px">Lưu ý kiến</el-button>
+
                   <el-input
-                  v-model="scope.row.reviewComment"
+                  :value="getReviewComment(scope.row.id)"
+                  @input="value = $event.target.value"
                   :rows="2"
                   type="textarea"
-                  @change="editCriteriaField('reviewComment', scope.row.id, scope.row.reviewComment)"
-                />
+                  @change="editCriteriaField('reviewComment', scope.row.id, {{value}})"/>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column label="Đánh giá">
                 <template #default="scope">
                   <div v-if="getApprovedStatus(scope.row.id) === 'VERIFIED'"><i className="fa fa-thumbs-up" aria-hidden="true">Đạt</i></div>
