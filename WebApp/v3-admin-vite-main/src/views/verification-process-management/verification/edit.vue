@@ -1,49 +1,114 @@
 <script lang="ts" setup>
-import {ref} from "vue"
+import { reactive, ref } from "vue"
 import _ from "lodash";
 import { useVerificationProcessStore } from "@/store/verificationProcess"
 import CriteriaTable from "./CriteriaTable.vue"
-import { ElMessage, ElMessageBox } from "element-plus"
+import { Action, ElMessage, ElMessageBox, FormInstance } from "element-plus"
 import { useUserStore } from "@/store/modules/user"
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { useAgentStore } from "@/store/agent";
+import { useCriteriaDetailStore } from "@/store/criteriaDetail";
 
 defineOptions({
   name: "VerificationDetail"
 })
 
+interface SelectOption {
+  value: number 
+  label: string
+}
+
 const loading = ref<boolean>(false)
-// created
+const submitting = ref<boolean>(false)
+const approveAllSubmiting = ref<boolean>(false)
+const dialogSubmitVisible = ref(false)
+const dialogVerifyConfirmVisible = ref(false)
+const submittingVefiryConfirm = ref<boolean>(false)
+
+const assignedAgentId = ref<string>()
+const agentOptions = ref<SelectOption[]>([])
+const canSubmit = ref<boolean>(false)
+
 const route = useRoute()
+const router = useRouter()
+
 const processId = route.params && route.params.id
+const agentStore = useAgentStore()
 
 const verificationProcessStore = useVerificationProcessStore()
+const criteriaDetailStore = useCriteriaDetailStore();
+
 verificationProcessStore.setProcessId(Number(processId))
-verificationProcessStore.loadSelfVerification(Number(processId))
+verificationProcessStore.loadSelfVerification(Number(processId)).then(() => {
+  checkCanSubmit()
+})
 
-const canSubmit = _(verificationProcessStore.verificationCriterias)
-    .filter((criteria) => criteria.approvedStatus === 'PENDING')
-    .isEmpty();
+const checkCanSubmit= () => {
+  canSubmit.value = _(verificationProcessStore.verificationCriterias)
+  .filter((criteria) => criteria.approvedStatus === 'PENDING')
+  .isEmpty();
+}
 
-const submit = () => {
-  ElMessageBox.confirm(
-    'Bạn chắc chắn sẽ gửi bản đánh giá chứ?',
-    'Warning',
-    {
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Hủy',
-      type: 'warning',
-    }
-  )
+agentStore.getAllAgents().then(() => {
+  agentStore.agents?.map((agent) => 
+    agentOptions.value.push({value: agent.id, label: agent.firstName + " " + agent.lastName} as SelectOption))
+})
+
+const approveAllCriterias = () => {
+  approveAllSubmiting.value = true
+  verificationProcessStore.approveAllCriterias(Number(processId))
     .then(() => {
-      const processId = verificationProcessStore.editingProcess?.id ?? 0
-      verificationProcessStore.submitProcess(processId).then(() => {
-        ElMessage.success('Tải tài liệu thành công.');
-      })
+      checkCanSubmit()
+      approveAllSubmiting.value = false
+      ElMessage.success('Lưu đánh giá thành công.');
     })
     .catch(() => {
-      ElMessage.error('Đã xảy ra lỗi trong quá trình tải tài liệu. Vui lòng thử lại sau.');
-    })
+      checkCanSubmit()
+      approveAllSubmiting.value = false
+      ElMessage.error('Đã xảy ra lỗi trong quá trình lưu đánh giá. Vui lòng thử lại sau.');
+    });
 };
+
+const submitVerify = () => {
+  if (!assignedAgentId.value || assignedAgentId.value === '-') {
+    return;
+  }
+  submitting.value = true
+  verificationProcessStore.submitVerifyReview(Number(processId), parseInt(assignedAgentId.value))
+    .then(() => {
+      checkCanSubmit()
+      submitting.value = false
+      dialogSubmitVisible.value = false
+
+      router.push({ name: '/verification' })
+      ElMessage.success('Yêu cầu duyệt đã được gửi.');
+    })
+    .catch(() => {
+      checkCanSubmit()
+      submitting.value = false
+      dialogSubmitVisible.value = false
+      ElMessage.error('Đã xảy ra lỗi trong quá trình lưu đánh giá. Vui lòng thử lại sau.');
+    });
+};
+
+const submitVerifyConfirm = () => {
+  submittingVefiryConfirm.value = true
+  verificationProcessStore.rejectProcess(Number(processId))
+    .then(() => {
+      submittingVefiryConfirm.value = false
+      dialogVerifyConfirmVisible.value = false
+
+      router.push({ name: '/verification' })
+      ElMessage.success('yêu cầu xác minh lại thành công.');
+    })
+    .catch(() => {
+      submittingVefiryConfirm.value = false
+      dialogVerifyConfirmVisible.value = false
+      ElMessage.error('Đã xảy ra lỗi trong quá trình yêu cầu xác minh. Vui lòng thử lại sau.');
+    });
+};
+
+
 
 </script>
 
@@ -51,7 +116,7 @@ const submit = () => {
   <div class="app-container">
     <div className="x_panel">
       <div className="x_title">
-        <h2>Đánh giá sự tuân thủ của doanh nghiệp {{verificationProcessStore.company?.companyNameVI}}</h2>
+        <h2>Đánh giá sự tuân thủ của doanh nghiệp {{ verificationProcessStore.company?.companyNameVI }}</h2>
         <div className="clearfix" />
       </div>
       <div className="x_breadcrumb">
@@ -62,72 +127,90 @@ const submit = () => {
         </router-link>
       </div>
       <div className="x_content">
-        
+
         <el-card v-loading="loading" shadow="never">
-          <CriteriaTable/>
+          <CriteriaTable />
           <!-- <el-button type="primary" style="display:block; margin: 0 auto;" @click="submit">Gửi đánh giá</el-button> -->
         </el-card>
       </div>
-      <div style="marginTop: 24px">
-          <router-link
-            className="btn btn-default"
-            :to="'/verify-verification-assign?companyId=' + verificationProcessStore.editingProcess?.companyId"
-          >
-            Yêu cầu xác minh
-          </router-link>
-          <!-- <el-button
-            className="btn btn-default"
-            @click=approveAllCriterias
-            disabled=approveAllSubmiting
-          >
-            Đánh dấu tất cả đạt
+      <el-row class="mb-4" style="marginTop: 24px">
+        <el-button type="primary" style="margin-right: 30px;" @click="dialogVerifyConfirmVisible = true">
+          Yêu cầu xác minh và gửi lại đánh giá
+        </el-button>
+
+        <el-button type="primary" style="margin-right: 30px;" @click=approveAllCriterias :disabled=approveAllSubmiting>
+          Đánh dấu tất cả đạt
+        </el-button>
+
+        <div v-if="canSubmit">
+          <el-button type="primary" style="margin-right: 30px;" @click="dialogSubmitVisible = true">
+            Duyệt kết quả
           </el-button>
-          <div v-if="canSubmit">
-            <el-button
-                className="btn btn-primary"
-                @click=setOpeningSubmitModal(true)
-              >
-                Duyệt kết quả
-              </el-button>
-          </div> -->
-          <!-- <div v-else>
-            <Popup
-                on={['hover']}
-                position="top center"
-                trigger={(
-                  <span>
-                    <button className="btn btn-primary" disabled>
-                      Duyệt kết quả
-                    </button>
-                  </span>
-                )}
-              >
-                Vui lòng đánh giá đầy đủ tiêu chí trước khi duyệt kết quả
-              </Popup>
-          </div> -->
         </div>
+        <div v-else>
+          <el-tooltip class="box-item" effect="dark" content="Vui lòng đánh giá đầy đủ tiêu chí trước khi duyệt kết quả"
+            placement="bottom-start">
+            <el-button type="primary" disabled>Duyệt kết quả</el-button>
+          </el-tooltip>
+        </div>
+      </el-row>
+      <el-dialog v-model="dialogSubmitVisible" title="Xác nhận gửi đánh giá">
+        <div>
+          Kiểm tra đầy đủ nội dung đánh giá và chỉ định cán bộ phân loại kết quả đánh giá
+        </div>
+        <el-select v-model="assignedAgentId" class="m-2" placeholder="Select" size="large">
+          <el-option
+            v-for="item in agentOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="dialogSubmitVisible = false">Hủy</el-button>
+            <el-button type="primary" @click="submitVerify" :disabled="submitting">
+              Xác nhận
+            </el-button>
+          </span>
+        </template>
+      </el-dialog>
+      <el-dialog v-model="dialogVerifyConfirmVisible" title="Yêu cầu gửi lại">
+        <div>
+          Xác nhận yêu cầu doanh nghiệp xác minh và gửi lại đánh giá?
+        </div>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="dialogVerifyConfirmVisible = false">Hủy</el-button>
+            <el-button type="primary" @click="submitVerifyConfirm" :disabled="submittingVefiryConfirm">
+              Xác nhận
+            </el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <style>
-.demo-tabs{
+.demo-tabs {
   height: auto;
 }
 
-.demo-tabs > .el-tabs__content {
+.demo-tabs>.el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;
   font-weight: 600;
 }
 
-.el-tabs--left .el-tabs__item.is-left, .el-tabs--right .el-tabs__item.is-left {
+.el-tabs--left .el-tabs__item.is-left,
+.el-tabs--right .el-tabs__item.is-left {
   max-width: 300px;
   text-wrap: wrap;
 }
 
-.el-tabs__item{
+.el-tabs__item {
   padding: 40px 20px;
 }
 

@@ -12,7 +12,7 @@ namespace EcisApi.DTO
         public long DocumentSize { get; set; }
         public string DocumentName { get; set; }
 
-        public VerificationConfirmDocument[] VerificationConfirmDocuments { get; set; }
+        // public VerificationConfirmDocument[] VerificationConfirmDocuments { get; set; }
     }
 
     public class VerificationConfirmUpdateDTOValidator : AbstractValidator<VerificationConfirmUpdateDTO>

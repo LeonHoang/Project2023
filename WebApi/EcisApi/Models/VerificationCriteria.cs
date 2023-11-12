@@ -21,7 +21,7 @@ namespace EcisApi.Models
 
         [JsonIgnore]
         public virtual ICollection<VerificationDocument> VerificationDocuments { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<VerificationConfirmRequirement> VerificationConfirmRequirements { get; set; }
+        //[JsonIgnore]
+        //public virtual ICollection<VerificationConfirmRequirement> VerificationConfirmRequirements { get; set; }
     }
 }

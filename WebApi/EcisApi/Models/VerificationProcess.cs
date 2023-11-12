@@ -9,6 +9,8 @@ namespace EcisApi.Models
         public int Id { get; set; }
         public DateTime? SubmitDeadline { get; set; }
         public DateTime? SubmittedAt { get; set; }
+        public int SubmittedCount { get; set; }
+
         public DateTime? ReviewedAt { get; set; }
         public DateTime? FinishedAt { get; set; }
         public DateTime? ValidFrom { get; set; }
@@ -34,8 +36,8 @@ namespace EcisApi.Models
         public virtual ICollection<CompanyReport> CompanyReports { get; set; }
         [JsonIgnore]
         public virtual ICollection<CompanyTypeModification> CompanyTypeModifications { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<VerificationConfirmRequirement> VerificationConfirmRequirements { get; set; }
+        // [JsonIgnore]
+        //public virtual ICollection<VerificationConfirmRequirement> VerificationConfirmRequirements { get; set; }
 
     }
 }

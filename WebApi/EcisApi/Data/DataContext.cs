@@ -26,8 +26,6 @@ namespace EcisApi.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<SystemConfiguration> SystemConfigurations { get; set; }
         public DbSet<ThirdParty> ThirdParties { get; set; }
-        public DbSet<VerificationConfirmRequirement> VerificationConfirmRequirements { get; set; }
-        public DbSet<VerificationConfirmDocument> VerificationConfirmDocuments { get; set; }
         public DbSet<VerificationCriteria> VerificationCriterias { get; set; }
         public DbSet<VerificationDocument> VerificationDocuments { get; set; }
         public DbSet<VerificationProcess> VerificationProcesses { get; set; }
@@ -78,17 +76,6 @@ namespace EcisApi.Data
             modelBuilder.Entity<Role>().ToTable("Role");
             modelBuilder.Entity<SystemConfiguration>().ToTable("SystemConfiguration");
             modelBuilder.Entity<ThirdParty>().ToTable("ThirdParty");
-            modelBuilder.Entity<VerificationConfirmDocument>().ToTable("VerificationConfirmDocument");
-
-            modelBuilder.Entity<VerificationConfirmRequirement>().ToTable("VerificationConfirmRequirement");
-            modelBuilder.Entity<VerificationConfirmRequirement>()
-                .HasOne(s => s.AssignedAgent)
-                .WithMany(g => g.VerificationConfirmRequirements)
-                .HasForeignKey(s => s.AssignedAgentId);
-            modelBuilder.Entity<VerificationConfirmRequirement>()
-                .HasOne(s => s.ConfirmCompanyType)
-                .WithMany(g => g.VerificationConfirmRequirements)
-                .HasForeignKey(s => s.ConfirmCompanyTypeId);
 
             modelBuilder.Entity<VerificationCriteria>().ToTable("VerificationCriteria");
             modelBuilder.Entity<VerificationDocument>().ToTable("VerificationDocument");

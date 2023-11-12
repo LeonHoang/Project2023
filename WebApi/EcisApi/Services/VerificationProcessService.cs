@@ -29,6 +29,9 @@ namespace EcisApi.Services
         Task<VerificationProcess> SubmitReviewAsync(int id, int assignedAgentId);
         //Task<VerificationProcess> SubmitClassifyAsync(int id, int companyTypeId);
         Task<VerificationProcess> RequestSupportAsync(int id);
+        Task DeleteAsync(int id);
+
+        Task<VerificationProcess> RejectProcessAsync(int id);
         Task<VerificationProcess> RejectReviewedAsync(int id);
         Task<VerificationProcess> FinishAsync(int id, int companyTypeId);
         //Task<VerificationProcess> RejectClassifiedAsync(int id);
@@ -324,6 +327,7 @@ namespace EcisApi.Services
             }
             process.IsSubmitted = true;
             process.SubmittedAt = DateTime.Now;
+            process.SubmittedCount += 1;
             process.Status = AppConstants.VerificationProcessStatus.Submitted;
             return await verificationProcessRepository.UpdateAsync(process);
         }
@@ -387,6 +391,25 @@ namespace EcisApi.Services
         //    process.CompanyTypeId = companyTypeId;
         //    return await verificationProcessRepository.UpdateAsync(process);
         //}
+        
+        public async Task<VerificationProcess> RejectProcessAsync(int id)
+        {
+            var process = verificationProcessRepository.GetById(id);
+
+            if (process == null)
+            {
+                throw new BadHttpRequestException("VerificationProcessNotExist");
+            }
+            if (process.Status != AppConstants.VerificationProcessStatus.Submitted)
+            {
+                throw new BadHttpRequestException("InvalidVerificationProcess");
+            }
+
+            process.Status = AppConstants.VerificationProcessStatus.InProgress;
+
+            return await verificationProcessRepository.UpdateAsync(process);
+        }
+
 
         public async Task<VerificationProcess> RejectReviewedAsync(int id)
         {
@@ -402,6 +425,8 @@ namespace EcisApi.Services
             }
 
             process.Status = AppConstants.VerificationProcessStatus.Submitted;
+            process.SubmitDeadline = DateTime.Now.AddDays(10);
+
             return await verificationProcessRepository.UpdateAsync(process);
         }
 
@@ -455,6 +480,11 @@ namespace EcisApi.Services
 
             transaction.Commit();
             return process;
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await verificationProcessRepository.DeleteAsync(id);
         }
 
         //public async Task<VerificationProcess> RejectClassifiedAsync(int id)

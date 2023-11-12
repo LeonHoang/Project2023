@@ -85,27 +85,10 @@ namespace EcisApi.Services
 
         public async Task<VerificationConfirmRequirement> AddAsync(VerificationConfirmRequirement payload)
         {
-            if (payload.AssignedAgentId == null)
-            {
-                throw new BadHttpRequestException("EmptyAssignedAgent");
-            }
             payload.AnnouncedAgentAt = DateTime.Now;
             var result = await verificationConfirmRequirementRepository.AddAsync(payload);
 
             var agent = agentRepository.GetById(payload.AssignedAgentId);
-
-            try
-            {
-                await emailHelper.SendEmailAsync(
-                    new string[] { agent.Account.Email },
-                    "Yêu cầu xác minh doanh nghiệp",
-                    EmailTemplate.VerificationConfirmRequirementAnnounceAgent,
-                    new Dictionary<string, string>());
-            }
-            catch (Exception)
-            {
-
-            }
 
             return result;
         }

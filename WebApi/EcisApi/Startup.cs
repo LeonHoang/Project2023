@@ -52,8 +52,8 @@ namespace EcisApi
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<ISystemConfigurationRepository, SystemConfigurationRepository>();
             services.AddTransient<IThirdPartyRepository, ThirdPartyRepository>();
-            services.AddTransient<IVerificationConfirmRequirementRepository, VerificationConfirmRequirementRepository>();
-            services.AddTransient<IVerificationConfirmDocumentRepository, VerificationConfirmDocumentRepository>();
+            //services.AddTransient<IVerificationConfirmRequirementRepository, VerificationConfirmRequirementRepository>();
+            //services.AddTransient<IVerificationConfirmDocumentRepository, VerificationConfirmDocumentRepository>();
             services.AddTransient<IVerificationCriteriaRepository, VerificationCriteriaRepository>();
             services.AddTransient<IVerificationDocumentRepository, VerificationDocumentRepository>();
             services.AddTransient<IVerificationProcessRepository, VerificationProcessRepository>();
@@ -75,7 +75,7 @@ namespace EcisApi
             services.AddTransient<IProvinceService, ProvinceService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IThirdPartyService, ThirdPartyService>();
-            services.AddTransient<IVerificationConfirmRequirementService, VerificationConfirmRequirementService>();
+            // services.AddTransient<IVerificationConfirmRequirementService, VerificationConfirmRequirementService>();
             services.AddTransient<IVerificationCriteriaService, VerificationCriteriaService>();
             services.AddTransient<IVerificationDocumentService, VerificationDocumentService>();
             services.AddTransient<IVerificationProcessService, VerificationProcessService>();
@@ -127,7 +127,7 @@ namespace EcisApi
             services.AddTransient<IValidator<CompanyReportDTO>, CompanyReportDTOValidator>();
             services.AddTransient<IValidator<PublicV1AuthenticateDTO>, PublicV1AuthenticateDTOValidator>();
             services.AddTransient<IValidator<ThirdPartyRegisterDTO>, ThirdPartyRegisterDTOValidator>();
-            services.AddTransient<IValidator<VerificationConfirmRequirement>, VerificationConfirmRequirementValidator>();
+            // services.AddTransient<IValidator<VerificationConfirmRequirement>, VerificationConfirmRequirementValidator>();
             services.AddTransient<IValidator<VerificationConfirmUpdateDTO>, VerificationConfirmUpdateDTOValidator>();
             services.AddTransient<IValidator<VerifyCompanyDTO>, VerifyCompanyDTOValidator>();
             services.AddTransient<IValidator<ViolationReportDTO>, ViolationReportDTOValidator>();

@@ -10,7 +10,7 @@ interface RouteSettings {
    * 1. All routes should be written into the resident route (indicating that all logged-in users can access the same page)
    * 2. The system automatically assigns a default role that has no effect to the currently logged in user.
    */
-  defaultRoles: string
+  defaultRoles: string[]
   /**
    * Whether to enable the route caching function at level 3 and above?
    * 1. After being enabled, routing will be downgraded (routes of level three and above will be converted into level two routes).
@@ -21,7 +21,7 @@ interface RouteSettings {
 
 const routeSettings: RouteSettings = {
   async: true,
-  defaultRoles: "Admin",
+  defaultRoles: ["DEFAULT_ROLE"],
   thirdLevelRouteCache: false
 }
 

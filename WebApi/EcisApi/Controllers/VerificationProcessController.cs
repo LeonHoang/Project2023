@@ -141,6 +141,20 @@ namespace EcisApi.Controllers
             }
         }
 
+        [HttpPut("RejectProcess/{id}")]
+        [Authorize("Agent", "Admin")]
+        public async Task<ActionResult<VerificationProcess>> RejectProcess([FromRoute] int id)
+        {
+            try
+            {
+                return await verificationProcessService.RejectProcessAsync(id);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(new { e.Message });
+            }
+        }
+
         [HttpPut("SubmitReview/{id}")]
         [Authorize("Admin", "Agent")]
         public async Task<ActionResult<VerificationProcess>> SubmitReview([FromRoute] int id, [FromQuery] int? assignedAgentId)
@@ -227,6 +241,14 @@ namespace EcisApi.Controllers
         public async Task<ActionResult<VerificationProcess>> Update([FromBody] VerificationProcess payload)
         {
             return await verificationProcessService.UpdateAsync(payload);
+        }
+
+        [HttpDelete("Delete/{id}")]
+        [Authorize]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            await verificationProcessService.DeleteAsync(id);
+            return Ok();
         }
     }
 }

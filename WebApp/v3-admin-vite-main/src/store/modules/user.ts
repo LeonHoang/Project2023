@@ -16,15 +16,15 @@ import routeSettings from "@/config/route"
 export const useUserStore = defineStore("user", () => {
   const user_email = ref<string>("")
   const token = ref<string>(getToken() || "")
-  const user_role = ref<string>("")
   const user_id = ref<number>(0)
+  const user_role = ref<string[]>([])
 
   const permissionStore = usePermissionStore()
   const tagsViewStore = useTagsViewStore()
   const settingsStore = useSettingsStore()
 
   /** setRole */
-  const setRole = (value: string) => {
+  const setRole = (value: string[]) => {
     user_role.value = value
   }
   /** Log in */
@@ -33,28 +33,26 @@ export const useUserStore = defineStore("user", () => {
     setToken(data.token)
     token.value = data.token
     user_email.value = data.email
-    user_role.value = data.roleName
+
+    // if(data.roleName?.length > 0){
+    //   user_role.value = []
+    //   user_role.value.push(data.roleName)
+    // }else{
+    //   user_role.value = routeSettings.defaultRoles
+    // }
   }
 
   /** Get user details */
   const getUserInfo = async () => {
     const { data } = await authenticationServices.getUserInfo()
     user_email.value = data.email
-    user_role.value = data? data.role.roleName : routeSettings.defaultRoles
     user_id.value = data.id
-  }
-
-  /** Switch roles */
-  const changeRole = async (role: string) => {
-    const newToken = "token-" + role
-    token.value = newToken
-    setToken(newToken)
-    permissionStore.setRoutes(user_role.value)
-    resetRouter()
-    permissionStore.dynamicRoutes.forEach((item: RouteRecordRaw) => {
-      router.addRoute(item)
-    })
-    _resetTagsView()
+    if(data.role?.roleName.length > 0){
+      user_role.value = []
+      user_role.value.push(data.role?.roleName)
+    }else{
+      user_role.value = routeSettings.defaultRoles
+    }
   }
 
   /** logout */
@@ -68,7 +66,7 @@ export const useUserStore = defineStore("user", () => {
   const resetToken = () => {
     removeToken()
     token.value = ""
-    user_role.value = ""
+    user_role.value = []
   }
 
   /** Reset Visited Views and Cached Views */

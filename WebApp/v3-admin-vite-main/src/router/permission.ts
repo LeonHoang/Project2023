@@ -45,10 +45,14 @@ router.beforeEach(async (to, _from, next) => {
 
    // Otherwise, re-acquire the permission role
    try {
-      await userStore.getUserInfo()
-      const user_role = userStore.user_role
-      //Generate accessible Routes based on user_role (accessible routes = resident routes + dynamic routes with access rights)
-      permissionStore.setRoutes(user_role)
+      if (routeSettings.async) {
+        await userStore.getUserInfo()
+        const user_role = userStore.user_role
+        permissionStore.setRoutes(user_role)
+      } else {
+        userStore.setRole(routeSettings.defaultRoles)
+        permissionStore.setRoutes(routeSettings.defaultRoles)
+      }
 
       // Add 'dynamic route with access permission' to Router
       permissionStore.dynamicRoutes.forEach((route) => router.addRoute(route))

@@ -6,18 +6,17 @@ import { constantRoutes, asyncRoutes } from "@/router"
 import { flatMultiLevelRoutes } from "@/router/helper"
 import routeSettings from "@/config/route"
 
-const hasPermission = (role: string, route: RouteRecordRaw) => {
-  const routeRole = route.meta?.role
-  return routeRole ? routeRole === role : true
+const hasPermission = (roles: string[], route: RouteRecordRaw) => {
+  const routeRoles = route.meta?.roles
+  return routeRoles ? roles.some((role) => routeRoles.includes(role)) : true
 }
-
-const filterAsyncRoutes = (routes: RouteRecordRaw[], role: string) => {
+const filterAsyncRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
   const res: RouteRecordRaw[] = []
   routes.forEach((route) => {
     const tempRoute = { ...route }
-    if (hasPermission(role, tempRoute)) {
+    if (hasPermission(roles, tempRoute)) {
       if (tempRoute.children) {
-        tempRoute.children = filterAsyncRoutes(tempRoute.children, role)
+        tempRoute.children = filterAsyncRoutes(tempRoute.children, roles)
       }
       res.push(tempRoute)
     }
@@ -29,8 +28,8 @@ export const usePermissionStore = defineStore("permission", () => {
   const routes = ref<RouteRecordRaw[]>([])
   const dynamicRoutes = ref<RouteRecordRaw[]>([])
 
-  const setRoutes = (role: string) => {
-    const accessedRoutes = routeSettings.async ? filterAsyncRoutes(asyncRoutes, role) : asyncRoutes
+  const setRoutes = (roles: string[]) => {
+    const accessedRoutes = routeSettings.async ? filterAsyncRoutes(asyncRoutes, roles) : asyncRoutes
     routes.value = constantRoutes.concat(accessedRoutes)
     dynamicRoutes.value = routeSettings.thirdLevelRouteCache ? flatMultiLevelRoutes(accessedRoutes) : accessedRoutes
   }

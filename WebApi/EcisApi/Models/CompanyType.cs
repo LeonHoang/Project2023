@@ -17,7 +17,7 @@ namespace EcisApi.Models
         public virtual ICollection<CompanyTypeModification> PreviousCompanyTypeModifications { get; set; }
         [JsonIgnore]
         public virtual ICollection<CompanyTypeModification> UpdatedCompanyTypeModifications { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<VerificationConfirmRequirement> VerificationConfirmRequirements { get; set; }
+        //[JsonIgnore]
+        //public virtual ICollection<VerificationConfirmRequirement> VerificationConfirmRequirements { get; set; }
     }
 }

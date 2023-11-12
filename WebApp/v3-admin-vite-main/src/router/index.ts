@@ -60,74 +60,6 @@ export const constantRoutes: RouteRecordRaw[] = [
         }
       }
     ]
-  },
-  {
-    path: "/company-verification",
-    component: Layouts,
-    redirect: "/company-verification/index",
-    children: [
-      {
-        path: "index",
-        component: () => import("@/views/company-verification/index.vue"),
-        name: "company-verification",
-        meta: {
-          role: "Company",
-          title: "Đánh giá, phân loại",
-          svgIcon: "menu"
-        }
-      }
-    ]
-  },
-  {
-    path: "/verification-process",
-    component: Layouts,
-    redirect: "/verification-process/verification",
-    name: "Menu",
-    meta: {
-      role: "Company",
-      title: "Đánh giá, xác minh",
-      svgIcon: "menu"
-    },
-    children: [
-      {
-        path: "verification",
-        redirect: "/verification-process/verification/list",
-        name: "verification",
-        meta: {
-          role: "Company",
-          title: "Đánh giá sự tuân thủ"
-        },
-        children: [
-          {
-            path: 'edit/:id(\\d+)',
-            component: () => import('@/views/verification-process-management/verification/edit.vue'),
-            name: 'EditVerification',
-            meta: { 
-              title: 'đánh giá', 
-              noCache: true, 
-              activeMenu: '/verification-process/verification/list', 
-              hidden: true
-            },
-          },
-          {
-            path: 'list',
-            component: () => import("@/views/verification-process-management/verification/index.vue"),
-            name: 'VerificationList',
-            meta: { title: 'Danh sách đánh giá', icon: 'list' }
-          }
-        ]
-      },
-      {
-        path: "menu2",
-        component: () => import("@/views/verification-process-management/menu2/index.vue"),
-        name: "Menu2",
-        meta: {
-          role: "Company",
-          title: "menu2",
-          keepAlive: true
-        }
-      }
-    ]
   }
 ]
 
@@ -138,32 +70,75 @@ export const constantRoutes: RouteRecordRaw[] = [
   */
 export const asyncRoutes: RouteRecordRaw[] = [
   {
-    path: "/permission",
+    path: "/company-verification",
     component: Layouts,
-    redirect: "/permission/page",
-    name: "Permission",
+    redirect: "/company-verification/index",
     meta: {
-      title: "Permission Management",
-      svgIcon: "lock",
-      role: "admin", // You can set the role in the root route
-      alwaysShow: true // Will always show the root menu
+      roles: ["Company"],
+      title: "Đánh giá, phân loại",
+      svgIcon: "menu"
     },
     children: [
       {
-        path: "page",
-        component: () => import("@/views/permission/page.vue"),
-        name: "PagePermission",
+        path: "index",
+        component: () => import("@/views/company-verification/index.vue"),
+        name: "company-verification",
         meta: {
-          title: "Page Permissions",
-          role: "admin" // Or set the role in the sub-navigation
+          roles: ["Company"],
+          title: "Đánh giá, phân loại",
+          svgIcon: "menu"
         }
+      }
+    ]
+  },
+  {
+    path: "/verification-process",
+    component: Layouts,
+    redirect: "/verification-process/verification",
+    name: "verificationMenu",
+    meta: {
+      roles: ["Agent"],
+      title: "Đánh giá, xác minh",
+      svgIcon: "menu"
+    },
+    children: [
+      {
+        path: "verification",
+        redirect: "/verification-process/verification/list",
+        name: "verification",
+        meta: {
+          roles: ["Agent"],
+          title: "Đánh giá sự tuân thủ"
+        },
+        children: [
+          {
+            path: 'edit/:id(\\d+)',
+            component: () => import('@/views/verification-process-management/verification/edit.vue'),
+            name: 'EditVerification',
+            meta: { 
+              roles: ["Agent"],
+              title: 'đánh giá', 
+              noCache: true, 
+              activeMenu: '/verification-process/verification/list', 
+              hidden: true
+            },
+          },
+          {
+            path: 'list',
+            component: () => import("@/views/verification-process-management/verification/index.vue"),
+            name: 'VerificationList',
+            meta: {roles: ["Agent"], title: 'Danh sách đánh giá', icon: 'list' }
+          }
+        ]
       },
       {
-        path: "directive",
-        component: () => import("@/views/permission/directive.vue"),
-        name: "DirectivePermission",
+        path: "menu2",
+        component: () => import("@/views/verification-process-management/menu2/index.vue"),
+        name: "Menu2",
         meta: {
-          title: "Command permissions" // If no role is set, it means: the page does not require permissions, but will inherit the role of the root route
+          roles: ["Agent"],
+          title: "menu2",
+          keepAlive: true
         }
       }
     ]

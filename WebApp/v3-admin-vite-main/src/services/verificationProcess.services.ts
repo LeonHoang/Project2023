@@ -69,6 +69,10 @@ function rejectReviewed(id: number): Promise<ApiResponseData<VerificationProcess
   return request.put(`/VerificationProcess/RejectReviewed/${id}`);
 }
 
+function rejectProcess(id: number): Promise<ApiResponseData<VerificationProcess>> {
+  return request.put(`/VerificationProcess/RejectProcess/${id}`);
+}
+
 function update(data: Partial<VerificationProcess>): Promise<ApiResponseData<VerificationProcess>> {
   return request.put(`/VerificationProcess/Update`, data);
 }
@@ -85,6 +89,8 @@ function finishVerify(id: number, companyTypeId: number): Promise<ApiResponseDat
 function rejectClassified(id: number): Promise<ApiResponseData<VerificationProcess>> {
   return request.put(`/VerificationProcess/RejectClassified/${id}`);
 }
+
+
 
 const verificationProcessServices = {
   getAll,
@@ -104,6 +110,7 @@ const verificationProcessServices = {
   update,
   finishVerify,
   rejectClassified,
+  rejectProcess
 };
 
 export default verificationProcessServices;

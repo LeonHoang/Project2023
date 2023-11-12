@@ -6,6 +6,8 @@ import { useCriteriaStore } from "@/store/criteria"
 import { useCriteriaDetailStore } from "@/store/criteriaDetail"
 import { TableInstance } from "element-plus"
 import CriteriaForm from "./CriteriaForm.vue"
+import CriteriaFormReview from "./CriteriaFormReview.vue"
+
 import { Criteria, CriteriaDetail } from "@/types/models";
 import { useVerificationProcessStore } from "@/store/verificationProcess";
 import { ElMessage, ElMessageBox } from "element-plus"
@@ -17,18 +19,6 @@ const verificationProcessStore = useVerificationProcessStore()
 
 const loading = ref<boolean>(false)
 const tableData = ref<Criteria[]>([])
-// const currentReviewComment = ref<string[]>([])
-// verificationProcessStore.verificationCriterias.map((x) => currentReviewComment.value.push(x.reviewComment))
-
-const editCriteriaField = (fieldName: string, verificationCriteriaId: number, value: string) => {
-  verificationProcessStore.updateCriteriaField(fieldName, verificationCriteriaId, value)
-    .then(() => {
-      ElMessage.success('Lưu thành công.');
-    })
-    .catch(() => {
-      ElMessage.error('Đã xảy ra lỗi trong quá trình cập nhật. Vui lòng thử lại sau.');
-    });
-};
 
 const getApprovedStatus = (verificationCriteriaId: number) => {
   const currentCriteria = _.find(verificationProcessStore.verificationCriterias, (item) => item.criteriaDetailId === verificationCriteriaId)
@@ -38,17 +28,6 @@ const getApprovedStatus = (verificationCriteriaId: number) => {
 
   return currentCriteria.approvedStatus 
 };
-
-const getReviewComment = (verificationCriteriaId: number) => {
-  const currentCriteria = _.find(verificationProcessStore.verificationCriterias, (item) => item.criteriaDetailId === verificationCriteriaId)
-  if (!currentCriteria) {
-    return null
-  }
-
-  // currentReviewComment.value[verificationCriteriaId] = currentCriteria.reviewComment 
-  return currentCriteria.reviewComment
-};
-
 
 const markCompliance = (verificationCriteriaId: number, value: boolean) => {
   verificationProcessStore.updateCriteriaCompliance(verificationCriteriaId, value)
@@ -82,19 +61,11 @@ const markCompliance = (verificationCriteriaId: number, value: boolean) => {
                   <CriteriaForm :data=scope.row />
                 </template>
               </el-table-column>
-              <!-- <el-table-column label="Góp ý">
+              <el-table-column label="Góp ý">
                 <template #default="scope">
-                  <el-input v-model="verificationProcessStore.verificationCriterias" type="textarea" placeholder="Ý kiến riêng"/>
-                  <el-button type="primary" :click="editCriteriaField" style="marginTop: 8px">Lưu ý kiến</el-button>
-
-                  <el-input
-                  :value="getReviewComment(scope.row.id)"
-                  @input="value = $event.target.value"
-                  :rows="2"
-                  type="textarea"
-                  @change="editCriteriaField('reviewComment', scope.row.id, {{value}})"/>
+                  <CriteriaFormReview :data=scope.row />
                 </template>
-              </el-table-column> -->
+              </el-table-column>
               <el-table-column label="Đánh giá">
                 <template #default="scope">
                   <div v-if="getApprovedStatus(scope.row.id) === 'VERIFIED'"><i className="fa fa-thumbs-up" aria-hidden="true">Đạt</i></div>

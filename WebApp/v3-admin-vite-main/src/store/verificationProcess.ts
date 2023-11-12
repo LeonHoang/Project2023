@@ -133,7 +133,26 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     await loadSelfVerification(processId.value);
   }
 
+  const approveAllCriterias = async (verificationProcessId: number) => {
+    await verificationCriteriaServices.approveAll(verificationProcessId);
+
+    // refresh
+    await loadSelfVerification(processId.value);
+  }
+
+  const submitVerifyReview = async (verificationProcessId: number, assignedAgentId: number) => {
+    await verificationProcessServices.submitVerifyReview(verificationProcessId, assignedAgentId);
+
+    // refresh
+    await loadSelfVerification(processId.value);
+  }
   
+  const rejectProcess = async (verificationProcessId: number) => {
+    await verificationProcessServices.rejectProcess(verificationProcessId);
+    // refresh
+    await loadSelfVerification(processId.value);
+  }
+
   return { 
     verificationProcess, 
     ratings, 
@@ -154,7 +173,11 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     loadSelfVerification, 
     updateVerificationCriteria,
     updateCriteriaField,
-    updateCriteriaCompliance}
+    updateCriteriaCompliance,
+    approveAllCriterias,
+    submitVerifyReview,
+    rejectProcess,
+  }
 })
 
 /** Use outside setup */

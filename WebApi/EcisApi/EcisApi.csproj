@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>5f340330-15b9-413f-b26e-3325b791fb01</UserSecretsId>
@@ -8,6 +8,15 @@
     <DocumentationFile>D:\Fithou\Project2023\WebApi\EcisApi.xml</DocumentationFile>
     <NoWarn>1591;1701;1702</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\VerificationConfirmRequirementController.cs" />
+    <Compile Remove="Models\VerificationConfirmDocument.cs" />
+    <Compile Remove="Models\VerificationConfirmRequirement.cs" />
+    <Compile Remove="Repositories\VerificationConfirmDocumentRepository.cs" />
+    <Compile Remove="Repositories\VerificationConfirmRequirementRepository.cs" />
+    <Compile Remove="Services\VerificationConfirmRequirementService.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.0" />

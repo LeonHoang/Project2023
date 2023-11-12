@@ -21,7 +21,7 @@ declare module "vue-router" {
     /**
      * Set the permission for the route to enter and support of permission.
      */
-    role?: string
+    roles?: string[]
     /**
      * Defaults to true, if set to false, it will not be displayed in breadcrumbs
      */
