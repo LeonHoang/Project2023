@@ -9,15 +9,21 @@ import { useUserStore } from "@/store/modules/user"
 defineOptions({
   name: "CompanyVerification"
 })
-
 const loading = ref<boolean>(false)
+const isRejected = ref<boolean>(false)
 // created
 const verificationProcessStore = useVerificationProcessStore()
 const userStore = useUserStore()
 const accountId = userStore.user_id
 
-verificationProcessStore.getProcessIdByAccountId(accountId)
-verificationProcessStore.loadSelfVerification(verificationProcessStore.processId)
+verificationProcessStore.getProcessIdByAccountId(accountId).then(() => {
+  verificationProcessStore.loadSelfVerification(verificationProcessStore.processId).then(() => {
+    if(verificationProcessStore.editingProcess?.status === "IN_PROGRESS" 
+      && verificationProcessStore.editingProcess?.submittedCount > 0){
+        isRejected.value = true
+    }
+  })
+})
 
 const submit = () => {
   ElMessageBox.confirm(
@@ -28,16 +34,15 @@ const submit = () => {
       cancelButtonText: 'Hủy',
       type: 'warning',
     }
-  )
-    .then(() => {
-      const processId = verificationProcessStore.editingProcess?.id ?? 0
-      verificationProcessStore.submitProcess(processId).then(() => {
-        ElMessage.success('Tải tài liệu thành công.');
-      })
+  ).then(() => {
+    const processId = verificationProcessStore.editingProcess?.id ?? 0
+    verificationProcessStore.submitProcess(processId).then(() => {
+      ElMessage.success('Tải tài liệu thành công.');
     })
     .catch(() => {
       ElMessage.error('Đã xảy ra lỗi trong quá trình tải tài liệu. Vui lòng thử lại sau.');
     })
+  }).catch(() => {})
 };
 
 </script>
@@ -52,11 +57,16 @@ const submit = () => {
       <div className="x_content">
         <el-card v-loading="loading" v-if="!verificationProcessStore.editingProcess" shadow="never">
           <div>
-            Hiện tại doanh nghiệp không cần phải đánh giá.
+            Hiện tại doanh nghiệp không cần phải đánh giá
           </div>
         </el-card>
         
         <el-card v-loading="loading" v-if="verificationProcessStore.editingProcess" shadow="never">
+
+          <div v-if="isRejected" style="color: red;">
+            Bạn đã gửi đánh giá lần thứ {{ verificationProcessStore.editingProcess?.submittedCount }} / 3.
+            Quá số lần gửi quy định sẽ cần đánh giá lại từ đầu.
+          </div>
           <CriteriaTable/>
           <el-button type="primary" style="display:block; margin: 0 auto;" @click="submit">Gửi đánh giá</el-button>
         </el-card>

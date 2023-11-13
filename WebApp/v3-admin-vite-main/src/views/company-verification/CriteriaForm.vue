@@ -127,6 +127,7 @@ const createDoc: UploadProps['onSuccess'] = (uploadFile) => {
         <el-input v-model="form.opinion" type="textarea" placeholder="Ý kiến riêng"/>
         <el-button type="primary" :onClick="updateCompanyOpinion" style="marginTop: 8px">Lưu ý kiến</el-button>
       </el-form-item>
+      <el-text style="color: red;">{{ currentCriteria?.reviewComment }}</el-text>
       <el-upload
         v-model:file-list="fileList"
         action="http://localhost:5000/api/File"

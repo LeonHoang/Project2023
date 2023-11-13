@@ -26,8 +26,9 @@ const getVerificationProcessData = () => {
     .then((res) => {
       const processIds = _.map(verificationProcessStore.verificationProcess, 'id');
       if(processIds.length > 0){
-        verificationProcessStore.getRatingCount(processIds)
-        ratings.value = verificationProcessStore.ratings
+        verificationProcessStore.getRatingCount(processIds).then(() => {
+          ratings.value = verificationProcessStore.ratings
+        })
       }
 
       paginationData.total = res.data.length
@@ -79,7 +80,13 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getVeri
               </el-table-column>
               <el-table-column label="Kết quả đánh giá" >
                 <template #default="scope">
-                  {{dayjs(scope.row.submitDeadline).format('DD/MM/YYYY') }}
+                  <div>Đạt: {{ratings.find((item) => item.verificationProcessId === scope.row.id)?.verifiedCount}}/{{ratings.find((item) => item.verificationProcessId === scope.row.id)?.totalCount}}</div>
+                  <div>Không đạt: {{ratings.find((item) => item.verificationProcessId === scope.row.id)?.rejectedCount}}/{{ratings.find((item) => item.verificationProcessId === scope.row.id)?.totalCount}}</div>
+                </template>  
+              </el-table-column>
+              <el-table-column label="Lần gửi đánh giá">
+                <template #default="scope">
+                  {{scope.row.submittedCount}} / 3
                 </template>  
               </el-table-column>
               <el-table-column label="Hành động">

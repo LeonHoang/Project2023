@@ -33,13 +33,6 @@ export const useUserStore = defineStore("user", () => {
     setToken(data.token)
     token.value = data.token
     user_email.value = data.email
-
-    // if(data.roleName?.length > 0){
-    //   user_role.value = []
-    //   user_role.value.push(data.roleName)
-    // }else{
-    //   user_role.value = routeSettings.defaultRoles
-    // }
   }
 
   /** Get user details */

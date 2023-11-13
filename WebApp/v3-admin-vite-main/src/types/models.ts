@@ -69,11 +69,13 @@ export interface VerificationProcess extends BaseModel {
   isReviewed: boolean;
   isFinished: boolean;
   submitMethod: string;
+  status: string;
   companyTypeId?: number;
   assignedAgentId?: number;
   companyId: number;
   company: Company;
   companyType?: CompanyType;
+  submittedCount: number;
 };
 
 export interface VerificationCriteria extends BaseModel {

@@ -7,16 +7,33 @@ import { useCriteriaDetailStore } from "@/store/criteriaDetail"
 import { TableInstance } from "element-plus"
 import CriteriaForm from "./CriteriaForm.vue"
 import { Criteria, CriteriaDetail } from "@/types/models";
+import { useVerificationProcessStore } from "@/store/verificationProcess";
 
 
 const criteriaTypeStore = useCriteriaTypeStore();
 const criteriaStore = useCriteriaStore();
 const criteriaDetailStore = useCriteriaDetailStore();
+const verificationProcessStore = useVerificationProcessStore();
+
 const tableData = ref()
 
-// const rowClicked = (row: any) => {
-//   tableData.toggleRowExpansion(row)
-// }
+const tableRowClassName = ({
+  row,
+  rowIndex,
+}: {
+  row: CriteriaDetail
+  rowIndex: number
+}) => {
+  const currentCriteria = verificationProcessStore.verificationCriterias.find(
+    (item) => (item.criteriaDetailId === row.id && item.approvedStatus === "REJECTED")
+    )
+  if (currentCriteria) {
+    return 'danger-row'
+  }
+
+  return ''
+}
+
 </script>
 
 <template>
@@ -31,7 +48,8 @@ const tableData = ref()
         :row-key="(row) => {return row.id}">
         <el-table-column type="expand">
           <template #default="{ row }">
-            <el-table style="width: 100%" :data="_.filter(criteriaDetailStore.criteriaDetail, (x) => x.criteriaId === row.id)">
+            <el-table style="width: 100%" :data="_.filter(criteriaDetailStore.criteriaDetail, (x) => x.criteriaId === row.id)"
+              :row-class-name="tableRowClassName">
               <el-table-column label="STT" type="index" width="100" />
               <el-table-column label="Nội dung kê khai" prop="criteriaDetailName" />
               <el-table-column label="Tự đánh giá" >
@@ -42,7 +60,8 @@ const tableData = ref()
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column label="STT" type="index" width="100"/>
+        <el-table-column label="STT" type="index" width="100">
+        </el-table-column>
         <el-table-column label="Nội dung kê khai" prop="criteriaName"/>
       </el-table>
     </el-tab-pane>
@@ -60,4 +79,9 @@ const tableData = ref()
     cursor: default;
   }
 }
+
+.el-table .danger-row {
+  --el-table-tr-bg-color: var(--el-color-danger-light-9);
+}
+
 </style>

@@ -25,7 +25,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
   const verificationDocuments = ref<VerificationDocument[]>([])
   const verificationProcess = ref<VerificationProcess[]>([])
   const documentReviews = ref<DocumentReview[]>([])
-  const companies = ref<Company[]>([])
+  // const companies = ref<Company[]>([])
   const ratings = ref<VerificationProcessRatingDTO[]>([])
 
   const userStore = useUserStore()
@@ -46,7 +46,10 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
       verificationDocumentServices.getAllByProcessId(processId)
     ])
 
-    editingProcess.value = process.data
+    if(process.data.status === "IN_PROGRESS"){
+      editingProcess.value = process.data
+    }
+    
     verificationCriterias.value = criterias.data
     verificationDocuments.value = documents.data
 
@@ -54,11 +57,13 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     criteriaStore.getCriteria()
     criteriaDetailStore.getcriteriaDetail()
     
-    const companiesResult = await companyServices.getAll()
-    companies.value = companiesResult.data
+    // const companiesResult = await companyServices.getAll()
+    // companies.value = companiesResult.data
 
-    const companyResult = await companyServices.getById(process.data.companyId)
-    company.value = companyResult.data
+    if(process.data){
+      const companyResult = await companyServices.getById(process.data.companyId)
+      company.value = companyResult.data
+    }
   }
 
   const getAllPending = async () => {
@@ -160,7 +165,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     verificationCriterias, 
     verificationDocuments, 
     company, 
-    companies,
+    // companies,
     processId,
 
     getProcessIdByAccountId,

@@ -43,6 +43,15 @@ verificationProcessStore.loadSelfVerification(Number(processId)).then(() => {
   checkCanSubmit()
 })
 
+const checkCanRequestConfirm = () => {
+  const verificationProcess = verificationProcessStore.verificationProcess.find((item) => item.id === Number(processId))
+  if(verificationProcess?.submittedCount && verificationProcess?.submittedCount <= 3){
+    return true
+  }else{
+    return true
+  }
+}
+
 const checkCanSubmit= () => {
   canSubmit.value = _(verificationProcessStore.verificationCriterias)
   .filter((criteria) => criteria.approvedStatus === 'PENDING')
@@ -108,8 +117,6 @@ const submitVerifyConfirm = () => {
     });
 };
 
-
-
 </script>
 
 <template>
@@ -130,7 +137,6 @@ const submitVerifyConfirm = () => {
 
         <el-card v-loading="loading" shadow="never">
           <CriteriaTable />
-          <!-- <el-button type="primary" style="display:block; margin: 0 auto;" @click="submit">Gửi đánh giá</el-button> -->
         </el-card>
       </div>
       <el-row class="mb-4" style="marginTop: 24px">
@@ -175,9 +181,14 @@ const submitVerifyConfirm = () => {
           </span>
         </template>
       </el-dialog>
-      <el-dialog v-model="dialogVerifyConfirmVisible" title="Yêu cầu gửi lại">
-        <div>
+      <el-dialog v-model="dialogVerifyConfirmVisible" title="Yêu cầu gửi lại đánh giá">
+        <div v-if="checkCanRequestConfirm() == true">
           Xác nhận yêu cầu doanh nghiệp xác minh và gửi lại đánh giá?
+        </div>
+        <div v-if="checkCanRequestConfirm() == false">
+          Doanh nghiệp đã đạt số lần gửi đánh giá tối đa được cho phép: 3/3 lần
+          <br/>
+          Ấn để xác nhận từ chối quá trình đánh giá lần này.
         </div>
         <template #footer>
           <span class="dialog-footer">
