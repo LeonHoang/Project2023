@@ -1,6 +1,6 @@
 <template>
   <div class="app-container center">
-    <el-empty description="Editor" />
+    <el-empty description="Agent" />
   </div>
 </template>
 

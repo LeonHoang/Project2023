@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { useUserStore } from "@/store/modules/user"
-import Admin from "./components/Admin.vue"
-import Editor from "./components/Editor.vue"
+import Agent from "./components/Agent.vue"
+import Company from "./components/Company.vue"
 
 const userStore = useUserStore()
-const isAdmin = (userStore.user_role == "admin")
+const isAgent = userStore.user_role.includes("Agent")
 </script>
 
 <template>
-  <component :is="isAdmin ? Admin : Editor" />
+  <component :is="isAgent ? Agent : Company" />
 </template>

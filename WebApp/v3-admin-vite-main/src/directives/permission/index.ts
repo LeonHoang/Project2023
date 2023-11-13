@@ -6,8 +6,8 @@ export const permission: Directive = {
   mounted(el, binding) {
     const { value: permissionRoles } = binding
     const { user_role } = useUserStoreHook()
-    if (permissionRoles.length > 0) {
-      const hasPermission = permissionRoles === user_role
+    if (Array.isArray(permissionRoles) && permissionRoles.length > 0) {
+      const hasPermission = user_role.some((role) => permissionRoles.includes(role))
       // hasPermission || (el.style.display = "none")
       hasPermission || el.parentNode?.removeChild(el)
     }

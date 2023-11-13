@@ -38,10 +38,10 @@ const handleRolesChange = () => {
          v-permission, in this case you can achieve it through v-if and checkPermission:
        </el-tag>
        <el-tabs type="border-card" class="margin-top-15">
-         <el-tab-pane v-if="checkPermission('admin')" label="admin">
+         <el-tab-pane v-if="checkPermission(['agent'])" label="admin">
            <el-tag>v-if="checkPermission(['admin'])"</el-tag> is used here, so only admin can see this sentence
          </el-tab-pane>
-         <el-tab-pane v-if="checkPermission('editor')" label="editor">
+         <el-tab-pane v-if="checkPermission(['company'])" label="editor">
            <el-tag>v-if="checkPermission(['editor'])"</el-tag> is used here, so only the editor can see this sentence
          </el-tab-pane>
        </el-tabs>
