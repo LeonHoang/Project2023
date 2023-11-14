@@ -79,7 +79,10 @@ const approveAllCriterias = () => {
 };
 
 const submitVerify = () => {
-  if (!assignedAgentId.value || assignedAgentId.value === '-') {
+  if (!assignedAgentId.value) {
+    ElMessage.error('Hãy chọn kiểm lâm tỉnh.');
+    submitting.value = false
+    dialogSubmitVisible.value = false
     return;
   }
   submitting.value = true
@@ -108,12 +111,12 @@ const submitVerifyConfirm = () => {
       dialogVerifyConfirmVisible.value = false
 
       router.push({ name: '/verification' })
-      ElMessage.success('yêu cầu xác minh lại thành công.');
+      ElMessage.success('yêu cầu doanh nghiệp tự đánh giá lại lại thành công.');
     })
     .catch(() => {
       submittingVefiryConfirm.value = false
       dialogVerifyConfirmVisible.value = false
-      ElMessage.error('Đã xảy ra lỗi trong quá trình yêu cầu xác minh. Vui lòng thử lại sau.');
+      ElMessage.error('Đã xảy ra lỗi trong quá trình yêu cầu doanh nghiệp tự đánh giá lại. Vui lòng thử lại sau.');
     });
 };
 

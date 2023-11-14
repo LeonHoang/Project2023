@@ -22,7 +22,7 @@ const verificationProcessStore = useVerificationProcessStore()
 const getVerificationProcessData = () => {
   loading.value = true
 
-  verificationProcessStore.getAllPending()
+  verificationProcessStore.getAllReviewed()
     .then((res) => {
       const processIds = _.map(verificationProcessStore.verificationProcess, 'id');
       if(processIds.length > 0){
@@ -51,13 +51,13 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getVeri
   <div class="app-container">
     <div className="x_panel">
       <div className="x_title">
-        <h2>Danh sách yêu cầu đánh giá</h2>
+        <h2>Phân loại đánh giá</h2>
         <div className="clearfix" />
       </div>
       <div className="x_content">
         <el-card v-loading="loading" v-if="verificationProcessStore.verificationProcess.length == 0" shadow="never">
           <div>
-            Không có yêu cầu
+            Không có danh sách yêu cầu phân loại 
           </div>
         </el-card>
         
@@ -67,32 +67,17 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getVeri
               :row-key="(row) => {return row.id}">
               <el-table-column label="STT" type="index" width="100"/>
               <el-table-column label="Doanh nghiệp" prop="company.companyNameVI"/>
-              <el-table-column label="Thời gian tạo">
-                <template #default="scope">
-                  {{dayjs(scope.row.createdAt).format('DD/MM/YYYY') }}
-                </template>  
-              </el-table-column>
-              <el-table-column label="Hạn đánh giá">
-                <template #default="scope">
-                  {{dayjs(scope.row.submitDeadline).format('DD/MM/YYYY') }}
-                </template>  
-              </el-table-column>
               <el-table-column label="Kết quả đánh giá" >
                 <template #default="scope">
                   <div>Đạt: {{ratings.find((item) => item.verificationProcessId === scope.row.id)?.verifiedCount}}/{{ratings.find((item) => item.verificationProcessId === scope.row.id)?.totalCount}}</div>
                   <div>Không đạt: {{ratings.find((item) => item.verificationProcessId === scope.row.id)?.rejectedCount}}/{{ratings.find((item) => item.verificationProcessId === scope.row.id)?.totalCount}}</div>
                 </template>  
               </el-table-column>
-              <el-table-column label="Lần gửi đánh giá">
-                <template #default="scope">
-                  {{scope.row.submittedCount}} / 3
-                </template>  
-              </el-table-column>
               <el-table-column label="Hành động">
               <template  #default="scope">
-                <router-link :to="'/verification-process/verification/'+scope.row.id">
+                <router-link :to="'/verification-process/classify/'+scope.row.id">
                   <el-button type="primary" style="display:block; margin: 0 auto;">
-                    Đánh giá
+                    Xem chi tiết
                   </el-button>
                 </router-link>
               </template>

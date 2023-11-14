@@ -98,7 +98,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
     name: "verificationMenu",
     meta: {
       roles: ["Agent"],
-      title: "Đánh giá, xác minh",
+      title: "Đánh giá, phân loại",
       svgIcon: "menu"
     },
     children: [
@@ -112,7 +112,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
         },
         children: [
           {
-            path: 'edit/:id(\\d+)',
+            path: ':id(\\d+)',
             component: () => import('@/views/verification-process-management/verification/edit.vue'),
             name: 'EditVerification',
             meta: { 
@@ -126,20 +126,40 @@ export const asyncRoutes: RouteRecordRaw[] = [
           {
             path: 'list',
             component: () => import("@/views/verification-process-management/verification/index.vue"),
-            name: 'VerificationList',
-            meta: {roles: ["Agent"], title: 'Danh sách đánh giá', icon: 'list' }
+            name: 'verification',
+            meta: {roles: ["Agent"], title: 'Danh sách đánh giá', svgIcon: 'menu'}
           }
         ]
       },
       {
-        path: "menu2",
-        component: () => import("@/views/verification-process-management/menu2/index.vue"),
-        name: "Menu2",
+        path: "classify",
+        redirect: "/verification-process/classify/list",
+        name: "classify",
         meta: {
           roles: ["Agent"],
-          title: "menu2",
-          keepAlive: true
-        }
+          title: "Phân loại đánh giá",
+          svgIcon: "menu"
+        },
+        children: [
+          {
+            path: ':id(\\d+)',
+            component: () => import('@/views/verification-process-management/classify/ClassifyDetail.vue'),
+            name: 'ClassifyDetail',
+            meta: { 
+              roles: ["Agent"],
+              title: 'Phân loại đánh giá chi tiết', 
+              noCache: true, 
+              activeMenu: '/verification-process/verification/list', 
+              hidden: true
+            },
+          },
+          {
+            path: 'list',
+            component: () => import("@/views/verification-process-management/classify/index.vue"),
+            name: 'classify',
+            meta: {roles: ["Agent"], title: 'Danh sách phân loại', svgIcon: 'menu'}
+          }
+        ]
       }
     ]
   },

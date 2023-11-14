@@ -71,6 +71,12 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     verificationProcess.value = verificationProcessServiceResult.data
     return verificationProcessServiceResult
   }
+
+  const getAllReviewed = async () => {
+    const verificationProcessServiceResult = await verificationProcessServices.getAllReviewed()
+    verificationProcess.value = verificationProcessServiceResult.data
+    return verificationProcessServiceResult
+  }
   
   const getRatingCount = async (processIds: number[]) => {
     const {data} = await verificationProcessServices.getRatingCount(processIds)
@@ -152,12 +158,26 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     await loadSelfVerification(processId.value);
   }
   
+  const submitClassify = async (verificationProcessId: number, companyTypeId: number) => {
+    await verificationProcessServices.finishVerify(verificationProcessId, companyTypeId);
+
+    // refresh
+    await loadSelfVerification(processId.value);
+  }
+
   const rejectProcess = async (verificationProcessId: number) => {
     await verificationProcessServices.rejectProcess(verificationProcessId);
     // refresh
     await loadSelfVerification(processId.value);
   }
 
+  const rejectReviewed = async (verificationProcessId: number) => {
+    await verificationProcessServices.rejectReviewed(verificationProcessId);
+    // refresh
+    await loadSelfVerification(processId.value);
+  }
+
+  
   return { 
     verificationProcess, 
     ratings, 
@@ -171,17 +191,24 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     getProcessIdByAccountId,
     setProcessId,
     getAllPending, 
-    getRatingCount, 
+    getAllReviewed,
+    getRatingCount,
+
     submitProcess, 
+    submitVerifyReview,
+    submitClassify,
+
     createDocument, 
     removeDocument, 
     loadSelfVerification, 
+    
     updateVerificationCriteria,
     updateCriteriaField,
     updateCriteriaCompliance,
     approveAllCriterias,
-    submitVerifyReview,
+    
     rejectProcess,
+    rejectReviewed
   }
 })
 
