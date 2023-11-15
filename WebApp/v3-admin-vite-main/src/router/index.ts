@@ -164,6 +164,28 @@ export const asyncRoutes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: "/verification-result",
+    component: Layouts,
+    redirect: "/verification-result/index",
+    meta: {
+      roles: ["Admin", "Agent"],
+      title: "Kết quả đánh giá",
+      svgIcon: "menu"
+    },
+    children: [
+      {
+        path: "index",
+        component: () => import("@/views/verification-result/index.vue"),
+        name: "company-verification",
+        meta: {
+          roles: ["Admin", "Agent"],
+          title: "Kết quả đánh giá",
+          svgIcon: "menu"
+        }
+      }
+    ]
+  },
+  {
     path: "/:pathMatch(.*)*", // Must put the 'ErrorPage' route at the end, Must put the 'ErrorPage' route at the end
     redirect: "/404",
     name: "ErrorPage",
