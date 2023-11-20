@@ -50,7 +50,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getComp
   <div class="app-container">
     <div className="x_panel">
       <div className="x_title">
-        <h2>Kết quả phân loại</h2>
+        <h2>Kết quả phân loại doanh nghiệp</h2>
         <div className="clearfix" />
       </div>
       <div className="x_content">

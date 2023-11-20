@@ -56,13 +56,36 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     criteriaTypeStore.getCriteriaType()
     criteriaStore.getCriteria()
     criteriaDetailStore.getcriteriaDetail()
-    
-    // const companiesResult = await companyServices.getAll()
-    // companies.value = companiesResult.data
 
     if(process.data){
       const companyResult = await companyServices.getById(process.data.companyId)
       company.value = companyResult.data
+    }
+  }
+
+  const loadLastSelfVerification = async () => {
+    const accountId = userStore.user_id
+    const companyResult = await companyServices.getByAccountId(accountId)
+    if (!companyResult.data) {
+      return null;
+    }
+
+    company.value = companyResult.data
+    const process = await verificationProcessServices.getLastByCompanyId(company.value.id)
+
+    if(process.data){
+      const [criterias, documents] = await Promise.all([
+        verificationCriteriaServices.getAllByProcessId(process.data.id),
+        verificationDocumentServices.getAllByProcessId(process.data.id)
+      ])
+
+      editingProcess.value = process.data
+      verificationCriterias.value = criterias.data
+      verificationDocuments.value = documents.data
+  
+      criteriaTypeStore.getCriteriaType()
+      criteriaStore.getCriteria()
+      criteriaDetailStore.getcriteriaDetail()
     }
   }
 
@@ -200,7 +223,8 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
 
     createDocument, 
     removeDocument, 
-    loadSelfVerification, 
+    loadSelfVerification,
+    loadLastSelfVerification,
     
     updateVerificationCriteria,
     updateCriteriaField,

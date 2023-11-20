@@ -17,12 +17,16 @@ const userStore = useUserStore()
 const accountId = userStore.user_id
 
 verificationProcessStore.getProcessIdByAccountId(accountId).then(() => {
-  verificationProcessStore.loadSelfVerification(verificationProcessStore.processId).then(() => {
+  if (verificationProcessStore.processId){
+    verificationProcessStore.loadSelfVerification(verificationProcessStore.processId).then(() => {
     if(verificationProcessStore.editingProcess?.status === "IN_PROGRESS" 
       && verificationProcessStore.editingProcess?.submittedCount > 0){
         isRejected.value = true
     }
   })
+  }else{
+    verificationProcessStore.editingProcess = undefined
+  }
 })
 
 const submit = () => {
@@ -58,6 +62,10 @@ const submit = () => {
         <el-card v-loading="loading" v-if="!verificationProcessStore.editingProcess" shadow="never">
           <div>
             Hiện tại doanh nghiệp không cần phải đánh giá
+            Yêu cầu đánh giá 
+            <router-link to="/request-verification" style="color: blue">
+              tại đây
+            </router-link>
           </div>
         </el-card>
         
@@ -67,6 +75,8 @@ const submit = () => {
             Bạn đã gửi đánh giá lần thứ {{ verificationProcessStore.editingProcess?.submittedCount }} / 3.
             Quá số lần gửi quy định sẽ cần đánh giá lại từ đầu.
           </div>
+          <br/>
+          <div>Bạn có chắc chắn gửi đánh giá lên cho cục kiểm lâm?</div>
           <CriteriaTable/>
           <el-button type="primary" style="display:block; margin: 0 auto;" @click="submit">Gửi đánh giá</el-button>
         </el-card>

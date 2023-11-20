@@ -166,19 +166,53 @@ export const asyncRoutes: RouteRecordRaw[] = [
   {
     path: "/verification-result",
     component: Layouts,
-    redirect: "/verification-result/index",
+    redirect: "/verification-result/list",
     meta: {
       roles: ["Admin", "Agent"],
+      title: "Kết quả phân loại doanh nghiệp",
+      svgIcon: "menu"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/verification-result/index.vue"),
+        name: "company-verification",
+        meta: {
+          roles: ["Admin", "Agent"],
+          title: "Kết quả phân loại",
+          svgIcon: "menu"
+        }
+      },
+      {
+        path: ':id(\\d+)',
+        component: () => import("@/views/verification-result/detail.vue"),
+        name: 'VerificationDetail',
+        meta: { 
+          roles: ["Admin", "Agent"],
+          title: 'Kết quả phân loại chi tiết', 
+          noCache: true, 
+          activeMenu: '/verification-result/list', 
+          hidden: true
+        },
+      },
+    ]
+  },
+  {
+    path: "/company-verifiy-result",
+    component: Layouts,
+    redirect: "/company-verifiy-result/list",
+    meta: {
+      roles: ["Company"],
       title: "Kết quả đánh giá",
       svgIcon: "menu"
     },
     children: [
       {
-        path: "index",
-        component: () => import("@/views/verification-result/index.vue"),
-        name: "company-verification",
+        path: "list",
+        component: () => import("@/views/company-verifiy-result/index.vue"),
+        name: "company-verifiy-result",
         meta: {
-          roles: ["Admin", "Agent"],
+          oles: ["Company"],
           title: "Kết quả đánh giá",
           svgIcon: "menu"
         }

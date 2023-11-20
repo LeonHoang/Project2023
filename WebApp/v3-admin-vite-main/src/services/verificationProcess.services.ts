@@ -43,6 +43,10 @@ function getCurrentPendingByCompanyId(companyId: number): Promise<ApiResponseDat
   return request.get(`/VerificationProcess/GetCurrentPending/${companyId}`);
 }
 
+function getLastByCompanyId(companyId: number): Promise<ApiResponseData<VerificationProcess>> {
+  return request.get(`/VerificationProcess/GetLast/${companyId}`);
+}
+
 function generate(companyId: number): Promise<ApiResponseData<VerificationProcess>> {
   return request.post(`/VerificationProcess/Generate/${companyId}`);
 }
@@ -102,6 +106,7 @@ const verificationProcessServices = {
   getRatingCount,
   getById,
   getCurrentPendingByCompanyId,
+  getLastByCompanyId,
   generate,
   submitProcess,
   submitVerifyReview,
