@@ -48,6 +48,8 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
 
     if(process.data.status === "IN_PROGRESS"){
       editingProcess.value = process.data
+    }else{
+      editingProcess.value = undefined
     }
     
     verificationCriterias.value = criterias.data

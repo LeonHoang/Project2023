@@ -5,9 +5,9 @@ import routeSettings from "@/config/route"
 const Layouts = () => import("@/layouts/index.vue")
 
 /**
-  * Resident routing
-  * In addition to hidden pages such as redirect/403/404/login, it is recommended to set the Name attribute on other pages
-  */
+ * Resident routing
+ * In addition to hidden pages such as redirect/403/404/login, it is recommended to set the Name attribute on other pages
+ */
 export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/redirect",
@@ -64,10 +64,10 @@ export const constantRoutes: RouteRecordRaw[] = [
 ]
 
 /**
-  * Dynamic routing
-  * Used to place routes with permissions (Roles attribute)
-  * Must have Name attribute
-  */
+ * Dynamic routing
+ * Used to place routes with permissions (Roles attribute)
+ * Must have Name attribute
+ */
 export const asyncRoutes: RouteRecordRaw[] = [
   {
     path: "/company-verification",
@@ -112,22 +112,22 @@ export const asyncRoutes: RouteRecordRaw[] = [
         },
         children: [
           {
-            path: ':id(\\d+)',
-            component: () => import('@/views/verification-process-management/verification/edit.vue'),
-            name: 'EditVerification',
-            meta: { 
+            path: ":id(\\d+)",
+            component: () => import("@/views/verification-process-management/verification/edit.vue"),
+            name: "EditVerification",
+            meta: {
               roles: ["Agent"],
-              title: 'đánh giá', 
-              noCache: true, 
-              activeMenu: '/verification-process/verification/list', 
+              title: "đánh giá",
+              noCache: true,
+              activeMenu: "/verification-process/verification/list",
               hidden: true
-            },
+            }
           },
           {
-            path: 'list',
+            path: "list",
             component: () => import("@/views/verification-process-management/verification/index.vue"),
-            name: 'verification',
-            meta: {roles: ["Agent"], title: 'Danh sách đánh giá', svgIcon: 'menu'}
+            name: "verification",
+            meta: { roles: ["Agent"], title: "Danh sách đánh giá", svgIcon: "menu" }
           }
         ]
       },
@@ -142,22 +142,22 @@ export const asyncRoutes: RouteRecordRaw[] = [
         },
         children: [
           {
-            path: ':id(\\d+)',
-            component: () => import('@/views/verification-process-management/classify/ClassifyDetail.vue'),
-            name: 'ClassifyDetail',
-            meta: { 
+            path: ":id(\\d+)",
+            component: () => import("@/views/verification-process-management/classify/ClassifyDetail.vue"),
+            name: "ClassifyDetail",
+            meta: {
               roles: ["Agent"],
-              title: 'Phân loại đánh giá chi tiết', 
-              noCache: true, 
-              activeMenu: '/verification-process/verification/list', 
+              title: "Phân loại đánh giá chi tiết",
+              noCache: true,
+              activeMenu: "/verification-process/verification/list",
               hidden: true
-            },
+            }
           },
           {
-            path: 'list',
+            path: "list",
             component: () => import("@/views/verification-process-management/classify/index.vue"),
-            name: 'classify',
-            meta: {roles: ["Agent"], title: 'Danh sách phân loại', svgIcon: 'menu'}
+            name: "classify",
+            meta: { roles: ["Agent"], title: "Danh sách phân loại", svgIcon: "menu" }
           }
         ]
       }
@@ -184,17 +184,51 @@ export const asyncRoutes: RouteRecordRaw[] = [
         }
       },
       {
-        path: ':id(\\d+)',
+        path: ":id(\\d+)",
         component: () => import("@/views/verification-result/detail.vue"),
-        name: 'VerificationDetail',
-        meta: { 
+        name: "VerificationDetail",
+        meta: {
           roles: ["Admin", "Agent"],
-          title: 'Kết quả phân loại chi tiết', 
-          noCache: true, 
-          activeMenu: '/verification-result/list', 
+          title: "Kết quả phân loại chi tiết",
+          noCache: true,
+          activeMenu: "/verification-result/list",
           hidden: true
-        },
+        }
+      }
+    ]
+  },
+  {
+    path: "/company-modification-history",
+    component: Layouts,
+    redirect: "/company-modification-history/list",
+    meta: {
+      roles: ["Company"],
+      title: "Quá trình đánh giá",
+      svgIcon: "menu"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/company-modification-history/index.vue"),
+        name: "CompanyModification",
+        meta: {
+          roles: ["Company"],
+          title: "Quá trình đánh giá",
+          svgIcon: "menu"
+        }
       },
+      {
+        path: ":id(\\d+)",
+        component: () => import("@/views/company-modification-history/detail.vue"),
+        name: "CompanyModificationDetail",
+        meta: {
+          roles: ["Company"],
+          title: "Quá trình đánh giá chi tiết",
+          noCache: true,
+          activeMenu: "/company-modification-history",
+          hidden: true
+        }
+      }
     ]
   },
   {

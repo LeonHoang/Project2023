@@ -26,10 +26,13 @@ verificationProcessStore.loadLastSelfVerification()
       <div className="x_content">
         <el-card v-loading="loading" v-if="verificationProcessStore.editingProcess?.status === 'IN_PROGRESS'" shadow="never">
           <div className="x_content">
-            Doanh nghiệp chưa gửi cho kiểm lâm đánh giá. Vui lòng hoàn thành đánh giá <Link to="/company-verification">tại đây</Link>.
+            Doanh nghiệp chưa gửi cho kiểm lâm đánh giá. Vui lòng hoàn thành đánh giá 
+            <router-link to="/company-verification" style="color: blue">
+              tại đây.
+            </router-link>
           </div>
         </el-card>
-        <el-card v-loading="loading" v-if="verificationProcessStore.editingProcess?.status === 'FINISHED'" shadow="never">
+        <el-card v-loading="loading" v-else-if="verificationProcessStore.editingProcess?.status === 'FINISHED'" shadow="never">
           <div>
             Hiện tại doanh nghiệp không trong quá trình đánh giá
             Yêu cầu đánh giá

@@ -53,9 +53,9 @@ const submitClassify = () => {
     .then(() => {
       submitting.value = false
       dialogSubmitVisible.value = false
-
-      router.push({ name: '/verification/classify' })
-      ElMessage.success('Phân loại thành công..');
+      
+      ElMessage.success('Phân loại thành công')
+      router.push({ path: '/verification-process/classify/list' })
     })
     .catch(() => {
       submitting.value = false
@@ -70,9 +70,9 @@ const rejectReviewed = () => {
     .then(() => {
       submittingRejectConfirm.value = false
       dialogRejectConfirmVisible.value = false
+      ElMessage.success('yêu cầu đánh giá thành công.')
 
-      router.push({ name: '/verification/classify' })
-      ElMessage.success('yêu cầu đánh giá thành công.');
+      router.push({ path: '/verification-process/classify/list' })
     })
     .catch(() => {
       submittingRejectConfirm.value = false

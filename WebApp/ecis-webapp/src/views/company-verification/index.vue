@@ -5,6 +5,7 @@ import { useVerificationProcessStore } from "@/store/verificationProcess"
 import CriteriaTable from "./CriteriaTable.vue"
 import { ElMessage, ElMessageBox } from "element-plus"
 import { useUserStore } from "@/store/modules/user"
+import { useRouter } from "vue-router";
 
 defineOptions({
   name: "CompanyVerification"
@@ -15,8 +16,11 @@ const isRejected = ref<boolean>(false)
 const verificationProcessStore = useVerificationProcessStore()
 const userStore = useUserStore()
 const accountId = userStore.user_id
+const router = useRouter()
 
-verificationProcessStore.getProcessIdByAccountId(accountId).then(() => {
+
+const intitialize = () => {
+  verificationProcessStore.getProcessIdByAccountId(accountId).then(() => {
   if (verificationProcessStore.processId){
     verificationProcessStore.loadSelfVerification(verificationProcessStore.processId).then(() => {
     if(verificationProcessStore.editingProcess?.status === "IN_PROGRESS" 
@@ -28,6 +32,7 @@ verificationProcessStore.getProcessIdByAccountId(accountId).then(() => {
     verificationProcessStore.editingProcess = undefined
   }
 })
+}
 
 const submit = () => {
   ElMessageBox.confirm(
@@ -47,7 +52,15 @@ const submit = () => {
       ElMessage.error('Đã xảy ra lỗi trong quá trình tải tài liệu. Vui lòng thử lại sau.');
     })
   }).catch(() => {})
+  .finally(() => {
+    // refresh page
+    intitialize()
+
+    router.push({ path: '/company-verifiy-result' })
+  })
 };
+
+intitialize()
 
 </script>
 

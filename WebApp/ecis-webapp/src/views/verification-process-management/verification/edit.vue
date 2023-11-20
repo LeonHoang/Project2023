@@ -92,7 +92,7 @@ const submitVerify = () => {
       submitting.value = false
       dialogSubmitVisible.value = false
 
-      router.push({ name: '/verification' })
+      router.push({ path: '/verification-process/verification/list' })
       ElMessage.success('Yêu cầu duyệt đã được gửi.');
     })
     .catch(() => {
@@ -110,7 +110,7 @@ const submitVerifyConfirm = () => {
       submittingVefiryConfirm.value = false
       dialogVerifyConfirmVisible.value = false
 
-      router.push({ name: '/verification' })
+      router.push({ path: '/verification-process/verification/list' })
       ElMessage.success('yêu cầu doanh nghiệp tự đánh giá lại lại thành công.');
     })
     .catch(() => {

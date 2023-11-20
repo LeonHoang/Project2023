@@ -84,7 +84,7 @@ function createRequest(instance: AxiosInstance) {
          Authorization: token ? `Bearer ${token}` : undefined,
          "Content-Type": "application/json"
        },
-       timeout: 5000,
+       timeout: 30000,
        baseURL: import.meta.env.VITE_BASE_API,
        data: {}
      }
