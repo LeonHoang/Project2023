@@ -131,6 +131,14 @@ namespace EcisApi.Controllers
             }
         }
 
+        [HttpDelete("Delete/{id}")]
+        [Authorize]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            await companyService.DeleteAsync(id);
+            return Ok();
+        }
+
         //public async Task<ActionResult<CompanyTypeModification>> ModifyType([FromBody] ModifyCompanyTypeDTO payload)
         //{
         //    return await companyService.ModifyType(payload);

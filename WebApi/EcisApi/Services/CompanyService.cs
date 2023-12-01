@@ -24,6 +24,7 @@ namespace EcisApi.Services
         Task<Account> VerifyCompany(int accountId);
         Task<CompanyTypeModification> ModifyType(ModifyCompanyTypeDTO data);
         Task<CompanyTypeModification> UpdateModificationAsync(CompanyTypeModification payload);
+        Task DeleteAsync(int id);
     }
 
     public class CompanyService : ICompanyService
@@ -268,6 +269,9 @@ namespace EcisApi.Services
             modification.UpdatedCompanyTypeId = payload.UpdatedCompanyTypeId;
             return await companyTypeModificationRepository.UpdateAsync(modification);
         }
-
+        public async Task DeleteAsync(int id)
+        {
+            await companyRepository.DeleteAsync(id);
+        }
     }
 }

@@ -76,7 +76,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
     meta: {
       roles: ["Company"],
       title: "Đánh giá, phân loại",
-      svgIcon: "menu"
+      svgIcon: "memo-circle-check"
     },
     children: [
       {
@@ -86,7 +86,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
         meta: {
           roles: ["Company"],
           title: "Đánh giá, phân loại",
-          svgIcon: "menu"
+          svgIcon: "memo-circle-check"
         }
       }
     ]
@@ -99,7 +99,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
     meta: {
       roles: ["Agent"],
       title: "Đánh giá, phân loại",
-      svgIcon: "menu"
+      svgIcon: "process"
     },
     children: [
       {
@@ -138,7 +138,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
         meta: {
           roles: ["Agent"],
           title: "Phân loại đánh giá",
-          svgIcon: "menu"
+          svgIcon: "multiply"
         },
         children: [
           {
@@ -157,7 +157,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
             path: "list",
             component: () => import("@/views/verification-process-management/classify/index.vue"),
             name: "classify",
-            meta: { roles: ["Agent"], title: "Danh sách phân loại", svgIcon: "menu" }
+            meta: { roles: ["Agent"], title: "Danh sách phân loại", svgIcon: "multiply" }
           }
         ]
       }
@@ -170,7 +170,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
     meta: {
       roles: ["Admin", "Agent"],
       title: "Kết quả phân loại doanh nghiệp",
-      svgIcon: "menu"
+      svgIcon: "bars-filter"
     },
     children: [
       {
@@ -180,7 +180,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
         meta: {
           roles: ["Admin", "Agent"],
           title: "Kết quả phân loại",
-          svgIcon: "menu"
+          svgIcon: "bars-filter"
         }
       },
       {
@@ -192,40 +192,6 @@ export const asyncRoutes: RouteRecordRaw[] = [
           title: "Kết quả phân loại chi tiết",
           noCache: true,
           activeMenu: "/verification-result/list",
-          hidden: true
-        }
-      }
-    ]
-  },
-  {
-    path: "/company-modification-history",
-    component: Layouts,
-    redirect: "/company-modification-history/list",
-    meta: {
-      roles: ["Company"],
-      title: "Quá trình đánh giá",
-      svgIcon: "menu"
-    },
-    children: [
-      {
-        path: "list",
-        component: () => import("@/views/company-modification-history/index.vue"),
-        name: "CompanyModification",
-        meta: {
-          roles: ["Company"],
-          title: "Quá trình đánh giá",
-          svgIcon: "menu"
-        }
-      },
-      {
-        path: ":id(\\d+)",
-        component: () => import("@/views/company-modification-history/detail.vue"),
-        name: "CompanyModificationDetail",
-        meta: {
-          roles: ["Company"],
-          title: "Quá trình đánh giá chi tiết",
-          noCache: true,
-          activeMenu: "/company-modification-history",
           hidden: true
         }
       }
@@ -249,6 +215,142 @@ export const asyncRoutes: RouteRecordRaw[] = [
           oles: ["Company"],
           title: "Kết quả đánh giá",
           svgIcon: "menu"
+        }
+      }
+    ]
+  },
+  {
+    path: "/company-modification-history",
+    component: Layouts,
+    redirect: "/company-modification-history/list",
+    meta: {
+      roles: ["Company"],
+      title: "Quá trình đánh giá",
+      svgIcon: "process"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/company-modification-history/index.vue"),
+        name: "CompanyModification",
+        meta: {
+          roles: ["Company"],
+          title: "Quá trình đánh giá",
+          svgIcon: "process"
+        }
+      },
+      {
+        path: ":id(\\d+)",
+        component: () => import("@/views/company-modification-history/detail.vue"),
+        name: "CompanyModificationDetail",
+        meta: {
+          roles: ["Company"],
+          title: "Quá trình đánh giá chi tiết",
+          noCache: true,
+          activeMenu: "/company-modification-history",
+          hidden: true
+        }
+      }
+    ]
+  },
+  {
+    path: "/company-management",
+    component: Layouts,
+    redirect: "/company-management/list",
+    meta: {
+      roles: ["Admin"],
+      title: "Quản lý doanh nghiệp",
+      svgIcon: "users-alt"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/company-management/index.vue"),
+        name: "CompanyList",
+        meta: {
+          roles: ["Admin"],
+          title: "Quản lý doanh nghiệp",
+          svgIcon: "users-alt"
+        }
+      },
+      {
+        path: ":id(\\d+)",
+        component: () => import("@/views/company-management/detail.vue"),
+        name: "CompanyDetail",
+        meta: {
+          roles: ["Admin"],
+          title: "Chi tiết doanh nghiệp",
+          noCache: true,
+          activeMenu: "/company-management",
+          hidden: true
+        }
+      }
+    ]
+  },
+  {
+    path: "/agent-management",
+    component: Layouts,
+    redirect: "/agent-management/list",
+    meta: {
+      roles: ["Admin"],
+      title: "Quản lý kiểm lâm tỉnh",
+      svgIcon: "menu"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/agent-management/index.vue"),
+        name: "AgentList",
+        meta: {
+          roles: ["Admin"],
+          title: "Quản lý kiểm lâm tỉnh",
+          svgIcon: "menu"
+        }
+      },
+      {
+        path: ":id(\\d+)",
+        component: () => import("@/views/agent-management/detail.vue"),
+        name: "AgentDetail",
+        meta: {
+          roles: ["Admin"],
+          title: "Chi tiết kiểm lâm tỉnh",
+          noCache: true,
+          activeMenu: "/agent-management",
+          hidden: true
+        }
+      }
+    ]
+  },
+  {
+    path: "/third-party-management",
+    component: Layouts,
+    redirect: "/third-party-management/list",
+    meta: {
+      roles: ["Admin"],
+      title: "Quản lý bên thụ hưởng",
+      svgIcon: "menu"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/third-party-management/index.vue"),
+        name: "3rdList",
+        meta: {
+          roles: ["Admin"],
+          title: "Quản lý bên thụ hưởng",
+          svgIcon: "menu"
+        }
+      },
+      {
+        path: ":id(\\d+)",
+        component: () => import("@/views/third-party-management/detail.vue"),
+        name: "3rdDetail",
+        meta: {
+          roles: ["Admin"],
+          title: "Chi tiết bên thụ hưởng",
+          noCache: true,
+          activeMenu: "/third-party-management",
+          hidden: true
         }
       }
     ]

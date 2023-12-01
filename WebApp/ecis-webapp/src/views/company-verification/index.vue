@@ -23,7 +23,7 @@ const intitialize = () => {
   verificationProcessStore.getProcessIdByAccountId(accountId).then(() => {
   if (verificationProcessStore.processId){
     verificationProcessStore.loadSelfVerification(verificationProcessStore.processId).then(() => {
-    if(verificationProcessStore.editingProcess?.status === "IN_PROGRESS" 
+    if(verificationProcessStore.editingProcess?.status === "IN_PROGRESS"
       && verificationProcessStore.editingProcess?.submittedCount > 0){
         isRejected.value = true
     }
@@ -75,13 +75,13 @@ intitialize()
         <el-card v-loading="loading" v-if="!verificationProcessStore.editingProcess" shadow="never">
           <div>
             Hiện tại doanh nghiệp không cần phải đánh giá
-            Yêu cầu đánh giá 
+            Yêu cầu đánh giá
             <router-link to="/request-verification" style="color: blue">
               tại đây
             </router-link>
           </div>
         </el-card>
-        
+
         <el-card v-loading="loading" v-if="verificationProcessStore.editingProcess" shadow="never">
 
           <div v-if="isRejected" style="color: red;">
@@ -89,7 +89,6 @@ intitialize()
             Quá số lần gửi quy định sẽ cần đánh giá lại từ đầu.
           </div>
           <br/>
-          <div>Bạn có chắc chắn gửi đánh giá lên cho cục kiểm lâm?</div>
           <CriteriaTable/>
           <el-button type="primary" style="display:block; margin: 0 auto;" @click="submit">Gửi đánh giá</el-button>
         </el-card>

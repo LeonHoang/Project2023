@@ -14,7 +14,7 @@ defineOptions({
 })
 
 interface SelectOption {
-  value: number 
+  value: number
   label: string
 }
 
@@ -28,6 +28,8 @@ const submittingVefiryConfirm = ref<boolean>(false)
 const assignedAgentId = ref<string>()
 const agentOptions = ref<SelectOption[]>([])
 const canSubmit = ref<boolean>(false)
+const userStore = useUserStore()
+const accountId = userStore.user_id
 
 const route = useRoute()
 const router = useRouter()
@@ -59,8 +61,8 @@ const checkCanSubmit= () => {
 }
 
 agentStore.getAllAgents().then(() => {
-  agentStore.agents?.map((agent) => 
-    agentOptions.value.push({value: agent.id, label: agent.firstName + " " + agent.lastName} as SelectOption))
+  agentStore.agents?.filter(x=> x.accountId != accountId).map((agent) =>
+      agentOptions.value.push({value: agent.id, label: agent.firstName + " " + agent.lastName} as SelectOption))
 })
 
 const approveAllCriterias = () => {
