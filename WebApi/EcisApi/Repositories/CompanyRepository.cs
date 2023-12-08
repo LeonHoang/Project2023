@@ -40,6 +40,5 @@ namespace EcisApi.Repositories
         {
             return db.Set<Company>().Where(x => x.CompanyCode == companyCode).FirstOrDefault();
         }
-
     }
 }

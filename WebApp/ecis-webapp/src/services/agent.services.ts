@@ -2,7 +2,7 @@ import { AgentCreateDTO } from '@/types/dto';
 import { Agent, AgentAssignment } from '@/types/models';
 import request from '../utils/service';
 
-function getAll(): Promise<ApiResponseData<ApiResponseData<Agent[]>>> {
+function getAll(): Promise<ApiResponseData<Agent[]>> {
   return request.get(`/Agent/GetAll`);
 }
 
@@ -26,6 +26,18 @@ function create(payload: AgentCreateDTO): Promise<ApiResponseData<Agent>> {
   return request.post('/Agent/Add', payload);
 }
 
+function updateAgent(agent: Partial<Agent>): Promise<ApiResponseData<Agent>> {
+  return request.put(`/Agent/Update`, agent);
+}
+
+function deleteAgent(id: number){
+  return request.del(`/Agent/Delete/${id}`);
+}
+
+function activateAgent(id: number){
+  return request.post(`/Agent/Activate/${id}`);
+}
+
 const agentServices = {
   getAll,
   getAllAgents,
@@ -33,6 +45,9 @@ const agentServices = {
   getById,
   getAssignmentByAgentId,
   create,
+  updateAgent,
+  deleteAgent,
+  activateAgent
 };
 
 export default agentServices;

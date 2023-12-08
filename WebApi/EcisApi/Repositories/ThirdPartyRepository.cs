@@ -20,7 +20,8 @@ namespace EcisApi.Repositories
 
         public new ICollection<ThirdParty> GetAll()
         {
-            return db.Set<ThirdParty>().Where(x => !x.IsDeleted).ToList();
+            //return db.Set<ThirdParty>().Where(x => !x.IsDeleted).ToList();
+            return db.Set<ThirdParty>().ToList();
         }
 
         public ThirdParty GetByAccountId(int accountId)

@@ -24,11 +24,20 @@ export const useCompanyStore = defineStore("company", () => {
     return await companyServices.registerCompany(payload)
   }
 
+  const updateCompany = async (data: Partial<Company>) => {
+    await companyServices.updateCompany(data);
+  }
+
+
   const deleteCompany = async (id: number) => {
     return await companyServices.deleteCompany(id)
   }
 
-  return { companies, getAll, getById, registerCompany, deleteCompany }
+  const activateCompany = async (id: number) => {
+    return await companyServices.activateCompany(id)
+  }
+
+  return { companies, getAll, getById, registerCompany, updateCompany, deleteCompany, activateCompany }
 })
 
 /** Use outside setup */

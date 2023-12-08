@@ -30,7 +30,7 @@ export interface UploadFileResponseDTO {
 };
 
 export interface VerificationConfirmRequirementDTO {
-  scheduledTime: Date; 
+  scheduledTime: Date;
   scheduledLocation: string;
   announceAgentDocumentContent: string;
   verificationProcessId: number;
@@ -50,8 +50,8 @@ export interface VerificationConfirmUpdateDTO {
 
 export interface ViolationReportDTO {
   description: string;
-  companyId: number; 
-  reportAgentId: number; 
+  companyId: number;
+  reportAgentId: number;
   violationReportDocuments: Partial<ViolationReportDocument>[];
 };
 

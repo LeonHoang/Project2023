@@ -52,6 +52,13 @@ namespace EcisApi.Controllers
             }
         }
 
+        [HttpGet("CanCreateReport/{id}")]
+        [Authorize]
+        public ActionResult<bool> CanCreateReport([FromRoute] int id)
+        {
+            return Ok(violationReportService.CanCreateReport(id));
+        }
+
         [HttpPut("Approve/{id}")]
         [Authorize]
         public async Task<ActionResult<ViolationReport>> Approve([FromRoute] int id)

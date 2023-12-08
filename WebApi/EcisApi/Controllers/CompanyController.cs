@@ -131,12 +131,56 @@ namespace EcisApi.Controllers
             }
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpPut("Update")]
         [Authorize]
+        public async Task<ActionResult<Company>> Update([FromBody] Company payload)
+        {
+            try
+            {
+                var updated = await companyService.UpdateAsync(payload);
+                return Ok(updated);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(new { e.Message });
+            }
+        }
+
+        [HttpDelete("Delete/{id}")]
+        [Authorize("Admin")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
-            await companyService.DeleteAsync(id);
-            return Ok();
+
+            try
+            {
+                await companyService.DeleteAsync(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    e.Message,
+                });
+            }
+        }
+
+        [HttpPost("Activate/{id}")]
+        [Authorize("Admin")]
+        public async Task<ActionResult<Company>> Activate([FromRoute] int id)
+        {
+            try
+            {
+                await companyService.ActivateAsync(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    e.Message,
+                });
+            }
         }
 
         //public async Task<ActionResult<CompanyTypeModification>> ModifyType([FromBody] ModifyCompanyTypeDTO payload)

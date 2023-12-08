@@ -18,6 +18,10 @@ namespace EcisApi.Services
         Agent GetById(int id);
         Agent GetByAccountId(int accountId);
         Task<Agent> AddAsync(AgentCreateDTO payload);
+
+        Task<Agent> UpdateAsync(Agent payload);
+        Task DeleteAsync(int id);
+        Task ActivateAsync(int id);
     }
 
     public class AgentService : IAgentService
@@ -151,6 +155,36 @@ namespace EcisApi.Services
             }
             transaction.Commit();
             return agent;
+        }
+
+        public async Task<Agent> UpdateAsync(Agent payload)
+        {
+            var agent = agentRepository.GetById(payload.Id);
+            if (agent == null)
+            {
+                throw new BadHttpRequestException("AgentNotExist");
+            }
+            agent.Address = payload.Address;
+            agent.FirstName = payload.FirstName;
+            agent.LastName = payload.LastName;
+            agent.Gender = payload.Gender;
+            agent.PhoneNumber = payload.PhoneNumber;
+            agent.DateOfBirth = payload.DateOfBirth;
+            return await agentRepository.UpdateAsync(agent);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var accountId = agentRepository.GetById(id).AccountId;
+            await agentRepository.DeleteAsync(id);
+            await accountRepository.DeleteAsync(accountId);
+        }
+
+        public async Task ActivateAsync(int id)
+        {
+            var accountId = agentRepository.GetById(id).AccountId;
+            await agentRepository.ActivateAsync(id);
+            await accountRepository.ActivateAsync(accountId);
         }
     }
 }

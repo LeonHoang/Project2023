@@ -36,6 +36,13 @@ namespace EcisApi.Controllers
             return Ok(verificationProcessService.GetAllPending());
         }
 
+        [HttpGet("GetPendingByAssignedAgent")]
+        [Authorize("Agent", "Admin")]
+        public ActionResult<ICollection<VerificationProcess>> GetPendingByAssignedAgent()
+        {
+            return Ok(verificationProcessService.GetPendingByAssignedAgent());
+        }
+
         [HttpGet("GetSupport")]
         [Authorize("Agent", "Admin")]
         public ActionResult<ICollection<VerificationProcess>> GetAllSupport()

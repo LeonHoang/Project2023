@@ -24,7 +24,10 @@ namespace EcisApi.Services
         Task<Account> VerifyCompany(int accountId);
         Task<CompanyTypeModification> ModifyType(ModifyCompanyTypeDTO data);
         Task<CompanyTypeModification> UpdateModificationAsync(CompanyTypeModification payload);
+
+        Task<Company> UpdateAsync(Company payload);
         Task DeleteAsync(int id);
+        Task ActivateAsync(int id);
     }
 
     public class CompanyService : ICompanyService
@@ -186,6 +189,7 @@ namespace EcisApi.Services
             {
 
             }
+
             transaction.Commit();
 
             await verificationProcessService.GenerateAsync(company.Id);
@@ -216,11 +220,18 @@ namespace EcisApi.Services
                 { "password", rawPassword }
             };
 
-            await emailHelper.SendEmailAsync(
-                new string[] { account.Email },
-                "Thông tin tài khoản đăng nhập",
-                EmailTemplate.CompanyRegistrationVerified,
-                mailParams);
+            try
+            {
+                await emailHelper.SendEmailAsync(
+                    new string[] { account.Email },
+                    "Thông tin tài khoản đăng nhập",
+                    EmailTemplate.CompanyRegistrationVerified,
+                    mailParams);
+            }
+            catch (Exception)
+            {
+
+            }
 
             await verificationProcessService.GenerateAsync(company.Id);
 
@@ -269,9 +280,34 @@ namespace EcisApi.Services
             modification.UpdatedCompanyTypeId = payload.UpdatedCompanyTypeId;
             return await companyTypeModificationRepository.UpdateAsync(modification);
         }
+
+        public async Task<Company> UpdateAsync(Company payload)
+        {
+            var company = companyRepository.GetById(payload.Id);
+            if (company == null)
+            {
+                throw new BadHttpRequestException("CompanyNotExist");
+            }
+            company.CompanyCode = payload.CompanyCode;
+            company.CompanyNameEN = payload.CompanyNameEN;
+            company.CompanyNameVI = payload.CompanyNameVI;
+            company.LogoUrl = payload.LogoUrl;
+            company.ProvinceId = payload.ProvinceId;
+            return await companyRepository.UpdateAsync(company);
+        }
+
         public async Task DeleteAsync(int id)
         {
+            var accountId = companyRepository.GetById(id).AccountId;
             await companyRepository.DeleteAsync(id);
+            await accountRepository.DeleteAsync(accountId);
+        }
+
+        public async Task ActivateAsync(int id)
+        {
+            var accountId = companyRepository.GetById(id).AccountId;
+            await companyRepository.ActivateAsync(id);
+            await accountRepository.ActivateAsync(accountId);
         }
     }
 }

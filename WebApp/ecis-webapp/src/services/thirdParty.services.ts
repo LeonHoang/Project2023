@@ -18,12 +18,24 @@ function create(payload: ThirdPartyRegisterDTO): Promise<ApiResponseData<ThirdPa
   return request.post(`/ThirdParty/Register`, payload);
 }
 
-function activate(id: number): Promise<ApiResponseData<ThirdParty>> {
-  return request.put(`/ThirdParty/Activate/${id}`);
+// function activate(id: number): Promise<ApiResponseData<ThirdParty>> {
+//   return request.put(`/ThirdParty/Activate/${id}`);
+// }
+
+// function deactivate(id: number): Promise<ApiResponseData<ThirdParty>> {
+//   return request.put(`/ThirdParty/Deactivate/${id}`);
+// }
+
+function updateThirdParty(thirdParty: Partial<ThirdParty>): Promise<ApiResponseData<ThirdParty>> {
+  return request.put(`/ThirdParty/Update`, thirdParty);
 }
 
-function deactivate(id: number): Promise<ApiResponseData<ThirdParty>> {
-  return request.put(`/ThirdParty/Deactivate/${id}`);
+function deleteThirdParty(id: number){
+  return request.del(`/ThirdParty/Delete/${id}`);
+}
+
+function activateThirdParty(id: number){
+  return request.post(`/ThirdParty/Activate/${id}`);
 }
 
 function resetSecret(id: number): Promise<ApiResponseData<ThirdParty>> {
@@ -35,8 +47,9 @@ const thirdPartyServices = {
   getById,
   getByAccountId,
   create,
-  activate,
-  deactivate,
+  updateThirdParty,
+  activateThirdParty,
+  deleteThirdParty,
   resetSecret,
 };
 

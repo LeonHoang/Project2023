@@ -42,11 +42,11 @@ companyStore.getById(Number(companyId))
           <el-descriptions-item label="Tên doanh nghiệp EN">{{ company?.companyNameEN }}</el-descriptions-item>
 
           <el-descriptions-item label="Loại">
-            {{ company?.companyType.typeName }}
+            {{ company?.companyType?.typeName }}
 
           </el-descriptions-item>
           <el-descriptions-item label="Mô tả">
-            {{ company?.companyType.description }}
+            {{ company?.companyType?.description }}
           </el-descriptions-item>
         </el-descriptions>
       </div>

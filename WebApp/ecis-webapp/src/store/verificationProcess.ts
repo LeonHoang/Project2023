@@ -20,7 +20,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
   const editingDocument = ref<VerificationDocument>()
   const company = ref<Company>()
   const processId = ref<number>(0)
-  
+
   const verificationCriterias = ref<VerificationCriteria[]>([])
   const verificationDocuments = ref<VerificationDocument[]>([])
   const verificationProcess = ref<VerificationProcess[]>([])
@@ -51,7 +51,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     }else{
       editingProcess.value = undefined
     }
-    
+
     verificationCriterias.value = criterias.data
     verificationDocuments.value = documents.data
 
@@ -84,7 +84,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
       editingProcess.value = process.data
       verificationCriterias.value = criterias.data
       verificationDocuments.value = documents.data
-  
+
       criteriaTypeStore.getCriteriaType()
       criteriaStore.getCriteria()
       criteriaDetailStore.getcriteriaDetail()
@@ -97,12 +97,18 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     return verificationProcessServiceResult
   }
 
+  const getAllPendingByAssignedAgent = async () => {
+    const verificationProcessServiceResult = await verificationProcessServices.getPendingByAssignedAgent()
+    verificationProcess.value = verificationProcessServiceResult.data
+    return verificationProcessServiceResult
+  }
+
   const getAllReviewed = async () => {
     const verificationProcessServiceResult = await verificationProcessServices.getAllReviewed()
     verificationProcess.value = verificationProcessServiceResult.data
     return verificationProcessServiceResult
   }
-  
+
   const getRatingCount = async (processIds: number[]) => {
     const {data} = await verificationProcessServices.getRatingCount(processIds)
     ratings.value = data
@@ -112,7 +118,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     const {data} = await verificationProcessServices.submitProcess(id)
     editingProcess.value = data
   }
-  
+
   const createDocument = async (data: Partial<VerificationDocument>) => {
     await verificationDocumentServices.create(data);
     // refresh
@@ -129,19 +135,19 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
   const setProcessId = async (id: number) => {
     processId.value = id
   }
-  
+
   const updateVerificationCriteria = async (data: Partial<VerificationCriteria>) => {
     await verificationCriteriaServices.update(data);
   }
 
   const updateCriteriaField = async (
     fieldName: string,
-    verificationCriteriaId: number,
+    criteriaDetailId: number,
     value: string,
   ) => {
     const verificationCriteria = _.find(
       verificationCriterias.value,
-      (item) => item.id === verificationCriteriaId
+      (item) => item.criteriaDetailId === criteriaDetailId
     );
     const data: Partial<VerificationCriteria> = {
       ...verificationCriteria,
@@ -152,11 +158,11 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     const criterias =  await verificationCriteriaServices.getAllByProcessId(processId.value)
     verificationCriterias.value = criterias.data
   }
-  
-  const updateCriteriaCompliance = async (verificationCriteriaId: number, value: boolean) => {
+
+  const updateCriteriaCompliance = async (criteriaDetailId: number, value: boolean) => {
     const verificationCriteria = _.find(
       verificationCriterias.value,
-      (item) => item.id === verificationCriteriaId
+      (item) => item.criteriaDetailId === criteriaDetailId
     );
     const data: Partial<VerificationCriteria> = {
       ...verificationCriteria,
@@ -182,7 +188,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     // refresh
     await loadSelfVerification(processId.value);
   }
-  
+
   const submitClassify = async (verificationProcessId: number, companyTypeId: number) => {
     await verificationProcessServices.finishVerify(verificationProcessId, companyTypeId);
 
@@ -202,37 +208,38 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     await loadSelfVerification(processId.value);
   }
 
-  
-  return { 
-    verificationProcess, 
-    ratings, 
-    editingProcess, 
-    verificationCriterias, 
-    verificationDocuments, 
-    company, 
+
+  return {
+    verificationProcess,
+    ratings,
+    editingProcess,
+    verificationCriterias,
+    verificationDocuments,
+    company,
     // companies,
     processId,
 
     getProcessIdByAccountId,
     setProcessId,
-    getAllPending, 
+    getAllPending,
+    getAllPendingByAssignedAgent,
     getAllReviewed,
     getRatingCount,
 
-    submitProcess, 
+    submitProcess,
     submitVerifyReview,
     submitClassify,
 
-    createDocument, 
-    removeDocument, 
+    createDocument,
+    removeDocument,
     loadSelfVerification,
     loadLastSelfVerification,
-    
+
     updateVerificationCriteria,
     updateCriteriaField,
     updateCriteriaCompliance,
     approveAllCriterias,
-    
+
     rejectProcess,
     rejectReviewed
   }

@@ -17,6 +17,7 @@ namespace EcisApi.Services
         Task<ViolationReport> AddAsync(ViolationReportDTO payload);
         Task<ViolationReport> ApproveAsync(int id);
         Task<ViolationReport> RejectAsync(int id);
+        bool CanCreateReport(int companyId);
     }
 
     public class ViolationReportService : IViolationReportService
@@ -27,6 +28,8 @@ namespace EcisApi.Services
         protected readonly IViolationReportRepository violationReportRepository;
         protected readonly IViolationReportDocumentRepository violationReportDocumentRepository;
 
+        protected readonly IVerificationProcessService verificationProcessService;
+
         protected readonly IEmailHelper emailHelper;
 
         public ViolationReportService(
@@ -35,6 +38,7 @@ namespace EcisApi.Services
             ICompanyTypeModificationRepository companyTypeModificationRepository,
             IViolationReportRepository violationReportRepository,
             IViolationReportDocumentRepository violationReportDocumentRepository,
+            IVerificationProcessService verificationProcessService,
             IEmailHelper emailHelper
             )
         {
@@ -43,6 +47,7 @@ namespace EcisApi.Services
             this.companyTypeModificationRepository = companyTypeModificationRepository;
             this.violationReportRepository = violationReportRepository;
             this.violationReportDocumentRepository = violationReportDocumentRepository;
+            this.verificationProcessService = verificationProcessService;
             this.emailHelper = emailHelper;
         }
 
@@ -127,6 +132,28 @@ namespace EcisApi.Services
             }
 
             return report;
+        }
+
+        public bool CanCreateReport(int companyId)
+        {
+            var violationReport = violationReportRepository
+                .GetAll()
+                .Where(x => x.CompanyId == companyId
+                    && x.Status == AppConstants.ViolationReportStatus.PENDING
+                    && !x.IsDeleted).Count();
+
+            if (violationReport > 0)
+            {
+                return false;
+            }
+
+            var process = verificationProcessService.GetCompanyLast(companyId);
+            if (process != null && process.Status != AppConstants.VerificationProcessStatus.Finished)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<ViolationReport> RejectAsync(int id)

@@ -13,6 +13,7 @@ namespace EcisApi.Repositories
         Task<TEntity> AddAsync(TEntity entity);
         Task<TEntity> UpdateAsync(TEntity entity);
         Task DeleteAsync(object id);
+        Task ActivateAsync(object id);
     }
 
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseModel, new()
@@ -101,6 +102,24 @@ namespace EcisApi.Repositories
             try
             {
                 entity.IsDeleted = true;
+                await UpdateAsync(entity);
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Cannot delete {nameof(entity)}");
+            }
+        }
+
+        public async Task ActivateAsync(object id)
+        {
+            var entity = db.Set<TEntity>().Find(id);
+            if (entity == null)
+            {
+                throw new Exception($"{nameof(entity)} not found");
+            }
+            try
+            {
+                entity.IsDeleted = false;
                 await UpdateAsync(entity);
             }
             catch (Exception)

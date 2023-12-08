@@ -6,6 +6,7 @@ import { useVerificationProcessStore } from "@/store/verificationProcess"
 import { VerificationProcessRatingDTO } from "@/types/dto"
 import { usePagination } from "@/hooks/usePagination"
 import { VerificationProcess } from "@/types/models";
+import { useUserStore } from "@/store/modules/user";
 
 defineOptions({
   name: "Verification"
@@ -60,7 +61,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getVeri
             Không có yêu cầu
           </div>
         </el-card>
-        
+
         <el-card v-loading="loading" v-if="verificationProcessStore.verificationProcess.length > 0" shadow="never">
             <el-table ref="tableData" :data=verificationProcessData
               style="width: 100%"
@@ -70,23 +71,23 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getVeri
               <el-table-column label="Thời gian tạo">
                 <template #default="scope">
                   {{dayjs(scope.row.createdAt).format('DD/MM/YYYY') }}
-                </template>  
+                </template>
               </el-table-column>
               <el-table-column label="Hạn đánh giá">
                 <template #default="scope">
                   {{dayjs(scope.row.submitDeadline).format('DD/MM/YYYY') }}
-                </template>  
+                </template>
               </el-table-column>
               <el-table-column label="Kết quả đánh giá" >
                 <template #default="scope">
                   <div>Đạt: {{ratings.find((item) => item.verificationProcessId === scope.row.id)?.verifiedCount}}/{{ratings.find((item) => item.verificationProcessId === scope.row.id)?.totalCount}}</div>
                   <div>Không đạt: {{ratings.find((item) => item.verificationProcessId === scope.row.id)?.rejectedCount}}/{{ratings.find((item) => item.verificationProcessId === scope.row.id)?.totalCount}}</div>
-                </template>  
+                </template>
               </el-table-column>
               <el-table-column label="Lần gửi đánh giá">
                 <template #default="scope">
                   {{scope.row.submittedCount}} / 3
-                </template>  
+                </template>
               </el-table-column>
               <el-table-column label="Hành động">
               <template  #default="scope">

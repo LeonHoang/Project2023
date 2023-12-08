@@ -31,7 +31,12 @@ function createService() {
        const status = get(error, "response.status")
        switch (status) {
          case 400:
-            error.message = "Request error"
+            const businessError = get(error, "response.data.message")
+            if(businessError){
+              error.message = businessError
+            }else{
+              error.message = "Request error"
+            }
             break
           case 401:
             // When Token expires

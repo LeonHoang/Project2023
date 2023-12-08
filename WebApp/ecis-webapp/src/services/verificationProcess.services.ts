@@ -10,6 +10,10 @@ function getAllPending(): Promise<ApiResponseData<VerificationProcess[]>> {
   return request.get(`/VerificationProcess/GetPending`);
 }
 
+function getPendingByAssignedAgent(): Promise<ApiResponseData<VerificationProcess[]>> {
+  return request.get(`/VerificationProcess/GetPendingByAssignedAgent`);
+}
+
 function getAllSupport(): Promise<ApiResponseData<VerificationProcess[]>> {
   return request.get(`/VerificationProcess/GetSupport`);
 }
@@ -20,7 +24,7 @@ function getAllReviewed(): Promise<ApiResponseData<VerificationProcess[]>> {
 
 /**
  * @deprecated
- * @returns 
+ * @returns
  */
 function getAllClassified(): Promise<ApiResponseData<VerificationProcess[]>> {
   return request.get(`/VerificationProcess/GetClassified`);
@@ -99,6 +103,7 @@ function rejectClassified(id: number): Promise<ApiResponseData<VerificationProce
 const verificationProcessServices = {
   getAll,
   getAllPending,
+  getPendingByAssignedAgent,
   getAllByCompany,
   getAllSupport,
   getAllReviewed,

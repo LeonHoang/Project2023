@@ -4,6 +4,7 @@ using EcisApi.Models;
 using EcisApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -79,14 +80,14 @@ namespace EcisApi.Controllers
             }
         }
 
-        [HttpPut("Activate/{id}")]
-        [Authorize("Admin")]
-        public async Task<ActionResult<ThirdParty>> Activate([FromRoute] int id)
+        [HttpPut("Update")]
+        [Authorize]
+        public async Task<ActionResult<ThirdParty>> Update([FromBody] ThirdParty payload)
         {
             try
             {
-                var result = await thirdPartyService.ActivateAsync(id);
-                return Ok(result);
+                var updated = await thirdPartyService.UpdateAsync(payload);
+                return Ok(updated);
             }
             catch (BadHttpRequestException e)
             {
@@ -94,20 +95,72 @@ namespace EcisApi.Controllers
             }
         }
 
-        [HttpPut("Deactivate/{id}")]
-        [Authorize]
-        public async Task<ActionResult<ThirdParty>> Deactivate([FromRoute] int id)
+        [HttpDelete("Delete/{id}")]
+        [Authorize("Admin")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+
+            try
+            {
+                await thirdPartyService.DeleteAsync(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    e.Message,
+                });
+            }
+        }
+
+        [HttpPost("Activate/{id}")]
+        [Authorize("Admin")]
+        public async Task<ActionResult<Company>> Activate([FromRoute] int id)
         {
             try
             {
-                var result = await thirdPartyService.DeactivateAsync(id);
-                return Ok(result);
+                await thirdPartyService.ActivateAsync(id);
+                return Ok();
             }
-            catch (BadHttpRequestException e)
+            catch (Exception e)
             {
-                return BadRequest(new { e.Message });
+                return BadRequest(new
+                {
+                    e.Message,
+                });
             }
         }
+
+        //[HttpPut("Activate/{id}")]
+        //[Authorize("Admin")]
+        //public async Task<ActionResult<ThirdParty>> Activate([FromRoute] int id)
+        //{
+        //    try
+        //    {
+        //        var result = await thirdPartyService.ActivateAsync(id);
+        //        return Ok(result);
+        //    }
+        //    catch (BadHttpRequestException e)
+        //    {
+        //        return BadRequest(new { e.Message });
+        //    }
+        //}
+
+        //[HttpPut("Deactivate/{id}")]
+        //[Authorize]
+        //public async Task<ActionResult<ThirdParty>> Deactivate([FromRoute] int id)
+        //{
+        //    try
+        //    {
+        //        var result = await thirdPartyService.DeactivateAsync(id);
+        //        return Ok(result);
+        //    }
+        //    catch (BadHttpRequestException e)
+        //    {
+        //        return BadRequest(new { e.Message });
+        //    }
+        //}
 
         [HttpPut("ResetSecret/{id}")]
         [Authorize]

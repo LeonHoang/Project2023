@@ -6,7 +6,7 @@ import { useCriteriaStore } from "@/store/criteria"
 import { useCriteriaDetailStore } from "@/store/criteriaDetail"
 import { TableInstance } from "element-plus"
 import CriteriaForm from "./CriteriaForm.vue"
-import { Criteria, CriteriaDetail } from "@/types/models";
+import { Criteria, CriteriaDetail, VerificationCriteria } from "@/types/models";
 import { useVerificationProcessStore } from "@/store/verificationProcess";
 
 
@@ -14,7 +14,6 @@ const criteriaTypeStore = useCriteriaTypeStore();
 const criteriaStore = useCriteriaStore();
 const criteriaDetailStore = useCriteriaDetailStore();
 const verificationProcessStore = useVerificationProcessStore();
-
 const tableData = ref()
 
 const tableRowClassName = ({
@@ -38,12 +37,12 @@ const tableRowClassName = ({
 
 <template>
 <el-tabs tab-position="left" class="demo-tabs">
-  <template v-for="(item, index) in criteriaTypeStore.criteriaType"   
+  <template v-for="(item, index) in criteriaTypeStore.criteriaType"
     :item="item"
     :index="index"
     :key="item.id">
     <el-tab-pane :label="item.criteriaTypeName">
-      <el-table ref="tableData" :data="_.filter(criteriaStore.criterias, (x) => x.criteriaTypeId === item.id)" 
+      <el-table ref="tableData" :data="_.filter(criteriaStore.criterias, (x) => x.criteriaTypeId === item.id)"
         style="width: 100%" class="clickable-rows"
         :row-key="(row) => {return row.id}">
         <el-table-column type="expand">

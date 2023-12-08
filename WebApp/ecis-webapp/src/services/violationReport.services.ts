@@ -10,6 +10,10 @@ function getById(id: number): Promise<ApiResponseData<ViolationReport>> {
   return request.get(`/ViolationReport/ById/${id}`);
 }
 
+function CanCreateReport(companyId: number): Promise<ApiResponseData<boolean>> {
+  return request.get(`/ViolationReport/CanCreateReport/${companyId}`);
+}
+
 function create(data: ViolationReportDTO): Promise<ApiResponseData<ViolationReport>> {
   return request.post(`/ViolationReport/Create`, data);
 }
@@ -25,6 +29,7 @@ function reject(id: number): Promise<ApiResponseData<ViolationReport>> {
 const violationReportServices = {
   getAll,
   getById,
+  CanCreateReport,
   create,
   approve,
   reject,

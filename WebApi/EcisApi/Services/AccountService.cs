@@ -15,6 +15,8 @@ namespace EcisApi.Services
         AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO model);
         AuthenticateResponseDTO AuthenticateManagement(AuthenticateRequestDTO model);
         Task ChangePassword(Account account, ChangePasswordDTO payload);
+        Task DeleteAsync(int id);
+        Task ActivateAsync(int id);
     }
 
     public class AccountService : IAccountService
@@ -61,11 +63,17 @@ namespace EcisApi.Services
         public AuthenticateResponseDTO AuthenticateManagement(AuthenticateRequestDTO model)
         {
             var hashedPassword = CommonUtils.GenerateSHA1(model.Password);
+
             var account = accountRepository.GetOne(x => x.Email == model.Email && x.Password == hashedPassword);
 
             if (account == null)
             {
                 throw new BadHttpRequestException("Sai email hoặc mật khẩu");
+            }
+
+            if (account.IsDeleted)
+            {
+                throw new BadHttpRequestException("Tài khoản đã bị vô hiệu hóa");
             }
 
             //if (!account.IsVerified || !account.Role.HasManagement)
@@ -95,6 +103,15 @@ namespace EcisApi.Services
             }
             account.Password = CommonUtils.GenerateSHA1(payload.NewPassword);
             await accountRepository.UpdateAsync(account);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await accountRepository.DeleteAsync(id);
+        }
+        public async Task ActivateAsync(int id)
+        {
+            await accountRepository.ActivateAsync(id);
         }
     }
 }

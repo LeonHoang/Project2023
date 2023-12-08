@@ -29,7 +29,7 @@ const getCompanyTypeModificationData = () => {
 
   companyTypeModificationStore.getReportPrivate(month.value, year.value)
     .then((res) => {
-      
+
       paginationData.total = res.data.length
       companyTypeModifications.value = res.data
     })
@@ -41,7 +41,6 @@ const getCompanyTypeModificationData = () => {
     })
 }
 
-/** 监听分页参数的变化 */
 watch([() => paginationData.currentPage, () => paginationData.pageSize], getCompanyTypeModificationData, { immediate: true })
 
 </script>
@@ -56,10 +55,10 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getComp
       <div className="x_content">
         <el-card v-loading="loading" v-if="companyTypeModifications.length == 0" shadow="never">
           <div>
-            Không có danh sách kết quả 
+            Không có danh sách kết quả
           </div>
         </el-card>
-        
+
         <el-card v-loading="loading" v-if="companyTypeModifications.length > 0" shadow="never">
             <el-table ref="tableData" :data=companyTypeModifications
               style="width: 100%"
@@ -69,12 +68,12 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getComp
               <el-table-column label="Thời gian tạo">
                 <template #default="scope">
                   {{dayjs(scope.row.createdAt).format('DD/MM/YYYY') }}
-                </template>  
+                </template>
               </el-table-column>
               <el-table-column label="Kết quả phân loại">
                 <template #default="scope">
                   {{_.get(scope.row, 'updatedCompanyType.typeName', 'Không có')}}
-                </template>  
+                </template>
               </el-table-column>
               <el-table-column label="Hành động">
               <template  #default="scope">

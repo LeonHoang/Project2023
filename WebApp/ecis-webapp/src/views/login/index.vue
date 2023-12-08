@@ -5,6 +5,7 @@ import { useUserStore } from "@/store/modules/user"
 import { type FormInstance, type FormRules } from "element-plus"
 import { User, Lock } from "@element-plus/icons-vue"
 import { type LogInDTO } from "@/types/dto"
+import { ElMessage, ElMessageBox } from "element-plus"
 
 const router = useRouter()
 
@@ -43,7 +44,7 @@ const handleLogin = () => {
           loading.value = false
         })
     } else {
-      console.error("Form verification failed", fields)
+      console.warn("Form verification failed", fields)
     }
   })
 }

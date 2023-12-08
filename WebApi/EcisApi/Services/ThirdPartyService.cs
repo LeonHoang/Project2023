@@ -16,8 +16,12 @@ namespace EcisApi.Services
         ThirdParty GetByAccountId(int accountId);
         Task<ThirdParty> AddAsync(ThirdPartyRegisterDTO payload);
         Task<ThirdParty> ResetClientSecretAsync(int id);
-        Task<ThirdParty> ActivateAsync(int id);
-        Task<ThirdParty> DeactivateAsync(int id);
+        //Task<ThirdParty> ActivateAsync(int id);
+        //Task<ThirdParty> DeactivateAsync(int id);
+
+        Task<ThirdParty> UpdateAsync(ThirdParty payload);
+        Task DeleteAsync(int id);
+        Task ActivateAsync(int id);
     }
 
     public class ThirdPartyService : IThirdPartyService
@@ -131,46 +135,71 @@ namespace EcisApi.Services
             return await thirdPartyRepository.UpdateAsync(thirdParty);
         }
 
-        public async Task<ThirdParty> ActivateAsync(int id)
+        public async Task<ThirdParty> UpdateAsync(ThirdParty payload)
         {
-            var thirdParty = thirdPartyRepository.GetById(id);
+            var thirdParty = thirdPartyRepository.GetById(payload.Id);
             if (thirdParty == null)
             {
-                throw new BadHttpRequestException("ThirdPartyNotExisted");
+                throw new BadHttpRequestException("ThirdPartyNotExist");
             }
-            if (thirdParty.IsDeleted || !thirdParty.Account.IsVerified || thirdParty.Account.IsDeleted)
-            {
-                throw new BadHttpRequestException("ThirdPartyInvalid");
-            }
-            if (thirdParty.IsActive)
-            {
-                throw new BadHttpRequestException("ThirdPartyInvalid");
-            }
-            thirdParty.IsActive = true;
-            await thirdPartyRepository.UpdateAsync(thirdParty);
-
-            thirdParty.Account.IsVerified = true;
-            await accountRepository.UpdateAsync(thirdParty.Account);
-            return thirdParty;
-        }
-
-        public async Task<ThirdParty> DeactivateAsync(int id)
-        {
-            var thirdParty = thirdPartyRepository.GetById(id);
-            if (thirdParty == null)
-            {
-                throw new BadHttpRequestException("ThirdPartyNotExisted");
-            }
-            if (thirdParty.IsDeleted || !thirdParty.Account.IsVerified || thirdParty.Account.IsDeleted)
-            {
-                throw new BadHttpRequestException("ThirdPartyInvalid");
-            }
-            if (!thirdParty.IsActive)
-            {
-                throw new BadHttpRequestException("ThirdPartyInvalid");
-            }
-            thirdParty.IsActive = false;
+            thirdParty.UserName = payload.UserName;
             return await thirdPartyRepository.UpdateAsync(thirdParty);
         }
+
+        public async Task DeleteAsync(int id)
+        {
+            var accountId = thirdPartyRepository.GetById(id).AccountId;
+            await thirdPartyRepository.DeleteAsync(id);
+            await accountRepository.DeleteAsync(accountId);
+        }
+
+        public async Task ActivateAsync(int id)
+        {
+            var accountId = thirdPartyRepository.GetById(id).AccountId;
+            await thirdPartyRepository.ActivateAsync(id);
+            await accountRepository.ActivateAsync(accountId);
+        }
+
+        //public async Task<ThirdParty> ActivateAsync(int id)
+        //{
+        //    var thirdParty = thirdPartyRepository.GetById(id);
+        //    if (thirdParty == null)
+        //    {
+        //        throw new BadHttpRequestException("ThirdPartyNotExisted");
+        //    }
+        //    if (thirdParty.IsDeleted || !thirdParty.Account.IsVerified || thirdParty.Account.IsDeleted)
+        //    {
+        //        throw new BadHttpRequestException("ThirdPartyInvalid");
+        //    }
+        //    if (thirdParty.IsActive)
+        //    {
+        //        throw new BadHttpRequestException("ThirdPartyInvalid");
+        //    }
+        //    thirdParty.IsActive = true;
+        //    await thirdPartyRepository.UpdateAsync(thirdParty);
+
+        //    thirdParty.Account.IsVerified = true;
+        //    await accountRepository.UpdateAsync(thirdParty.Account);
+        //    return thirdParty;
+        //}
+
+        //public async Task<ThirdParty> DeactivateAsync(int id)
+        //{
+        //    var thirdParty = thirdPartyRepository.GetById(id);
+        //    if (thirdParty == null)
+        //    {
+        //        throw new BadHttpRequestException("ThirdPartyNotExisted");
+        //    }
+        //    if (thirdParty.IsDeleted || !thirdParty.Account.IsVerified || thirdParty.Account.IsDeleted)
+        //    {
+        //        throw new BadHttpRequestException("ThirdPartyInvalid");
+        //    }
+        //    if (!thirdParty.IsActive)
+        //    {
+        //        throw new BadHttpRequestException("ThirdPartyInvalid");
+        //    }
+        //    thirdParty.IsActive = false;
+        //    return await thirdPartyRepository.UpdateAsync(thirdParty);
+        //}
     }
 }

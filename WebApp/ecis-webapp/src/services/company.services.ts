@@ -18,16 +18,28 @@ function registerCompany(payload: CompanyRegistrationDTO): Promise<ApiResponseDa
   return request.post('/Company/RegisterCompany', payload);
 }
 
-function deleteCompany(id: number){
-  return request.del(`/Company/DeleteCompany/${id}`);
+function updateCompany(company: Partial<Company>): Promise<ApiResponseData<Company>> {
+  return request.put(`/Company/Update`, company);
 }
+
+
+function deleteCompany(id: number){
+  return request.del(`/Company/Delete/${id}`);
+}
+
+function activateCompany(id: number){
+  return request.post(`/Company/Activate/${id}`);
+}
+
 
 const companyServices = {
   getAll,
   getByAccountId,
   getById,
   registerCompany,
-  deleteCompany
+  updateCompany,
+  deleteCompany,
+  activateCompany
 };
 
 export default companyServices;

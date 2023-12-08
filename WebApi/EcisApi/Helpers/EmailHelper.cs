@@ -86,7 +86,8 @@ namespace EcisApi.Helpers
             {
                 Host = smtpServer,
                 Port = smtpPortNumber,
-                EnableSsl = true
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
             };
 
             //Set Sender UserEmailID, Password  

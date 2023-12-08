@@ -4,6 +4,7 @@ using EcisApi.Models;
 using EcisApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -38,7 +39,7 @@ namespace EcisApi.Controllers
 
         [HttpGet("ByAccount/{accountId}")]
         [Authorize]
-        public ActionResult<Agent> GetByCompanyId([FromRoute] int accountId)
+        public ActionResult<Agent> GetByAccountId([FromRoute] int accountId)
         {
             return agentService.GetByAccountId(accountId);
         }
@@ -71,5 +72,58 @@ namespace EcisApi.Controllers
                 return BadRequest(new { e.Message });
             }
         }
+
+        [HttpPut("Update")]
+        [Authorize]
+        public async Task<ActionResult<Agent>> Update([FromBody] Agent payload)
+        {
+            try
+            {
+                var updated = await agentService.UpdateAsync(payload);
+                return Ok(updated);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(new { e.Message });
+            }
+        }
+
+        [HttpDelete("Delete/{id}")]
+        [Authorize("Admin")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+
+            try
+            {
+                await agentService.DeleteAsync(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    e.Message,
+                });
+            }
+        }
+
+        [HttpPost("Activate/{id}")]
+        [Authorize("Admin")]
+        public async Task<ActionResult<Company>> Activate([FromRoute] int id)
+        {
+            try
+            {
+                await agentService.ActivateAsync(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    e.Message,
+                });
+            }
+        }
+
     }
 }

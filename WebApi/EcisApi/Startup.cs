@@ -16,6 +16,8 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
 using System.Reflection;
+using Hangfire;
+using Hangfire.SqlServer;
 
 namespace EcisApi
 {
@@ -85,6 +87,16 @@ namespace EcisApi
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IEmailHelper, EmailHelper>();
 
+            // Add Hangfire services.
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -131,12 +143,12 @@ namespace EcisApi
             services.AddTransient<IValidator<VerificationConfirmUpdateDTO>, VerificationConfirmUpdateDTOValidator>();
             services.AddTransient<IValidator<VerifyCompanyDTO>, VerifyCompanyDTOValidator>();
             services.AddTransient<IValidator<ViolationReportDTO>, ViolationReportDTOValidator>();
-
+            services.AddScoped<IJobService, JobService>();
             services.AddHttpClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, IWebHostEnvironment env)
         {
             if (env.IsProduction())
             {
@@ -151,6 +163,9 @@ namespace EcisApi
                 app.UseSwaggerUI();
             }
 
+            app.UseHangfireDashboard();
+            //backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
+
             app.UseRouting();
 
             app.UseCors();
@@ -162,6 +177,7 @@ namespace EcisApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHangfireDashboard();
             });
         }
     }

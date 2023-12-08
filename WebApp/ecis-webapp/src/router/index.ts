@@ -198,6 +198,51 @@ export const asyncRoutes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: "/report-violation",
+    component: Layouts,
+    redirect: "/report-violation/list",
+    meta: {
+      roles: ["Agent"],
+      title: "Báo cáo sai phạm doanh nghiệp",
+      svgIcon: "process"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/report-violation/index.vue"),
+        name: "report-violation-list",
+        meta: {
+          roles: ["Agent"],
+          title: "Hoạt động sai phạm DN",
+          svgIcon: "menu"
+        }
+      }
+    ]
+  },
+  ,
+  {
+    path: "/verify-violation-report",
+    component: Layouts,
+    redirect: "/verify-violation-report/list",
+    meta: {
+      roles: ["Admin"],
+      title: "Xác minh khiếu nại",
+      svgIcon: "process"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/verify-violation-report/index.vue"),
+        name: "verify-violation-report-list",
+        meta: {
+          roles: ["Admin"],
+          title: "Xác minh khiếu nại",
+          svgIcon: "menu"
+        }
+      }
+    ]
+  },
+  {
     path: "/company-verifiy-result",
     component: Layouts,
     redirect: "/company-verifiy-result/list",
@@ -212,7 +257,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
         component: () => import("@/views/company-verifiy-result/index.vue"),
         name: "company-verifiy-result",
         meta: {
-          oles: ["Company"],
+          roles: ["Company"],
           title: "Kết quả đánh giá",
           svgIcon: "menu"
         }
@@ -306,18 +351,6 @@ export const asyncRoutes: RouteRecordRaw[] = [
           title: "Quản lý kiểm lâm tỉnh",
           svgIcon: "menu"
         }
-      },
-      {
-        path: ":id(\\d+)",
-        component: () => import("@/views/agent-management/detail.vue"),
-        name: "AgentDetail",
-        meta: {
-          roles: ["Admin"],
-          title: "Chi tiết kiểm lâm tỉnh",
-          noCache: true,
-          activeMenu: "/agent-management",
-          hidden: true
-        }
       }
     ]
   },
@@ -339,18 +372,6 @@ export const asyncRoutes: RouteRecordRaw[] = [
           roles: ["Admin"],
           title: "Quản lý bên thụ hưởng",
           svgIcon: "menu"
-        }
-      },
-      {
-        path: ":id(\\d+)",
-        component: () => import("@/views/third-party-management/detail.vue"),
-        name: "3rdDetail",
-        meta: {
-          roles: ["Admin"],
-          title: "Chi tiết bên thụ hưởng",
-          noCache: true,
-          activeMenu: "/third-party-management",
-          hidden: true
         }
       }
     ]

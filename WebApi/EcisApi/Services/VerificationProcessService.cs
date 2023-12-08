@@ -14,6 +14,8 @@ namespace EcisApi.Services
     {
         ICollection<VerificationProcess> GetAll();
         ICollection<VerificationProcess> GetAllPending();
+        ICollection<VerificationProcess> GetPendingByAssignedAgent();
+        
         ICollection<VerificationProcess> GetAllSupport();
         ICollection<VerificationProcess> GetAllReviewed();
         //ICollection<VerificationProcess> GetAllClassified();
@@ -118,6 +120,27 @@ namespace EcisApi.Services
                 .ToList();
         }
 
+        public ICollection<VerificationProcess> GetPendingByAssignedAgent()
+        {
+            var role = (Role)_httpContextAccessor.HttpContext.Items["Role"];
+            if (role == null)
+            {
+                return Array.Empty<VerificationProcess>();
+            }
+            var processes = verificationProcessRepository
+                    .Find(x => x.Status == AppConstants.VerificationProcessStatus.Submitted && !x.IsDeleted);
+
+            if (role.RoleName == "Admin")
+            {
+                return processes.ToList();
+            }
+            var account = (Account)_httpContextAccessor.HttpContext.Items["Account"];
+            var agent = agentRepository.GetByAccountId(account.Id);
+            return processes
+                .Where(x => x.AssignedAgentId == agent.Id)
+                .ToList();
+        }
+        
         public ICollection<VerificationProcess> GetAllSupport()
         {
             var role = (Role)_httpContextAccessor.HttpContext.Items["Role"];
@@ -159,7 +182,7 @@ namespace EcisApi.Services
             var assigneds = agentAssignmentRepository.GetByAgentId(agent.Id);
             var provinceIds = assigneds.Select(x => x.ProvinceId).ToList();
             return processes
-                .Where(x => provinceIds.Contains(x.Company.ProvinceId.Value))
+                .Where(x => provinceIds.Contains(x.Company.ProvinceId.Value) && x.AssignedAgentId == agent.Id)
                 .ToList();
         }
 
@@ -475,7 +498,7 @@ namespace EcisApi.Services
             }
             catch (Exception)
             {
-                Console.WriteLine("FinishAsync SendEmail Error");
+
             }
 
             transaction.Commit();

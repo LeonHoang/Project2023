@@ -46,8 +46,6 @@ export interface Company extends BaseModel {
   companyNameEN: string;
   accountId: number;
   companyTypeId: number;
-  isVerified: boolean;
-
   companyType: CompanyType;
 };
 
@@ -117,15 +115,16 @@ export interface Agent extends BaseModel {
   address: string;
   accountId: number;
   account: Account;
+  provinceIds: number[];
 };
 
 export interface VerificationConfirmRequirement extends BaseModel {
-  id: number; 
+  id: number;
   scheduledTime: Date;
-  scheduledLocation: string; 
-  announcedAgentAt?: Date; 
+  scheduledLocation: string;
+  announcedAgentAt?: Date;
   announcedCompanyAt?: Date;
-  confirmedAt?: Date; 
+  confirmedAt?: Date;
 
   announceAgentDocumentContent?: string;
   confirmDocumentContent?: string;

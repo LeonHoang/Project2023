@@ -6,6 +6,8 @@ import CriteriaTable from "./CriteriaTable.vue"
 import { ElMessage, ElMessageBox } from "element-plus"
 import { useUserStore } from "@/store/modules/user"
 import { useRouter } from "vue-router";
+import { CriteriaDetail, VerificationCriteria } from "@/types/models";
+import { useCriteriaDetailStore } from "@/store/criteriaDetail";
 
 defineOptions({
   name: "CompanyVerification"
@@ -17,7 +19,9 @@ const verificationProcessStore = useVerificationProcessStore()
 const userStore = useUserStore()
 const accountId = userStore.user_id
 const router = useRouter()
-
+const verificationCriteriasError = ref<VerificationCriteria[]>([])
+const criteriaDetailStore = useCriteriaDetailStore();
+const criteriaDetail = ref<CriteriaDetail[]>()
 
 const intitialize = () => {
   verificationProcessStore.getProcessIdByAccountId(accountId).then(() => {
@@ -27,6 +31,9 @@ const intitialize = () => {
       && verificationProcessStore.editingProcess?.submittedCount > 0){
         isRejected.value = true
     }
+
+    verificationCriteriasError.value = verificationProcessStore.verificationCriterias.filter((item) => item.approvedStatus === "REJECTED")
+    criteriaDetail.value = criteriaDetailStore.criteriaDetail
   })
   }else{
     verificationProcessStore.editingProcess = undefined
@@ -87,6 +94,18 @@ intitialize()
           <div v-if="isRejected" style="color: red;">
             Bạn đã gửi đánh giá lần thứ {{ verificationProcessStore.editingProcess?.submittedCount }} / 3.
             Quá số lần gửi quy định sẽ cần đánh giá lại từ đầu.
+          </div>
+          <br/>
+          <div v-if="verificationCriteriasError != undefined" style="color: red;">
+            <el-table :data="verificationCriteriasError"
+                :row-key="(row) => {return row.id}">
+            <el-table-column label="Tiêu chí cần cần xác minh">
+                <template #default="scope">
+                  {{ criteriaDetail?.find((x) => x.id === scope.row.criteriaDetailId)?.criteriaDetailName }}
+                </template>
+              </el-table-column>
+            <el-table-column label="Đánh giá" prop="reviewComment"/>
+          </el-table>
           </div>
           <br/>
           <CriteriaTable/>
