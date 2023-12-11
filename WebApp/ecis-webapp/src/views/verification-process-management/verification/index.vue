@@ -23,7 +23,7 @@ const verificationProcessStore = useVerificationProcessStore()
 const getVerificationProcessData = () => {
   loading.value = true
 
-  verificationProcessStore.getAllPending()
+  verificationProcessStore.getAllPendingByAssignedAgent()
     .then((res) => {
       const processIds = _.map(verificationProcessStore.verificationProcess, 'id');
       if(processIds.length > 0){
@@ -43,7 +43,6 @@ const getVerificationProcessData = () => {
     })
 }
 
-/** 监听分页参数的变化 */
 watch([() => paginationData.currentPage, () => paginationData.pageSize], getVerificationProcessData, { immediate: true })
 
 </script>
@@ -68,11 +67,6 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getVeri
               :row-key="(row) => {return row.id}">
               <el-table-column label="STT" type="index" width="100"/>
               <el-table-column label="Doanh nghiệp" prop="company.companyNameVI"/>
-              <el-table-column label="Thời gian tạo">
-                <template #default="scope">
-                  {{dayjs(scope.row.createdAt).format('DD/MM/YYYY') }}
-                </template>
-              </el-table-column>
               <el-table-column label="Hạn đánh giá">
                 <template #default="scope">
                   {{dayjs(scope.row.submitDeadline).format('DD/MM/YYYY') }}
@@ -89,6 +83,18 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getVeri
                   {{scope.row.submittedCount}} / 3
                 </template>
               </el-table-column>
+
+              <el-table-column label="Trạng thái">
+                <template #default="scope">
+                  <div v-if="scope.row.isReviewed">
+                    Bị yêu cầu đánh giá lại
+                  </div>
+                  <div v-else>
+                    Chưa đánh giá
+                  </div>
+                </template>
+              </el-table-column>
+
               <el-table-column label="Hành động">
               <template  #default="scope">
                 <router-link :to="'/verification-process/verification/'+scope.row.id">

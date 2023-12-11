@@ -1,4 +1,5 @@
-﻿using EcisApi.Models;
+﻿using EcisApi.Helpers;
+using EcisApi.Models;
 using EcisApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -21,5 +22,13 @@ namespace EcisApi.Controllers
         {
             return Ok(provinceService.GetAll());
         }
+
+        [HttpGet("GetAssignments/{provinceId}")]
+        [Authorize]
+        public ActionResult<ICollection<AgentAssignment>> GetAssignmentsByProvinceId([FromRoute] int provinceId)
+        {
+            return Ok(provinceService.GetAssignmentsByProvinceId(provinceId));
+        }
+
     }
 }

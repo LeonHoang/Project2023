@@ -46,6 +46,8 @@ export interface Company extends BaseModel {
   companyNameEN: string;
   accountId: number;
   companyTypeId: number;
+  provinceId: number;
+  province: Province;
   companyType: CompanyType;
 };
 
@@ -70,6 +72,7 @@ export interface VerificationProcess extends BaseModel {
   status: string;
   companyTypeId?: number;
   assignedAgentId?: number;
+  assignedAgentReviewId?: number;
   companyId: number;
   company: Company;
   companyType?: CompanyType;

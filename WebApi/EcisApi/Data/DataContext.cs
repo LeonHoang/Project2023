@@ -86,6 +86,16 @@ namespace EcisApi.Data
                 .WithMany(g => g.VerificationProcesses)
                 .HasForeignKey(s => s.CompanyId)
                 .IsRequired(false);
+            modelBuilder.Entity<VerificationProcess>()
+                .HasOne(s => s.AssignedAgent)
+                .WithMany(g => g.VerificationProcesses)
+                .HasForeignKey(s => s.AssignedAgentId)
+                .IsRequired(false);
+            modelBuilder.Entity<VerificationProcess>()
+                .HasOne(s => s.AssignedAgentReview)
+                .WithMany(g => g.VerificationReviewProcesses)
+                .HasForeignKey(s => s.AssignedAgentReviewId)
+                .IsRequired(false);
         }
     }
 }

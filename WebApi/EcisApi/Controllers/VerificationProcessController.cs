@@ -164,15 +164,11 @@ namespace EcisApi.Controllers
 
         [HttpPut("SubmitReview/{id}")]
         [Authorize("Admin", "Agent")]
-        public async Task<ActionResult<VerificationProcess>> SubmitReview([FromRoute] int id, [FromQuery] int? assignedAgentId)
+        public async Task<ActionResult<VerificationProcess>> SubmitReview([FromRoute] int id)
         {
-            if (assignedAgentId == null)
-            {
-                return BadRequest(new { Message = "AssignedAgentIdMissing" });
-            }
             try
             {
-                return await verificationProcessService.SubmitReviewAsync(id, assignedAgentId.Value);
+                return await verificationProcessService.SubmitReviewAsync(id);
             }
             catch (BadHttpRequestException e)
             {

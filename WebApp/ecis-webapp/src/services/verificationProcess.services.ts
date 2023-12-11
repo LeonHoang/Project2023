@@ -59,8 +59,8 @@ function submitProcess(id: number): Promise<ApiResponseData<VerificationProcess>
   return request.put(`/VerificationProcess/SubmitProcess/${id}`);
 }
 
-function submitVerifyReview(id: number, assignedAgentId: number): Promise<ApiResponseData<VerificationProcess>> {
-  return request.put(`/VerificationProcess/SubmitReview/${id}?assignedAgentId=${assignedAgentId}`);
+function submitVerifyReview(id: number): Promise<ApiResponseData<VerificationProcess>> {
+  return request.put(`/VerificationProcess/SubmitReview/${id}`);
 }
 
 /**

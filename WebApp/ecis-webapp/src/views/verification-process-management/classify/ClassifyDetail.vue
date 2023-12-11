@@ -7,13 +7,14 @@ import { ElMessage} from "element-plus"
 import { useRoute, useRouter } from "vue-router";
 import { useAgentStore } from "@/store/agent";
 import { useCompanyTypeStore } from "@/store/companyType";
+import { VerificationProcess } from "@/types/models";
 
 defineOptions({
   name: "ClassifyDetail"
 })
 
 interface SelectOption {
-  value: number 
+  value: number
   label: string
 }
 
@@ -31,14 +32,24 @@ const router = useRouter()
 
 const processId = route.params && route.params.id
 const companyTypeStore = useCompanyTypeStore()
-
+const agentStore = useAgentStore()
+const currentProcess = ref<VerificationProcess>()
+const assignedReviewAgent = ref<string>()
 const verificationProcessStore = useVerificationProcessStore()
 
 verificationProcessStore.setProcessId(Number(processId))
-verificationProcessStore.loadSelfVerification(Number(processId))
+verificationProcessStore.loadSelfVerification(Number(processId)).then(() => {
+
+  currentProcess.value = verificationProcessStore.verificationProcess.find((item) => item.id === Number(processId))
+
+  agentStore.getAllAgents().then(() => {
+    let agent = agentStore.agents?.find(x => x.id == currentProcess.value?.assignedAgentReviewId)
+    assignedReviewAgent.value = agent?.lastName + " " + agent?.firstName + ". Số điện thoại liên lạc: " + agent?.phoneNumber
+  })
+})
 
 companyTypeStore.getAll().then(() => {
-  companyTypeStore.companyTypes?.map((companyType) => 
+  companyTypeStore.companyTypes?.map((companyType) =>
     companyTypesOption.value.push({value: companyType.id, label: companyType.typeName} as SelectOption))
 })
 
@@ -53,7 +64,7 @@ const submitClassify = () => {
     .then(() => {
       submitting.value = false
       dialogSubmitVisible.value = false
-      
+
       ElMessage.success('Phân loại thành công')
       router.push({ path: '/verification-process/classify/list' })
     })
@@ -147,6 +158,8 @@ const rejectReviewed = () => {
         <div>
           Nếu cán bộ thấy kết quả đánh giá chưa đáp ứng yêu cầu, cán bộ có thể yêu cầu đánh giá lại.
         </div>
+        <br/>
+        {{ assignedReviewAgent }}
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogRejectConfirmVisible = false">Hủy</el-button>

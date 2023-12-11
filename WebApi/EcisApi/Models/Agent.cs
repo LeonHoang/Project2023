@@ -21,6 +21,8 @@ namespace EcisApi.Models
         [JsonIgnore]
         public virtual ICollection<VerificationProcess> VerificationProcesses { get; set; }
         [JsonIgnore]
+        public virtual ICollection<VerificationProcess> VerificationReviewProcesses { get; set; }
+        [JsonIgnore]
         public virtual ICollection<CompanyReport> CompanyActions { get; set; }
         //[JsonIgnore]
         //public virtual ICollection<VerificationConfirmRequirement> VerificationConfirmRequirements { get; set; }

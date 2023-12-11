@@ -8,6 +8,7 @@ import { useUserStore } from "@/store/modules/user"
 import { useRoute, useRouter } from "vue-router";
 import { useAgentStore } from "@/store/agent";
 import { useCriteriaDetailStore } from "@/store/criteriaDetail";
+import { VerificationProcess } from "@/types/models";
 
 defineOptions({
   name: "VerificationDetail"
@@ -25,7 +26,8 @@ const dialogSubmitVisible = ref(false)
 const dialogVerifyConfirmVisible = ref(false)
 const submittingVefiryConfirm = ref<boolean>(false)
 
-const assignedAgentId = ref<string>()
+const assignedAgent = ref<string>()
+const currentProcess = ref<VerificationProcess>()
 const agentOptions = ref<SelectOption[]>([])
 const canSubmit = ref<boolean>(false)
 const userStore = useUserStore()
@@ -43,11 +45,18 @@ const criteriaDetailStore = useCriteriaDetailStore();
 verificationProcessStore.setProcessId(Number(processId))
 verificationProcessStore.loadSelfVerification(Number(processId)).then(() => {
   checkCanSubmit()
+
+  currentProcess.value = verificationProcessStore.verificationProcess.find((item) => item.id === Number(processId))
+
+  agentStore.getAllAgents().then(() => {
+    let agent = agentStore.agents?.find(x => x.id == currentProcess.value?.assignedAgentId)
+    assignedAgent.value = agent?.lastName + " " + agent?.firstName + ". Số điện thoại liên lạc: " + agent?.phoneNumber
+  })
+
 })
 
 const checkCanRequestConfirm = () => {
-  const verificationProcess = verificationProcessStore.verificationProcess.find((item) => item.id === Number(processId))
-  if(verificationProcess?.submittedCount && verificationProcess?.submittedCount <= 3){
+  if(currentProcess.value?.submittedCount && currentProcess.value?.submittedCount <= 3){
     return true
   }else{
     return true
@@ -59,11 +68,6 @@ const checkCanSubmit= () => {
   .filter((criteria) => criteria.approvedStatus === 'PENDING')
   .isEmpty();
 }
-
-agentStore.getAllAgents().then(() => {
-  agentStore.agents?.filter(x=> x.accountId != accountId).map((agent) =>
-      agentOptions.value.push({value: agent.id, label: agent.firstName + " " + agent.lastName} as SelectOption))
-})
 
 const approveAllCriterias = () => {
   approveAllSubmiting.value = true
@@ -81,14 +85,8 @@ const approveAllCriterias = () => {
 };
 
 const submitVerify = () => {
-  if (!assignedAgentId.value) {
-    ElMessage.error('Hãy chọn kiểm lâm tỉnh.');
-    submitting.value = false
-    dialogSubmitVisible.value = false
-    return;
-  }
   submitting.value = true
-  verificationProcessStore.submitVerifyReview(Number(processId), parseInt(assignedAgentId.value))
+  verificationProcessStore.submitVerifyReview(Number(processId))
     .then(() => {
       checkCanSubmit()
       submitting.value = false
@@ -165,18 +163,12 @@ const submitVerifyConfirm = () => {
           </el-tooltip>
         </div>
       </el-row>
-      <el-dialog v-model="dialogSubmitVisible" title="Xác nhận gửi đánh giá">
+      <el-dialog v-model="dialogSubmitVisible" title="Xác nhận gửi đánh giá cho cán bộ phân loại">
         <div>
-          Kiểm tra đầy đủ nội dung đánh giá và chỉ định cán bộ phân loại kết quả đánh giá
+          Xác nhận gửi đánh giá cho cán bộ phân loại?
         </div>
-        <el-select v-model="assignedAgentId" class="m-2" placeholder="Select" size="large">
-          <el-option
-            v-for="item in agentOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <br/>
+        {{ assignedAgent }}
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogSubmitVisible = false">Hủy</el-button>

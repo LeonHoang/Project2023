@@ -4,14 +4,16 @@ using EcisApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EcisApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231209124551_Add_Assign_Agent")]
+    partial class Add_Assign_Agent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -811,8 +813,6 @@ namespace EcisApi.Migrations
 
                     b.HasIndex("AssignedAgentId");
 
-                    b.HasIndex("AssignedAgentReviewId");
-
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("CompanyTypeId");
@@ -1111,10 +1111,6 @@ namespace EcisApi.Migrations
                         .WithMany("VerificationProcesses")
                         .HasForeignKey("AssignedAgentId");
 
-                    b.HasOne("EcisApi.Models.Agent", "AssignedAgentReview")
-                        .WithMany("VerificationReviewProcesses")
-                        .HasForeignKey("AssignedAgentReviewId");
-
                     b.HasOne("EcisApi.Models.Company", "Company")
                         .WithMany("VerificationProcesses")
                         .HasForeignKey("CompanyId");
@@ -1124,8 +1120,6 @@ namespace EcisApi.Migrations
                         .HasForeignKey("CompanyTypeId");
 
                     b.Navigation("AssignedAgent");
-
-                    b.Navigation("AssignedAgentReview");
 
                     b.Navigation("Company");
 
@@ -1172,8 +1166,6 @@ namespace EcisApi.Migrations
                     b.Navigation("CompanyActions");
 
                     b.Navigation("VerificationProcesses");
-
-                    b.Navigation("VerificationReviewProcesses");
 
                     b.Navigation("ViolationReports");
                 });

@@ -23,11 +23,13 @@ namespace EcisApi.Models
         public string Status { get; set; }
 
         public int? CompanyTypeId { get; set; }
+        public int? AssignedAgentReviewId { get; set; }
         public int? AssignedAgentId { get; set; }
         public int? CompanyId { get; set; }
 
         public virtual Company Company { get; set; }
         public virtual Agent AssignedAgent { get; set; }
+        public virtual Agent AssignedAgentReview { get; set; }
         public virtual CompanyType CompanyType { get; set; }
 
         [JsonIgnore]

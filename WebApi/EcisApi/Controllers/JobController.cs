@@ -64,5 +64,26 @@ namespace EcisApi.Controllers
             });
             return Ok(true);
         }
+
+        [HttpPost("CheckVerificationAgentDeadline")]
+        [Authorize("Admin")]
+        public ActionResult<bool> CheckVerificationAgentDeadline()
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    //using var scope = serviceScopeFactory.CreateScope();
+                    //var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
+                    //await jobService.CheckVerificationDeadline();
+                    _recurringJobManager.AddOrUpdate("deadlineReviewJobId", () => _jobService.CheckVerificationAgentDeadline(), Cron.Daily);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            });
+            return Ok(true);
+        } 
     }
 }

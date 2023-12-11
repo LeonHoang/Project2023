@@ -219,7 +219,6 @@ export const asyncRoutes: RouteRecordRaw[] = [
       }
     ]
   },
-  ,
   {
     path: "/verify-violation-report",
     component: Layouts,
@@ -237,6 +236,28 @@ export const asyncRoutes: RouteRecordRaw[] = [
         meta: {
           roles: ["Admin"],
           title: "Xác minh khiếu nại",
+          svgIcon: "menu"
+        }
+      }
+    ]
+  },
+  {
+    path: "/verification-assign",
+    component: Layouts,
+    redirect: "/verification-assign/list",
+    meta: {
+      roles: ["Admin"],
+      title: "Phân công nhiệm vụ",
+      svgIcon: "process"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/verification-assign/index.vue"),
+        name: "verification-assign-list",
+        meta: {
+          roles: ["Admin"],
+          title: "Phân công nhiệm vụ",
           svgIcon: "menu"
         }
       }

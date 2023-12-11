@@ -28,7 +28,7 @@ namespace EcisApi.Services
         Task<VerificationProcess> GenerateAsync(int companyId);
         Task<VerificationProcess> UpdateAsync(VerificationProcess verificationProcess);
         Task<VerificationProcess> SubmitProcessAsync(int id);
-        Task<VerificationProcess> SubmitReviewAsync(int id, int assignedAgentId);
+        Task<VerificationProcess> SubmitReviewAsync(int id);
         //Task<VerificationProcess> SubmitClassifyAsync(int id, int companyTypeId);
         Task<VerificationProcess> RequestSupportAsync(int id);
         Task DeleteAsync(int id);
@@ -120,6 +120,29 @@ namespace EcisApi.Services
                 .ToList();
         }
 
+        //public ICollection<VerificationProcess> GetAllPendingByAgent()
+        //{
+        //    var role = (Role)_httpContextAccessor.HttpContext.Items["Role"];
+        //    if (role == null)
+        //    {
+        //        return Array.Empty<VerificationProcess>();
+        //    }
+        //    var processes = verificationProcessRepository
+        //            .Find(x => x.Status == AppConstants.VerificationProcessStatus.Submitted && !x.IsDeleted);
+
+        //    if (role.RoleName == "Admin")
+        //    {
+        //        return processes.ToList();
+        //    }
+        //    var account = (Account)_httpContextAccessor.HttpContext.Items["Account"];
+        //    var agent = agentRepository.GetByAccountId(account.Id);
+        //    //var assigneds = agentAssignmentRepository.GetByAgentId(agent.Id);
+        //    //var provinceIds = assigneds.Select(x => x.ProvinceId).ToList();
+        //    return processes
+        //        .Where(x => x.AssignedAgentReviewId == agent.Id)
+        //        .ToList();
+        //}
+
         public ICollection<VerificationProcess> GetPendingByAssignedAgent()
         {
             var role = (Role)_httpContextAccessor.HttpContext.Items["Role"];
@@ -136,8 +159,10 @@ namespace EcisApi.Services
             }
             var account = (Account)_httpContextAccessor.HttpContext.Items["Account"];
             var agent = agentRepository.GetByAccountId(account.Id);
+            var assigneds = agentAssignmentRepository.GetByAgentId(agent.Id);
+            var provinceIds = assigneds.Select(x => x.ProvinceId).ToList();
             return processes
-                .Where(x => x.AssignedAgentId == agent.Id)
+                .Where(x => provinceIds.Contains(x.Company.ProvinceId.Value) && x.AssignedAgentReviewId == agent.Id)
                 .ToList();
         }
         
@@ -321,6 +346,7 @@ namespace EcisApi.Services
             }
 
             process.AssignedAgentId = verificationProcess.AssignedAgentId;
+            process.AssignedAgentReviewId = verificationProcess.AssignedAgentReviewId;
             process.CompanyTypeId = verificationProcess.CompanyTypeId;
             process.IsFinished = verificationProcess.IsFinished;
             process.IsOpenedByAgent = verificationProcess.IsOpenedByAgent;
@@ -351,11 +377,12 @@ namespace EcisApi.Services
             process.IsSubmitted = true;
             process.SubmittedAt = DateTime.Now;
             process.SubmittedCount += 1;
+            process.SubmitDeadline = DateTime.Now.AddDays(3);
             process.Status = AppConstants.VerificationProcessStatus.Submitted;
             return await verificationProcessRepository.UpdateAsync(process);
         }
 
-        public async Task<VerificationProcess> SubmitReviewAsync(int id, int assignedAgentId)
+        public async Task<VerificationProcess> SubmitReviewAsync(int id)
         {
             var process = verificationProcessRepository.GetById(id);
 
@@ -370,8 +397,8 @@ namespace EcisApi.Services
 
             process.IsReviewed = true;
             process.ReviewedAt = DateTime.Now;
+            process.SubmitDeadline = DateTime.Now.AddDays(1);
             process.Status = AppConstants.VerificationProcessStatus.Reviewed;
-            process.AssignedAgentId = assignedAgentId;
             return await verificationProcessRepository.UpdateAsync(process);
         }
 
@@ -429,6 +456,8 @@ namespace EcisApi.Services
             }
 
             process.Status = AppConstants.VerificationProcessStatus.InProgress;
+            process.IsSubmitted = false;
+            process.SubmitDeadline = DateTime.Now.AddDays(5);
 
             return await verificationProcessRepository.UpdateAsync(process);
         }
@@ -448,7 +477,8 @@ namespace EcisApi.Services
             }
 
             process.Status = AppConstants.VerificationProcessStatus.Submitted;
-            process.SubmitDeadline = DateTime.Now.AddDays(10);
+            process.IsReviewed = false;
+            process.SubmitDeadline = DateTime.Now.AddDays(1);
 
             return await verificationProcessRepository.UpdateAsync(process);
         }

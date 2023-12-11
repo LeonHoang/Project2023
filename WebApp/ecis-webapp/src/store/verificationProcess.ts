@@ -91,6 +91,12 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     }
   }
 
+  const getAll = async () => {
+    const verificationProcessServiceResult = await verificationProcessServices.getAll()
+    verificationProcess.value = verificationProcessServiceResult.data
+    return verificationProcessServiceResult
+  }
+
   const getAllPending = async () => {
     const verificationProcessServiceResult = await verificationProcessServices.getAllPending()
     verificationProcess.value = verificationProcessServiceResult.data
@@ -140,6 +146,10 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     await verificationCriteriaServices.update(data);
   }
 
+  const updateProcess = async (data: Partial<VerificationProcess>) => {
+    await verificationProcessServices.update(data);
+  }
+
   const updateCriteriaField = async (
     fieldName: string,
     criteriaDetailId: number,
@@ -182,8 +192,8 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     await loadSelfVerification(processId.value);
   }
 
-  const submitVerifyReview = async (verificationProcessId: number, assignedAgentId: number) => {
-    await verificationProcessServices.submitVerifyReview(verificationProcessId, assignedAgentId);
+  const submitVerifyReview = async (verificationProcessId: number) => {
+    await verificationProcessServices.submitVerifyReview(verificationProcessId);
 
     // refresh
     await loadSelfVerification(processId.value);
@@ -221,6 +231,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
 
     getProcessIdByAccountId,
     setProcessId,
+    getAll,
     getAllPending,
     getAllPendingByAssignedAgent,
     getAllReviewed,
@@ -235,6 +246,7 @@ export const useVerificationProcessStore = defineStore("verificationProcess", ()
     loadSelfVerification,
     loadLastSelfVerification,
 
+    updateProcess,
     updateVerificationCriteria,
     updateCriteriaField,
     updateCriteriaCompliance,

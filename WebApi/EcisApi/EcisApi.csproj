@@ -43,6 +43,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\EmailTemplates\VerificationNeedReview.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\EmailTemplates\ThirdPartyCreated.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
