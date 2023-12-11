@@ -108,5 +108,8 @@ namespace EcisApi.Helpers
         public static readonly string VerificationConfirmRequirementAnnounceAgent = "VerificationConfirmRequirementAnnounceAgent";
         public static readonly string VerificationConfirmRequirementAnnounceCompany = "VerificationConfirmRequirementAnnounceCompany";
         public static readonly string VerificationFinished = "VerificationFinished";
+        public static readonly string VerificationAutoFinished = "VerificationAutoFinished";
+        public static readonly string VerificationRequest = "VerificationRequest";
+        public static readonly string VerificationRequestNotifyMonth = "VerificationRequestNotifyMonth";
     }
 }

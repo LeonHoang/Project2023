@@ -1,4 +1,5 @@
 ﻿using EcisApi.Helpers;
+using EcisApi.Models;
 using EcisApi.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,6 +13,8 @@ namespace EcisApi.Services
         Task CheckGenerateVerification();
         Task CheckVerificationDeadline();
         Task CheckVerificationAgentDeadline();
+
+        Task CheckVerificationFinishDeadline();
     }
 
     public class JobService : IJobService
@@ -76,8 +79,8 @@ namespace EcisApi.Services
                     {
                         await emailHelper.SendEmailAsync(
                             new string[] { lastVerification.Company.Account.Email },
-                            "Doanh nghiệp còn 1 ngày đến hạn xác minh đánh giá, đề nghị cán bộ xử lý",
-                            EmailTemplate.VerificationNeedReview,
+                            "Yêu cầu doanh nghiệp thực hiện tự đánh giá",
+                            EmailTemplate.VerificationRequest,
                             new Dictionary<string, string>());
                     }
                     catch (Exception)
@@ -90,9 +93,20 @@ namespace EcisApi.Services
 
                 if (
                     lastVerification.Status == AppConstants.VerificationProcessStatus.Finished
-                    && DateTime.Today > lastVerification.FinishedAt.GetValueOrDefault(DateTime.Now).AddByType(durationTime, durationType).AddDays(-30))
+                    && DateTime.Today == lastVerification.FinishedAt.GetValueOrDefault(DateTime.Now).AddByType(durationTime, durationType).AddDays(-30))
                 {
-                    await verificationProcessService.GenerateAsync(company.Id);
+                    try
+                    {
+                        await emailHelper.SendEmailAsync(
+                            new string[] { lastVerification.Company.Account.Email },
+                            "Doanh nghiệp còn 1 tháng sẽ bắt đầu quá trình tự đánh giá",
+                            EmailTemplate.VerificationRequestNotifyMonth,
+                            new Dictionary<string, string>());
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                     Console.WriteLine($"company {company.Id} at: {DateTimeOffset.UtcNow} has 1 month left until the time verification start");
                 }
 
@@ -101,6 +115,18 @@ namespace EcisApi.Services
                     && DateTime.Today > lastVerification.FinishedAt.GetValueOrDefault(DateTime.Now).AddByType(durationTime, durationType))
                 {
                     await verificationProcessService.GenerateAsync(company.Id);
+                    try
+                    {
+                        await emailHelper.SendEmailAsync(
+                            new string[] { lastVerification.Company.Account.Email },
+                            "Yêu cầu doanh nghiệp thực hiện tự đánh giá",
+                            EmailTemplate.VerificationRequest,
+                            new Dictionary<string, string>());
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                     Console.WriteLine($"Generate verification success for company {company.Id} at: {DateTimeOffset.UtcNow}");
                 }
             }
@@ -155,7 +181,7 @@ namespace EcisApi.Services
                     };
 
                     await emailHelper.SendEmailAsync(
-                        new string[] { verification.AssignedAgentReview.Account.Email},
+                        new string[] { verification.AssignedAgentReview.Account.Email },
                         "Doanh nghiệp còn 1 ngày đến hạn xác minh đánh giá, đề nghị cán bộ xử lý",
                         EmailTemplate.VerificationNeedReview,
                         mailParams);
@@ -168,6 +194,48 @@ namespace EcisApi.Services
             }
 
             Console.WriteLine($"Job CheckVerificationAgentDeadline Finished {processed} in {unfinishedVerifications.Count}");
+        }
+
+        public async Task CheckVerificationFinishDeadline()
+        {
+            Console.WriteLine($"Job CheckVerificationFinishDeadline Started");
+
+            var unfinishedVerifications = verificationProcessRepository.Find(x => x.IsReviewed && !x.IsFinished && !x.IsDeleted && x.SubmitDeadline <= DateTime.Now);
+
+            var processed = 0;
+
+            foreach (var verification in unfinishedVerifications)
+            {
+                processed += 1;
+                if (processed % 20 == 0)
+                {
+                    Console.WriteLine($"Job CheckVerificationFinishDeadline Processed {processed} in {unfinishedVerifications.Count}");
+                }
+                try
+                {
+                    var mailParams = new Dictionary<string, string>
+                    {
+                        { "companyEmail", verification.Company.Account.Email },
+                        { "companyName", verification.Company.CompanyNameVI },
+                        { "companyCode", verification.Company.CompanyCode }
+                    };
+
+                    await emailHelper.SendEmailAsync(
+                        new string[] { verification.AssignedAgentReview.Account.Email },
+                        "Doanh nghiệp bên dưới sẽ tự động phân loaị do đến hạn xử lý. Vui lòng truy cập ECIS để xem kết quả chi tiết.",
+                        EmailTemplate.VerificationNeedReview,
+                        mailParams);
+                }
+                catch (Exception)
+                {
+
+                }
+                await verificationProcessService.AutoFinishAsync(verification.Id);
+
+                Console.WriteLine($"Review verification pass deadline success for verification {verification.Id} at :{DateTimeOffset.UtcNow}");
+            }
+
+            Console.WriteLine($"Job CheckVerificationFinishDeadline Finished {processed} in {unfinishedVerifications.Count}");
         }
     }
 }

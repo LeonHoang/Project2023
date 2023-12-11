@@ -32,8 +32,6 @@ namespace EcisApi.Controllers
             {
                 try
                 {
-                    //using var scope = serviceScopeFactory.CreateScope();
-                    //var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
                     _recurringJobManager.AddOrUpdate("generateJobId", () => _jobService.CheckGenerateVerification(), Cron.Daily);
                 }
                 catch (Exception e)
@@ -52,9 +50,6 @@ namespace EcisApi.Controllers
             {
                 try
                 {
-                    //using var scope = serviceScopeFactory.CreateScope();
-                    //var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-                    //await jobService.CheckVerificationDeadline();
                     _recurringJobManager.AddOrUpdate("deadlineJobId", () => _jobService.CheckVerificationDeadline(), Cron.Daily);
                 }
                 catch (Exception e)
@@ -73,9 +68,6 @@ namespace EcisApi.Controllers
             {
                 try
                 {
-                    //using var scope = serviceScopeFactory.CreateScope();
-                    //var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-                    //await jobService.CheckVerificationDeadline();
                     _recurringJobManager.AddOrUpdate("deadlineReviewJobId", () => _jobService.CheckVerificationAgentDeadline(), Cron.Daily);
                 }
                 catch (Exception e)
@@ -84,6 +76,24 @@ namespace EcisApi.Controllers
                 }
             });
             return Ok(true);
-        } 
+        }
+
+        [HttpPost("CheckVerificationFinishDeadline")]
+        [Authorize("Admin")]
+        public ActionResult<bool> CheckVerificationFinishDeadline()
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    _recurringJobManager.AddOrUpdate("deadlineFinishJobId", () => _jobService.CheckVerificationFinishDeadline(), Cron.Daily);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            });
+            return Ok(true);
+        }
     }
 }

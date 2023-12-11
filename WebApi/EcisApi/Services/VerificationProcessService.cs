@@ -36,6 +36,7 @@ namespace EcisApi.Services
         Task<VerificationProcess> RejectProcessAsync(int id);
         Task<VerificationProcess> RejectReviewedAsync(int id);
         Task<VerificationProcess> FinishAsync(int id, int companyTypeId);
+        Task<VerificationProcess> AutoFinishAsync(int id);
         //Task<VerificationProcess> RejectClassifiedAsync(int id);
     }
 
@@ -44,6 +45,7 @@ namespace EcisApi.Services
         protected readonly IAgentRepository agentRepository;
         protected readonly IAgentAssignmentRepository agentAssignmentRepository;
         protected readonly ICompanyRepository companyRepository;
+        protected readonly ICompanyTypeRepository companyTypeRepository;
         protected readonly ICompanyTypeModificationRepository companyTypeModificationRepository;
         protected readonly ICriteriaDetailRepository criteriaDetailRepository;
         protected readonly IVerificationCriteriaRepository verificationCriteriaRepository;
@@ -57,6 +59,7 @@ namespace EcisApi.Services
             IAgentRepository agentRepository,
             IAgentAssignmentRepository agentAssignmentRepository,
             ICompanyRepository companyRepository,
+            ICompanyTypeRepository companyTypeRepository,
             ICompanyTypeModificationRepository companyTypeModificationRepository,
             ICriteriaDetailRepository criteriaDetailRepository,
             IVerificationCriteriaRepository verificationCriteriaRepository,
@@ -69,6 +72,7 @@ namespace EcisApi.Services
             this.agentRepository = agentRepository;
             this.agentAssignmentRepository = agentAssignmentRepository;
             this.companyRepository = companyRepository;
+            this.companyTypeRepository = companyTypeRepository;
             this.companyTypeModificationRepository = companyTypeModificationRepository;
             this.criteriaDetailRepository = criteriaDetailRepository;
             this.verificationCriteriaRepository = verificationCriteriaRepository;
@@ -185,7 +189,7 @@ namespace EcisApi.Services
             var assigneds = agentAssignmentRepository.GetByAgentId(agent.Id);
             var provinceIds = assigneds.Select(x => x.ProvinceId).ToList();
             return processes
-                .Where(x => provinceIds.Contains(x.Company.ProvinceId.Value))
+                .Where(x => provinceIds.Contains(x.Company.ProvinceId.Value) && x.AssignedAgentId == agent.Id)
                 .ToList();
         }
 
@@ -494,6 +498,72 @@ namespace EcisApi.Services
             if (process.Status != AppConstants.VerificationProcessStatus.Reviewed)
             {
                 throw new BadHttpRequestException("InvalidVerificationProcess");
+            }
+
+            using var transaction = unitOfWork.BeginTransaction();
+            process.IsFinished = true;
+            process.FinishedAt = DateTime.Now;
+            process.CompanyTypeId = companyTypeId;
+            process.Status = AppConstants.VerificationProcessStatus.Finished;
+            await verificationProcessRepository.UpdateAsync(process);
+
+            Company company = companyRepository.GetById(process.CompanyId);
+
+            CompanyTypeModification currentModification = new()
+            {
+                CompanyId = process.CompanyId,
+                PreviousCompanyTypeId = company.CompanyTypeId,
+                UpdatedCompanyTypeId = companyTypeId,
+                Modification = AppConstants.CompanyModificationType.VERIFICATION,
+                VerificationProcessId = process.Id,
+            };
+            await companyTypeModificationRepository.AddAsync(currentModification);
+
+            company.CompanyTypeId = companyTypeId;
+            await companyRepository.UpdateAsync(company);
+
+            try
+            {
+                await emailHelper.SendEmailAsync(
+                    new string[] { process.Company.Account.Email },
+                    "Kết quả đánh giá doanh nghiệp",
+                    EmailTemplate.VerificationFinished,
+                    new Dictionary<string, string>());
+            }
+            catch (Exception)
+            {
+
+            }
+
+            transaction.Commit();
+            return process;
+        }
+
+        public async Task<VerificationProcess> AutoFinishAsync(int id)
+        {
+            var process = verificationProcessRepository.GetById(id);
+
+            if (process == null || process.Status != AppConstants.VerificationProcessStatus.Reviewed)
+            {
+                throw new BadHttpRequestException("InvalidVerificationProcess");
+            }
+
+            int? companyTypeId = null;
+            var criterias = verificationCriteriaRepository.GetByProcessId(process.Id);
+            companyTypeRepository.GetByName("Loại 1");
+            if (criterias.Where(x => x.ApprovedStatus == AppConstants.VerificationCriteriaStatus.VERIFIED).Count() == criterias.Count)
+            {
+                companyTypeId = companyTypeRepository.GetByName("Loại 1")?.Id;
+            }
+
+            if (criterias.Where(x => x.ApprovedStatus == AppConstants.VerificationCriteriaStatus.REJECTED).Count() > 0)
+            {
+                companyTypeId = companyTypeRepository.GetByName("Loại 2")?.Id;
+            }
+
+            if (companyTypeId == null)
+            {
+                throw new BadHttpRequestException("CannotAutoHandle");
             }
 
             using var transaction = unitOfWork.BeginTransaction();
