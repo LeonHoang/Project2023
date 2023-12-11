@@ -43,6 +43,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\EmailTemplates\VerificationAutoFinished.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\EmailTemplates\VerificationRequestNotifyMonth.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\EmailTemplates\VerificationRequest.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\EmailTemplates\VerificationNeedReview.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
